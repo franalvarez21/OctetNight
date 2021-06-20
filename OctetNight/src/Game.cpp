@@ -1,0 +1,117 @@
+
+#include "Game.h"
+
+#include "utils/Utils.h"
+#include "utils/Stats.h"
+#include "utils/Effects.h"
+#include "world/World.h"
+
+#include "menus/Menu.h"
+#include "menus/TitleMenu.h"
+#include "menus/PauseMenu.h"
+
+Arduboy2Base arduboy;
+ArduboyTones sound(arduboy.audio.enabled);
+
+uint8_t onStage;
+uint8_t action;
+
+Utils utils;
+Stats stats;
+Effects effects;
+World world;
+
+TitleMenu titleMenu;
+PauseMenu pauseMenu;
+
+void Game::setup(void)
+{
+  arduboy.begin();
+  arduboy.setFrameRate(15);
+  arduboy.initRandomSeed();
+  arduboy.systemButtons();
+  arduboy.waitNoButtons();
+
+  utils.init(&arduboy);
+  restart();
+}
+
+void Game::restart(void)
+{
+  world.refresh();
+  stats.init();
+  action = 0;
+}
+
+void Game::loop(void)
+{
+  if (!(arduboy.nextFrame()))
+  {
+    return;
+  }
+
+  arduboy.pollButtons();
+  arduboy.clear();
+
+  switch (onStage)
+  {
+  case 0:
+    mainMenuTick();
+    break;
+  case 1:
+    mainPauseTick();
+    break;
+  case 2:
+    mainGameTick();
+    break;
+  }
+
+  utils.tick();
+  arduboy.display();
+}
+
+void Game::mainMenuTick(void)
+{
+  rand() % analogRead(0);
+  titleMenu.eventDisplay(&utils);
+  if (!titleMenu.action(&utils))
+  {
+    restart();
+    onStage = 2;
+  }
+  effects.displayErrorLine(65, 25, 60);
+  effects.displayBistercianBar(0, 2, 10);
+  effects.displayBistercianColumn(118, 30, 3);
+}
+
+void Game::mainPauseTick()
+{
+  pauseMenu.eventDisplay(&utils);
+  switch (pauseMenu.action(&utils))
+  {
+  case 1:
+    onStage = 2;
+    break;
+  case 2:
+    onStage = 0;
+    break;
+  default:
+    world.completeCanvas();
+    break;
+  }
+}
+
+void Game::mainGameTick(void)
+{
+  if (arduboy.justPressed(A_BUTTON) && !world.inAction())
+  {
+    pauseMenu.refresh();
+    onStage = 1;
+  }
+  else
+  {
+    world.action(&utils, &stats);
+    world.display(&utils, &stats);
+  }
+  world.canvas();
+}
