@@ -3,27 +3,100 @@
 class World
 {
 protected:
-  uint8_t mapOffsetX;
-  uint8_t mapOffsetY;
-  uint8_t map[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
   uint8_t playerXPosition;
   uint8_t playerYPosition;
   uint8_t playerOrientation;
+
+private:
+  uint8_t mapOffsetX;
+  uint8_t mapOffsetY;
+  uint8_t map[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
+  uint8_t map2[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
   bool playerXOrientation;
   uint8_t currentAction;
   uint8_t speedTick;
   uint8_t currentToolSelected;
   bool justPressedLock;
   uint8_t plusAnimation;
+  uint8_t currentMap;
+  uint8_t lastArrowUsed;
 
 public:
+  uint8_t mapGet(uint8_t x, uint8_t y)
+  {
+    if (currentMap == 0)
+    {
+      return map[x][y];
+    }
+    return map2[x][y];
+  }
+
+  void mapSet(uint8_t x, uint8_t y, uint8_t value)
+  {
+    if (currentMap == 0)
+    {
+      map[x][y] = value;
+    }
+    else
+    {
+      map2[x][y] = value;
+    }
+  }
+
+  void reset()
+  {
+    currentMap = 0;
+    refresh();
+    clearMap();
+    clearPlayerPosition();
+    playerXPosition = 3;
+    playerYPosition = 2;
+    lastArrowUsed = 0;
+  }
+
   void refresh()
   {
     speedTick = 0;
     currentAction = 0;
     currentToolSelected = 0;
     plusAnimation = 0;
-    reset();
+    justPressedLock = true;
+  }
+
+  void clearPlayerPosition()
+  {
+    mapOffsetX = 0;
+    mapOffsetY = 0;
+
+    if (currentMap == 0 && lastArrowUsed == 0)
+    {
+      playerXPosition = 3;
+      playerYPosition = 2;
+    }
+    else if (currentMap == 0 && lastArrowUsed == 1)
+    {
+      mapOffsetX = 7;
+      mapOffsetY = 0;
+      playerXPosition = 11;
+      playerYPosition = 4;
+    }
+    else if (currentMap == 1 && lastArrowUsed == 0)
+    {
+      playerXPosition = 1;
+      playerYPosition = 4;
+    }
+    else if (currentMap == 1 && lastArrowUsed == 2)
+    {
+      playerXPosition = 8;
+      playerYPosition = 1;
+    }
+    else if (currentMap == 2)
+    {
+      mapOffsetX = 0;
+      mapOffsetY = 6;
+      playerXPosition = 8;
+      playerYPosition = 6;
+    }
   }
 
   void seedGrowth(uint8_t i, uint8_t j, uint8_t seed_number)
@@ -38,20 +111,95 @@ public:
     }
   }
 
+  void sheepRest()
+  {
+    for (uint8_t i = 11; i < REAL_MAP_WEIGHT - 1; i++)
+    {
+      for (uint8_t j = 4; j < REAL_MAP_HEIGHT - 1; j++)
+      {
+        if (map[i][j] == 23 || map[i][j] == 27)
+        {
+          map[i][j] = map[i][j] - 2;
+        }
+      }
+    }
+  }
+
   void newDay(Stats *stats)
   {
-    stats->rest();
-    currentAction = 0;
-    currentToolSelected = 0;
-    clearPlayerPosition();
-    sheepRest();
-    for (uint8_t i = 0; i < REAL_MAP_WEIGHT - 1; i++)
+    if (currentMap == 0)
     {
-      for (uint8_t j = 0; j < REAL_MAP_HEIGHT - 1; j++)
+      stats->rest();
+      refresh();
+      clearPlayerPosition();
+      sheepRest();
+      for (uint8_t i = 0; i < REAL_MAP_WEIGHT - 1; i++)
       {
-        seedGrowth(i, j, SEED_1_NUMBER);
-        seedGrowth(i, j, SEED_2_NUMBER);
-        seedGrowth(i, j, SEED_3_NUMBER);
+        for (uint8_t j = 0; j < REAL_MAP_HEIGHT - 1; j++)
+        {
+          seedGrowth(i, j, SEED_1_NUMBER);
+          seedGrowth(i, j, SEED_2_NUMBER);
+          seedGrowth(i, j, SEED_3_NUMBER);
+        }
+      }
+    }
+  }
+
+  void sheepChange(Utils *utils)
+  {
+    for (uint8_t i = 10; i < REAL_MAP_WEIGHT - 1; i++)
+    {
+      for (uint8_t j = 3; j < REAL_MAP_HEIGHT - 1; j++)
+      {
+        if (map[i][j] == 21 || map[i][j] == 23 || map[i][j] == 25 || map[i][j] == 27)
+        {
+          switch (rand() % 4)
+          {
+          case 0:
+            if (i - 1 > 10)
+            {
+              if (map[i][j] == 21 || map[i][j] == 23)
+              {
+                map[i][j] = map[i][j] + 4;
+              }
+              moveOthers(i, j, i - 1, j);
+            }
+            break;
+          case 1:
+            if (i + 1 < REAL_MAP_WEIGHT - 1)
+            {
+              if (map[i][j] == 25 || map[i][j] == 27)
+              {
+                map[i][j] = map[i][j] - 4;
+              }
+              moveOthers(i, j, i + 1, j);
+            }
+            break;
+          case 2:
+            if (j - 1 > 3)
+            {
+              moveOthers(i, j, i, j - 1);
+            }
+            break;
+          case 3:
+            if (j + 1 < REAL_MAP_HEIGHT - 1)
+            {
+              moveOthers(i, j, i, j + 1);
+            }
+            break;
+          }
+        }
+      }
+    }
+
+    for (uint8_t i = 11; i < REAL_MAP_WEIGHT - 1; i++)
+    {
+      for (uint8_t j = 4; j < REAL_MAP_HEIGHT - 1; j++)
+      {
+        if (map[i][j] == 22 || map[i][j] == 24 || map[i][j] == 26 || map[i][j] == 28)
+        {
+          map[i][j]--;
+        }
       }
     }
   }
@@ -178,99 +326,21 @@ public:
     return 0;
   }
 
-  void reset()
-  {
-    justPressedLock = true;
-
-    clearMap();
-    clearPlayerPosition();
-  }
-
   void moveOthers(uint8_t x, uint8_t y, uint8_t i, uint8_t j)
   {
-    if (map[i][j] == VOID_NUMBER)
+    if (mapGet(i, j) == VOID_NUMBER)
     {
-      map[i][j] = map[x][y] + 1;
-      map[x][y] = VOID_NUMBER;
-    }
-  }
-
-  void sheepRest()
-  {
-    for (uint8_t i = 11; i < REAL_MAP_WEIGHT - 1; i++)
-    {
-      for (uint8_t j = 4; j < REAL_MAP_HEIGHT - 1; j++)
-      {
-        if (map[i][j] == 23 || map[i][j] == 27)
-        {
-          map[i][j] = map[i][j] - 2;
-        }
-      }
-    }
-  }
-
-  void sheepChange(Utils *utils)
-  {
-    for (uint8_t i = 10; i < REAL_MAP_WEIGHT - 1; i++)
-    {
-      for (uint8_t j = 3; j < REAL_MAP_HEIGHT - 1; j++)
-      {
-        if (map[i][j] == 21 || map[i][j] == 23 || map[i][j] == 25 || map[i][j] == 27)
-        {
-          switch (rand() % 4)
-          {
-          case 0:
-            if (i - 1 > 10)
-            {
-              if (map[i][j] == 21 || map[i][j] == 23)
-              {
-                map[i][j] = map[i][j] + 4;
-              }
-              moveOthers(i, j, i - 1, j);
-            }
-            break;
-          case 1:
-            if (i + 1 < REAL_MAP_WEIGHT - 1)
-            {
-              if (map[i][j] == 25 || map[i][j] == 27)
-              {
-                map[i][j] = map[i][j] - 4;
-              }
-              moveOthers(i, j, i + 1, j);
-            }
-            break;
-          case 2:
-            if (j - 1 > 3)
-            {
-              moveOthers(i, j, i, j - 1);
-            }
-            break;
-          case 3:
-            if (j + 1 < REAL_MAP_HEIGHT - 1)
-            {
-              moveOthers(i, j, i, j + 1);
-            }
-            break;
-          }
-        }
-      }
-    }
-
-    for (uint8_t i = 11; i < REAL_MAP_WEIGHT - 1; i++)
-    {
-      for (uint8_t j = 4; j < REAL_MAP_HEIGHT - 1; j++)
-      {
-        if (map[i][j] == 22 || map[i][j] == 24 || map[i][j] == 26 || map[i][j] == 28)
-        {
-          map[i][j]--;
-        }
-      }
+      mapSet(i, j, mapGet(x, y) + 1);
+      mapSet(x, y, VOID_NUMBER);
     }
   }
 
   void environmentChange(Utils *utils)
   {
-    sheepChange(utils);
+    if (currentMap == 0)
+    {
+      sheepChange(utils);
+    }
   }
 
   void displayTime(Utils *utils, Stats *stats)
@@ -453,33 +523,35 @@ private:
   void clearMap()
   {
     uint8_t cell[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
-    memcpy_P(&cell, &Map::map_0, sizeof(cell));
+
+    if (currentMap == 0)
+    {
+      memcpy_P(&cell, &Map::map_0, sizeof(cell));
+    }
+    else if (currentMap == 1)
+    {
+      memcpy_P(&cell, &Map::map_1, sizeof(cell));
+    }
+    else if (currentMap == 2)
+    {
+      memcpy_P(&cell, &Map::map_2, sizeof(cell));
+    }
 
     for (uint8_t i = 0; i < REAL_MAP_WEIGHT; i++)
     {
       for (uint8_t j = 0; j < REAL_MAP_HEIGHT; j++)
       {
-        map[i][j] = cell[i][j];
+        mapSet(i, j, cell[i][j]);
         if (cell[i][j] == 0)
         {
-          map[i][j] = rand() % 3;
+          mapSet(i, j, rand() % 3);
         }
         else if (cell[i][j] == 1)
         {
-          map[i][j] = VOID_NUMBER;
+          mapSet(i, j, VOID_NUMBER);
         }
       }
     }
-  }
-
-  void clearPlayerPosition()
-  {
-    mapOffsetX = 0;
-    mapOffsetY = 0;
-    playerOrientation = 1;
-    playerXOrientation = true;
-    playerXPosition = 3;
-    playerYPosition = 2;
   }
 
   bool attackEnemy(uint8_t value)
@@ -641,7 +713,7 @@ private:
 
   bool check(uint8_t x, uint8_t y, bool check)
   {
-    return (check) ? map[x][y] == EMPTY_NUMBER : map[x][y] < SEED_1_NUMBER;
+    return (check) ? mapGet(x, y) == EMPTY_NUMBER : mapGet(x, y) < SEED_1_NUMBER;
   }
 
   bool mazeOccupancy(uint8_t x, uint8_t y, bool left, bool right, bool up, bool down)
@@ -668,7 +740,7 @@ private:
 
   void displayMaze(Utils *utils, uint8_t x, uint8_t y, uint8_t i, uint8_t j)
   {
-    if (x > 0 && y < SQUARE_AMOUNT_WEIGHT - 1 && map[x][y] < SEED_1_NUMBER && currentAction > 1 && currentToolSelected == 0)
+    if (x > 0 && y < SQUARE_AMOUNT_WEIGHT - 1 && mapGet(x, y) < SEED_1_NUMBER && currentAction > 1 && currentToolSelected == 0)
     {
       if (mazeOccupancy(x, y, false, false, true, false))
       {
@@ -730,7 +802,7 @@ private:
 
     if (!(i == playerXPosition && j == playerYPosition))
     {
-      switch (map[x][y])
+      switch (mapGet(x, y))
       {
       case 0:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::tree_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
@@ -848,6 +920,18 @@ private:
           Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Mini::sheep_7, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         }
         break;
+      case 29:
+        if (utils->halfCycleCheck())
+        {
+          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::exit_left_arrow, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        }
+        break;
+      case 30:
+        if (utils->halfCycleCheck())
+        {
+          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::exit_bottom_arrow, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        }
+        break;
       // Seed 1
       case SEED_1_NUMBER:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
@@ -958,31 +1042,54 @@ private:
   {
     if (playerXPosition + extX >= 0 && playerYPosition + extY >= 0 && playerXPosition + extX < SQUARE_AMOUNT_WEIGHT - 1 && playerYPosition + extY < SQUARE_AMOUNT_HEIGHT - 1)
     {
-      uint8_t value = map[playerXPosition + mapOffsetX + extX][playerYPosition + mapOffsetY + extY];
+      uint8_t value = mapGet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY);
 
       if (value == SEED_1_NUMBER + 10)
       {
         stats->plusSeedOne(utils);
         plusAnimation = 5;
-        map[playerXPosition + mapOffsetX + extX][playerYPosition + mapOffsetY + extY] = EMPTY_NUMBER;
+        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_2_NUMBER + 10)
       {
         stats->plusSeedTwo(utils);
         plusAnimation = 5;
-        map[playerXPosition + mapOffsetX + extX][playerYPosition + mapOffsetY + extY] = EMPTY_NUMBER;
+        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_3_NUMBER + 10)
       {
         stats->plusSeedThree(utils);
         plusAnimation = 5;
-        map[playerXPosition + mapOffsetX + extX][playerYPosition + mapOffsetY + extY] = EMPTY_NUMBER;
+        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
 
       if (value == 17)
       {
-        // to right map
-        return 2;
+        currentMap = 1;
+        lastArrowUsed = 0;
+        clearMap();
+        clearPlayerPosition();
+        return 1;
+      }
+      else if (value == 18)
+      {
+        currentMap = 2;
+        lastArrowUsed = 1;
+        clearMap();
+        clearPlayerPosition();
+      }
+      else if (value == 29)
+      {
+        currentMap = 0;
+        lastArrowUsed = 1;
+        clearPlayerPosition();
+      }
+      else if (value == 30)
+      {
+        currentMap = 1;
+        lastArrowUsed = 2;
+        clearMap();
+        clearPlayerPosition();
       }
       else if (value > 16)
       {
@@ -1044,11 +1151,11 @@ private:
 
     if (stats->getEnergy() > 0)
     {
-      uint8_t value = map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)];
+      uint8_t value = mapGet(playerXPosition + mapOffsetX + (-1 + x), playerYPosition + mapOffsetY + (-1 + y));
       switch (currentToolSelected)
       {
       case 0:
-        if (canPlace())
+        if (currentMap == 0 && canPlace())
         {
           map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)] = (SEED_1_NUMBER + rand() % 3);
           stats->decEnergy(1);
@@ -1058,7 +1165,7 @@ private:
       case 1:
         if (value == 21 || value == 25)
         {
-          map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)] = value + 2;
+          mapSet(playerXPosition + mapOffsetX + (-1 + x), playerYPosition + mapOffsetY + (-1 + y), value + 2);
           stats->plusWool(utils);
           plusAnimation = 5;
           return 1;
@@ -1067,7 +1174,7 @@ private:
       case 2:
         if (attackEnemy(value))
         {
-          map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)] = VOID_NUMBER;
+          mapSet(playerXPosition + mapOffsetX + (-1 + x), playerYPosition + mapOffsetY + (-1 + y), VOID_NUMBER);
           utils->subtleOkBeep();
         }
         break;
