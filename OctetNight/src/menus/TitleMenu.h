@@ -28,15 +28,15 @@ public:
   void eventDisplay(Utils *utils)
   {
     Arduboy2Base::drawBitmap(65, 0, Title::title_2, 60, 25, WHITE);
-    if (utils->cycle <= 5)
+    if (utils->halfCycleCheck())
     {
-      Arduboy2Base::drawBitmap(0, 27, Title::title_0, 23, 23, WHITE);
-      Arduboy2Base::drawBitmap(45, 39, Title::title_3, 12, 12, WHITE);
+      Arduboy2Base::drawBitmap(15, 27, Title::title_0, 23, 23, WHITE);
+      Arduboy2Base::drawBitmap(60, 39, Title::title_3, 12, 12, WHITE);
     }
     else
     {
-      Arduboy2Base::drawBitmap(0, 27, Title::title_1, 23, 23, WHITE);
-      Arduboy2Base::drawBitmap(45, 39, Title::title_4, 12, 12, WHITE);
+      Arduboy2Base::drawBitmap(15, 27, Title::title_1, 23, 23, WHITE);
+      Arduboy2Base::drawBitmap(60, 39, Title::title_4, 12, 12, WHITE);
     }
 
     Arduboy2Base::drawBitmap(98, 52, Lines::start, 24, 4, WHITE);

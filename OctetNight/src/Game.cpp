@@ -9,6 +9,7 @@
 #include "menus/Menu.h"
 #include "menus/TitleMenu.h"
 #include "menus/PauseMenu.h"
+#include "menus/StoreMenu.h"
 
 Arduboy2Base arduboy;
 ArduboyTones sound(arduboy.audio.enabled);
@@ -23,6 +24,7 @@ World world;
 
 TitleMenu titleMenu;
 PauseMenu pauseMenu;
+StoreMenu storeMenu;
 
 void Game::setup(void)
 {
@@ -64,6 +66,9 @@ void Game::loop(void)
   case 2:
     mainGameTick();
     break;
+  case 3:
+    mainStoreMenuTick();
+    break;
   }
 
   utils.tick();
@@ -82,6 +87,7 @@ void Game::mainMenuTick(void)
   effects.displayErrorLine(65, 25, 60);
   effects.displayBistercianBar(0, 2, 10);
   effects.displayBistercianColumn(118, 30, 3);
+  effects.displayBistercianColumn(0, 8, 8);
 }
 
 void Game::mainPauseTick()
@@ -93,6 +99,10 @@ void Game::mainPauseTick()
     onStage = 2;
     break;
   case 2:
+    world.newDay(&stats);
+    onStage = 2;
+    break;
+  case 3:
     onStage = 0;
     break;
   default:
@@ -101,17 +111,44 @@ void Game::mainPauseTick()
   }
 }
 
+void Game::mainStoreMenuTick(void)
+{
+  storeMenu.eventDisplay();
+  switch (storeMenu.action(&utils))
+  {
+  case 1:
+    onStage = 2;
+    break;
+  case 2:
+    onStage = 2;
+    break;
+  }
+  world.completeCanvas();
+}
+
 void Game::mainGameTick(void)
 {
   if (arduboy.justPressed(A_BUTTON) && !world.inAction())
   {
-    pauseMenu.refresh();
     onStage = 1;
+    pauseMenu.refresh();
+    world.canvas();
   }
   else
   {
-    world.action(&utils, &stats);
-    world.display(&utils, &stats);
+    if (world.action(&utils, &stats) == 2)
+    {
+      onStage = 3;
+      storeMenu.refresh();
+    }
+    else
+    {
+      if (utils.cycle == 1)
+      {
+        world.environmentChange(&utils);
+      }
+      world.display(&utils, &stats);
+      world.canvas();
+    }
   }
-  world.canvas();
 }

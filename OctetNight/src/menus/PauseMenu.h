@@ -3,7 +3,7 @@
 class PauseMenu : public Menu
 {
 public:
-  PauseMenu() : Menu(2){};
+  PauseMenu() : Menu(3){};
 
   void refresh()
   {
@@ -16,14 +16,19 @@ public:
 
     if (okMovement())
     {
-      if (option == 2)
+      if (option == 3)
       {
         utils->okBeep();
-        return 2;
+        return 3;
+      }
+      else if (option == 2)
+      {
+        utils->changesoundFlag();
       }
       else if (option == 1)
       {
-        utils->changesoundFlag();
+        utils->okBeep();
+        return 2;
       }
       else if (option == 0)
       {
@@ -43,15 +48,16 @@ public:
   {
     Arduboy2Base::drawBitmap(48, 8, Lines::options, 34, 4, WHITE);
     Arduboy2Base::drawBitmap(54, 20, Lines::back, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(54, 28, Lines::nDay, 34, 4, WHITE);
     if (utils->soundFlag)
     {
-      Arduboy2Base::drawBitmap(54, 28, Lines::sOn, 34, 4, WHITE);
+      Arduboy2Base::drawBitmap(54, 36, Lines::sOn, 34, 4, WHITE);
     }
     else
     {
-      Arduboy2Base::drawBitmap(54, 28, Lines::sOff, 34, 4, WHITE);
+      Arduboy2Base::drawBitmap(54, 36, Lines::sOff, 34, 4, WHITE);
     }
-    Arduboy2Base::drawBitmap(54, 36, Lines::mMenu, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(54, 44, Lines::mMenu, 34, 4, WHITE);
 
     displayMenuCursor(48, 20);
   }

@@ -12,6 +12,7 @@
 #include "const/Lines.h"
 #include "const/Title.h"
 #include "const/Cards.h"
+#include "const/Seeds.h"
 
 struct Utils
 {
@@ -24,7 +25,7 @@ struct Utils
   void init(Arduboy2Base *arduboy)
   {
     this->arduboy = arduboy;
-    cycle = 10;
+    cycle = CYCLE_TIME;
 
     soundFlag = false;
     Arduboy2Base::audio.off();
@@ -35,8 +36,13 @@ struct Utils
     cycle--;
     if (cycle < 1)
     {
-      cycle = 10;
+      cycle = CYCLE_TIME;
     }
+  }
+
+  bool halfCycleCheck()
+  {
+    return cycle <= CYCLE_TIME / 2;
   }
 
   void changesoundFlag()
