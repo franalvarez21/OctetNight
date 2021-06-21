@@ -40,7 +40,7 @@ void Game::setup(void)
 
 void Game::restart(void)
 {
-  world.reset();
+  world.reset(&stats);
   stats.init();
   action = 0;
 }

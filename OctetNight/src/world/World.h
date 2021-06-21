@@ -43,14 +43,17 @@ public:
     }
   }
 
-  void reset()
+  void reset(Stats *stats)
   {
     currentMap = 0;
     refresh();
     clearMap();
     clearPlayerPosition();
+    spawnSheep(stats);
     playerXPosition = 3;
-    playerYPosition = 2;
+    playerYPosition = 3;
+    playerOrientation = 1;
+    playerXOrientation = true;
     lastArrowUsed = 0;
   }
 
@@ -71,7 +74,7 @@ public:
     if (currentMap == 0 && lastArrowUsed == 0)
     {
       playerXPosition = 3;
-      playerYPosition = 2;
+      playerYPosition = 3;
     }
     else if (currentMap == 0 && lastArrowUsed == 1)
     {
@@ -108,6 +111,14 @@ public:
     else if (map[i][j] > seed_number - 1 && map[i][j] < seed_number + 3)
     {
       map[i][j] = seed_number + 3;
+    }
+  }
+
+  void spawnSheep(Stats *stats)
+  {
+    for (uint8_t i = 11, x = 0; i < REAL_MAP_WEIGHT - 1 && x < stats->sheepAmount; i++, x++)
+    {
+      map[i][4 + rand() % 9] = 21;
     }
   }
 
@@ -711,95 +722,8 @@ private:
     Arduboy2Base::drawBitmap(104, 55, Cards::stats_1, 24, 8, WHITE);
   }
 
-  bool check(uint8_t x, uint8_t y, bool check)
-  {
-    return (check) ? mapGet(x, y) == EMPTY_NUMBER : mapGet(x, y) < SEED_1_NUMBER;
-  }
-
-  bool mazeOccupancy(uint8_t x, uint8_t y, bool left, bool right, bool up, bool down)
-  {
-    uint8_t checks = 0;
-    if (check(x - 1, y, left))
-    {
-      checks++;
-    }
-    if (check(x + 1, y, right))
-    {
-      checks++;
-    }
-    if (check(x, y - 1, up))
-    {
-      checks++;
-    }
-    if (check(x, y + 1, down))
-    {
-      checks++;
-    }
-    return checks == 4;
-  }
-
   void displayMaze(Utils *utils, uint8_t x, uint8_t y, uint8_t i, uint8_t j)
   {
-    if (x > 0 && y < SQUARE_AMOUNT_WEIGHT - 1 && mapGet(x, y) < SEED_1_NUMBER && currentAction > 1 && currentToolSelected == 0)
-    {
-      if (mazeOccupancy(x, y, false, false, true, false))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_top, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, false, true, false, false))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_right, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, true, false, false, false))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_left, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, false, false, false, true))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_bottom, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, true, false, true, false))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_top_left, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, false, true, true, false))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_top_right, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, false, true, false, true))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_bottom_right, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, true, false, false, true))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_bottom_left, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, true, false, true, true))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_top_bottom_left, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, false, true, true, true))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_top_bottom_right, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, true, true, false, true))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_bottom_left_right, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, true, true, true, false))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_top_left_right, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, false, false, true, true))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_top_bottom, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (mazeOccupancy(x, y, true, true, false, false))
-      {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::map_left_right, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-    }
-
     if (!(i == playerXPosition && j == playerYPosition))
     {
       switch (mapGet(x, y))

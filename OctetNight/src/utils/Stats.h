@@ -23,7 +23,7 @@ struct Stats
     seedTwo = 0;
     seedThree = 0;
 
-    sheepAmount = 0;
+    sheepAmount = 8;
     seedOneAmount = 0;
     seedTwoAmount = 0;
     seedThreeAmount = 0;
