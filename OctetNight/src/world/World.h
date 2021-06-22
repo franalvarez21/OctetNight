@@ -20,6 +20,7 @@ private:
   uint8_t plusAnimation;
   uint8_t currentMap;
   uint8_t lastArrowUsed;
+  uint8_t pauseTemp;
 
 public:
   uint8_t mapGet(uint8_t x, uint8_t y)
@@ -360,6 +361,15 @@ public:
     }
   }
 
+  bool canPause()
+  {
+    if (pauseTemp == 0)
+    {
+      return Arduboy2Base::justPressed(A_BUTTON);
+    }
+    return false;
+  }
+
   bool inAction()
   {
     return (currentAction > 0);
@@ -367,10 +377,16 @@ public:
 
   uint8_t action(Utils *utils, Stats *stats)
   {
+    if (pauseTemp > 0)
+    {
+      pauseTemp--;
+    }
+
     if (Arduboy2Base::justPressed(A_BUTTON))
     {
       if (currentAction > 0)
       {
+        pauseTemp = 5;
         currentAction--;
         return 1;
       }
@@ -601,7 +617,7 @@ public:
     }
   }
 
-  void display(Utils *utils, Stats *stats)
+  void display(Utils *utils, Stats *stats, Effects *effects)
   {
     if (playerXPosition + mapOffsetX == 9)
     {
@@ -638,7 +654,7 @@ public:
     {
       for (uint8_t y = mapOffsetY, j = 0; y < SQUARE_AMOUNT_HEIGHT + mapOffsetY - 1; y++, j++)
       {
-        displayMaze(utils, x, y, i, j);
+        displayMaze(utils, stats, effects, x, y, i, j);
       }
     }
 
@@ -718,13 +734,17 @@ private:
       for (uint8_t j = 0; j < REAL_MAP_HEIGHT; j++)
       {
         mapSet(i, j, cell[i][j]);
-        if (cell[i][j] == 0)
+        if (cell[i][j] == 0) // Trees
         {
           mapSet(i, j, rand() % 3);
         }
-        else if (cell[i][j] == 1)
+        else if (cell[i][j] == 1) // Empty
         {
           mapSet(i, j, VOID_NUMBER);
+        }
+        else if (cell[i][j] == 2) // Rocks
+        {
+          mapSet(i, j, 31 + rand() % 3);
         }
       }
     }
@@ -887,7 +907,7 @@ private:
     Arduboy2Base::drawBitmap(104, 55, Cards::stats_1, 24, 8, WHITE);
   }
 
-  void displayMaze(Utils *utils, uint8_t x, uint8_t y, uint8_t i, uint8_t j)
+  void displayMaze(Utils *utils, Stats *stats, Effects *effects, uint8_t x, uint8_t y, uint8_t i, uint8_t j)
   {
     if (!(i == playerXPosition && j == playerYPosition))
     {
@@ -1020,6 +1040,75 @@ private:
         {
           Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::exit_bottom_arrow, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         }
+        break;
+      case 31:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::rock_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 32:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::rock_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 33:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::rock_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 34:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::pillar_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 35:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::pillar_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 36:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::pillar_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 37:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::weird_block_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 3, stats->getRealMoney());
+        break;
+      case 38:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::weird_block_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 3, stats->getRealMoney());
+        break;
+      case 39:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::weird_block_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 3, stats->getRealMoney());
+        break;
+      case 40:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 41:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 42:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 43:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_wall_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 44:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_wall_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 45:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_wall_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 46:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_wall_3, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 47:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_wall_4, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 48:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_wall_5, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 49:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_door_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 50:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_door_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 51:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_tombstone_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 52:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_flag_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       // Seed 1
       case SEED_1_NUMBER:
@@ -1369,7 +1458,7 @@ private:
         break;
       }
 
-      if (value > 16)
+      if (value > 16 && value < 31 || value > SEED_1_NUMBER - 1)
       {
         playerXPosition += extX;
         playerYPosition += extY;
@@ -1470,12 +1559,9 @@ private:
 
   void displayToolAction(Utils *utils)
   {
-    if (currentAction == 2)
+    if (currentAction == 2 && currentToolSelected == 0 && canPlace())
     {
-      if (canPlace() && currentToolSelected == 0)
-      {
-        displayPlaceIcon(utils);
-      }
+      displayPlaceIcon(utils);
     }
   }
 
@@ -1484,25 +1570,25 @@ private:
     switch (playerOrientation)
     {
     case 0:
-      if (playerYPosition + mapOffsetY > 0 && map[playerXPosition + mapOffsetX][playerYPosition + mapOffsetY - 1] == EMPTY_NUMBER)
+      if (playerYPosition + mapOffsetY > 0 && mapGet(playerXPosition + mapOffsetX, playerYPosition + mapOffsetY - 1) == EMPTY_NUMBER)
       {
         return true;
       }
       break;
     case 1:
-      if (playerXPosition + mapOffsetX < REAL_MAP_WEIGHT - 1 && map[playerXPosition + mapOffsetX + 1][playerYPosition + mapOffsetY] == EMPTY_NUMBER)
+      if (playerXPosition + mapOffsetX < REAL_MAP_WEIGHT - 1 && mapGet(playerXPosition + mapOffsetX + 1, playerYPosition + mapOffsetY) == EMPTY_NUMBER)
       {
         return true;
       }
       break;
     case 2:
-      if (playerYPosition + mapOffsetY < REAL_MAP_HEIGHT - 1 && map[playerXPosition + mapOffsetX][playerYPosition + mapOffsetY + 1] == EMPTY_NUMBER)
+      if (playerYPosition + mapOffsetY < REAL_MAP_HEIGHT - 1 && mapGet(playerXPosition + mapOffsetX, playerYPosition + mapOffsetY + 1) == EMPTY_NUMBER)
       {
         return true;
       }
       break;
     case 3:
-      if (playerXPosition + mapOffsetX > 0 && map[playerXPosition + mapOffsetX - 1][playerYPosition + mapOffsetY] == EMPTY_NUMBER)
+      if (playerXPosition + mapOffsetX > 0 && mapGet(playerXPosition + mapOffsetX - 1, playerYPosition + mapOffsetY) == EMPTY_NUMBER)
       {
         return true;
       }

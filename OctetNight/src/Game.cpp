@@ -128,7 +128,7 @@ void Game::mainStoreMenuTick(void)
 
 void Game::mainGameTick(void)
 {
-  if (arduboy.justPressed(A_BUTTON) && !world.inAction())
+  if (world.canPause() && !world.inAction())
   {
     onStage = 1;
     pauseMenu.refresh();
@@ -147,7 +147,7 @@ void Game::mainGameTick(void)
       {
         world.environmentChange(&utils);
       }
-      world.display(&utils, &stats);
+      world.display(&utils, &stats, &effects);
       world.canvas();
     }
   }

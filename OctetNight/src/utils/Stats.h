@@ -2,9 +2,9 @@
 
 struct Stats
 {
-  uint16_t hp;
+  uint8_t hp;
   uint16_t money;
-  uint16_t energy;
+  uint8_t energy;
 
   uint16_t seedOne;
   uint16_t seedTwo;
@@ -158,7 +158,7 @@ struct Stats
     return min(money, MAX_CAPACITY);
   }
 
-  uint8_t getRealMoney()
+  uint16_t getRealMoney()
   {
     return min(money, REAL_MAX_CAPACITY);
   }

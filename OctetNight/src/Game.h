@@ -18,8 +18,8 @@
 #define SEED_1_NUMBER 65
 #define SEED_2_NUMBER 76
 #define SEED_3_NUMBER 87
-#define VOID_NUMBER 98
-#define EMPTY_NUMBER 99
+#define VOID_NUMBER 198
+#define EMPTY_NUMBER 199
 
 class Game
 {
