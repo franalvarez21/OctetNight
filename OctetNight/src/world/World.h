@@ -71,34 +71,178 @@ public:
     mapOffsetX = 0;
     mapOffsetY = 0;
 
-    if (currentMap == 0 && lastArrowUsed == 0)
+    switch (currentMap)
     {
-      playerXPosition = 3;
-      playerYPosition = 3;
-    }
-    else if (currentMap == 0 && lastArrowUsed == 1)
-    {
-      mapOffsetX = 7;
-      mapOffsetY = 0;
-      playerXPosition = 11;
-      playerYPosition = 4;
-    }
-    else if (currentMap == 1 && lastArrowUsed == 0)
-    {
-      playerXPosition = 1;
-      playerYPosition = 4;
-    }
-    else if (currentMap == 1 && lastArrowUsed == 2)
-    {
-      playerXPosition = 8;
-      playerYPosition = 1;
-    }
-    else if (currentMap == 2)
-    {
-      mapOffsetX = 0;
-      mapOffsetY = 6;
-      playerXPosition = 8;
-      playerYPosition = 6;
+    case 0:
+      if (lastArrowUsed == 0)
+      {
+        playerXPosition = 3;
+        playerYPosition = 3;
+      }
+      else if (lastArrowUsed == 1)
+      {
+        mapOffsetX = 7;
+        playerXPosition = 11;
+        playerYPosition = 4;
+      }
+      break;
+    case 1:
+      if (lastArrowUsed == 0)
+      {
+        playerXPosition = 1;
+        playerYPosition = 4;
+      }
+      else if (lastArrowUsed == 2)
+      {
+        playerXPosition = 8;
+        playerYPosition = 1;
+      }
+      break;
+    case 2:
+      if (lastArrowUsed == 1)
+      {
+        mapOffsetY = 6;
+        playerXPosition = 8;
+        playerYPosition = 6;
+      }
+      else if (lastArrowUsed == 3 || lastArrowUsed == 7)
+      {
+        playerXPosition = 1;
+        playerYPosition = 1;
+      }
+      else if (lastArrowUsed == 4 || lastArrowUsed == 5)
+      {
+        mapOffsetX = 7;
+        playerXPosition = 11;
+        playerYPosition = 1;
+      }
+      else if (lastArrowUsed == 6)
+      {
+        playerXPosition = 8;
+        playerYPosition = 1;
+      }
+      break;
+    case 3:
+      if (lastArrowUsed == 5)
+      {
+        mapOffsetY = 6;
+        playerXPosition = 8;
+        playerYPosition = 6;
+      }
+      else if (lastArrowUsed == 4)
+      {
+        playerXPosition = 1;
+        playerYPosition = 1;
+      }
+      else if (lastArrowUsed == 2)
+      {
+        mapOffsetX = 7;
+        playerXPosition = 11;
+        playerYPosition = 1;
+      }
+      else if (lastArrowUsed == 7)
+      {
+        playerXPosition = 8;
+        playerYPosition = 1;
+      }
+      break;
+    case 4:
+      if (lastArrowUsed == 7)
+      {
+        mapOffsetY = 6;
+        playerXPosition = 8;
+        playerYPosition = 6;
+      }
+      else if (lastArrowUsed == 2)
+      {
+        playerXPosition = 1;
+        playerYPosition = 1;
+      }
+      else if (lastArrowUsed == 3)
+      {
+        mapOffsetX = 7;
+        playerXPosition = 11;
+        playerYPosition = 1;
+      }
+      else if (lastArrowUsed == 5)
+      {
+        playerXPosition = 8;
+        playerYPosition = 1;
+      }
+      break;
+    case 5:
+      if (lastArrowUsed == 4)
+      {
+        mapOffsetY = 6;
+        playerXPosition = 8;
+        playerYPosition = 6;
+      }
+      else if (lastArrowUsed == 6)
+      {
+        mapOffsetX = 7;
+        mapOffsetY = 6;
+        playerXPosition = 11;
+        playerYPosition = 4;
+      }
+      else if (lastArrowUsed == 7)
+      {
+        mapOffsetY = 6;
+        playerXPosition = 1;
+        playerYPosition = 4;
+      }
+      else if (lastArrowUsed == 3)
+      {
+        playerXPosition = 8;
+        playerYPosition = 1;
+      }
+      break;
+    case 6:
+      if (lastArrowUsed == 2)
+      {
+        mapOffsetY = 6;
+        playerXPosition = 8;
+        playerYPosition = 6;
+      }
+      else if (lastArrowUsed == 5)
+      {
+        mapOffsetY = 6;
+        playerXPosition = 1;
+        playerYPosition = 4;
+      }
+      else if (lastArrowUsed == 7)
+      {
+        mapOffsetX = 7;
+        mapOffsetY = 6;
+        playerXPosition = 11;
+        playerYPosition = 4;
+      }
+      break;
+    case 7:
+      if (lastArrowUsed == 3)
+      {
+        mapOffsetY = 6;
+        playerXPosition = 8;
+        playerYPosition = 6;
+      }
+      else if (lastArrowUsed == 5)
+      {
+        mapOffsetX = 7;
+        mapOffsetY = 6;
+        playerXPosition = 11;
+        playerYPosition = 4;
+      }
+      else if (lastArrowUsed == 6)
+      {
+        mapOffsetY = 6;
+        playerXPosition = 1;
+        playerYPosition = 4;
+      }
+      else if (lastArrowUsed == 4)
+      {
+        playerXPosition = 8;
+        playerYPosition = 1;
+      }
+      break;
     }
   }
 
@@ -141,6 +285,7 @@ public:
     if (currentMap == 0)
     {
       stats->rest();
+      lastArrowUsed = 0;
       refresh();
       clearPlayerPosition();
       sheepRest();
@@ -348,7 +493,7 @@ public:
 
   void environmentChange(Utils *utils)
   {
-    if (currentMap == 0)
+    if (currentMap == 0 && !(currentAction > 1 && currentToolSelected == 1))
     {
       sheepChange(utils);
     }
@@ -546,6 +691,26 @@ private:
     else if (currentMap == 2)
     {
       memcpy_P(&cell, &Map::map_2, sizeof(cell));
+    }
+    else if (currentMap == 3)
+    {
+      memcpy_P(&cell, &Map::map_3, sizeof(cell));
+    }
+    else if (currentMap == 4)
+    {
+      memcpy_P(&cell, &Map::map_4, sizeof(cell));
+    }
+    else if (currentMap == 5)
+    {
+      memcpy_P(&cell, &Map::map_5, sizeof(cell));
+    }
+    else if (currentMap == 6)
+    {
+      memcpy_P(&cell, &Map::map_6, sizeof(cell));
+    }
+    else if (currentMap == 7)
+    {
+      memcpy_P(&cell, &Map::map_7, sizeof(cell));
     }
 
     for (uint8_t i = 0; i < REAL_MAP_WEIGHT; i++)
@@ -987,35 +1152,224 @@ private:
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
 
-      if (value == 17)
+      bool changeMap = false;
+      lastArrowUsed = currentMap;
+      switch (currentMap)
       {
-        currentMap = 1;
-        lastArrowUsed = 0;
-        clearMap();
-        clearPlayerPosition();
-        return 1;
+      case 0:
+        if (value == 17)
+        {
+          currentMap = 1;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        break;
+      case 1:
+        if (value == 29)
+        {
+          currentMap = 0;
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 18)
+        {
+          currentMap = 2;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        break;
+      case 2:
+        if (value == 30)
+        {
+          currentMap = 1;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 29)
+        {
+          currentMap = 3;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 17)
+        {
+          currentMap = 4;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 18)
+        {
+          currentMap = 6;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        break;
+      case 3:
+        if (value == 30)
+        {
+          currentMap = 5;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 29)
+        {
+          currentMap = 4;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 17)
+        {
+          currentMap = 2;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 18)
+        {
+          currentMap = 7;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        break;
+      case 4:
+        if (value == 30)
+        {
+          currentMap = 7;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 29)
+        {
+          currentMap = 2;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 17)
+        {
+          currentMap = 3;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 18)
+        {
+          currentMap = 5;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        break;
+      case 5:
+        if (value == 30)
+        {
+          currentMap = 4;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 29)
+        {
+          if (playerYPosition > 1)
+          {
+            currentMap = 7;
+          }
+          else
+          {
+            currentMap = 2;
+          }
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 17)
+        {
+          currentMap = 6;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 18)
+        {
+          currentMap = 3;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        break;
+      case 6:
+        if (value == 30)
+        {
+          currentMap = 2;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 29)
+        {
+          currentMap = 5;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 17)
+        {
+          currentMap = 7;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        break;
+      case 7:
+        if (value == 30)
+        {
+          currentMap = 3;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 29)
+        {
+          currentMap = 6;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 17)
+        {
+          if (playerYPosition > 1)
+          {
+            currentMap = 5;
+          }
+          else
+          {
+            currentMap = 2;
+          }
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        else if (value == 18)
+        {
+          currentMap = 4;
+          clearMap();
+          clearPlayerPosition();
+          return 1;
+        }
+        break;
       }
-      else if (value == 18)
-      {
-        currentMap = 2;
-        lastArrowUsed = 1;
-        clearMap();
-        clearPlayerPosition();
-      }
-      else if (value == 29)
-      {
-        currentMap = 0;
-        lastArrowUsed = 1;
-        clearPlayerPosition();
-      }
-      else if (value == 30)
-      {
-        currentMap = 1;
-        lastArrowUsed = 2;
-        clearMap();
-        clearPlayerPosition();
-      }
-      else if (value > 16)
+
+      if (value > 16)
       {
         playerXPosition += extX;
         playerYPosition += extY;
