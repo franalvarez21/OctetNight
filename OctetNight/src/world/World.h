@@ -48,9 +48,8 @@ public:
   {
     currentMap = 0;
     refresh();
-    clearMap();
+    clearMap(stats);
     clearPlayerPosition();
-    spawnSheep(stats);
     playerXPosition = 3;
     playerYPosition = 3;
     playerOrientation = 1;
@@ -259,10 +258,22 @@ public:
     }
   }
 
+  void clearSheepSpace()
+  {
+    for (uint8_t i = 11; i < REAL_MAP_WEIGHT - 1; i++)
+    {
+      for (uint8_t j = 4; j < REAL_MAP_HEIGHT - 1; j++)
+      {
+        map[i][j] = VOID_NUMBER;
+      }
+    }
+  }
+
   void spawnSheep(Stats *stats)
   {
     for (uint8_t i = 11, x = 0; i < REAL_MAP_WEIGHT - 1 && x < stats->sheepAmount; i++, x++)
     {
+      map[i][5 + rand() % 8] = 20;
       map[i][4 + rand() % 9] = 21;
     }
   }
@@ -692,7 +703,7 @@ private:
     return false;
   }
 
-  void clearMap()
+  void clearMap(Stats *stats)
   {
     uint8_t cell[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
 
@@ -746,8 +757,15 @@ private:
         {
           mapSet(i, j, 31 + rand() % 3);
         }
+        else if (cell[i][j] == 63) // weird block
+        {
+          mapSet(i, j, 37 + rand() % 3);
+        }
       }
     }
+
+    clearSheepSpace();
+    spawnSheep(stats);
   }
 
   bool attackEnemy(uint8_t value)
@@ -1110,6 +1128,15 @@ private:
       case 52:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_flag_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
+      case 62:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_store_0, SQUARE_SIZE * 4, SQUARE_SIZE * 3, WHITE);
+        break;
+      case 63:
+        // Reserve as weird blocker
+        break;
+      case 64:
+        // Reserve as blocker
+        break;
       // Seed 1
       case SEED_1_NUMBER:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
@@ -1249,7 +1276,7 @@ private:
         if (value == 17)
         {
           currentMap = 1;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
@@ -1264,7 +1291,7 @@ private:
         else if (value == 18)
         {
           currentMap = 2;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
@@ -1273,28 +1300,28 @@ private:
         if (value == 30)
         {
           currentMap = 1;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 29)
         {
           currentMap = 3;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 17)
         {
           currentMap = 4;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 18)
         {
           currentMap = 6;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
@@ -1303,28 +1330,28 @@ private:
         if (value == 30)
         {
           currentMap = 5;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 29)
         {
           currentMap = 4;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 17)
         {
           currentMap = 2;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 18)
         {
           currentMap = 7;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
@@ -1333,28 +1360,28 @@ private:
         if (value == 30)
         {
           currentMap = 7;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 29)
         {
           currentMap = 2;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 17)
         {
           currentMap = 3;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 18)
         {
           currentMap = 5;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
@@ -1363,7 +1390,7 @@ private:
         if (value == 30)
         {
           currentMap = 4;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
@@ -1377,21 +1404,21 @@ private:
           {
             currentMap = 2;
           }
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 17)
         {
           currentMap = 6;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 18)
         {
           currentMap = 3;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
@@ -1400,21 +1427,21 @@ private:
         if (value == 30)
         {
           currentMap = 2;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 29)
         {
           currentMap = 5;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 17)
         {
           currentMap = 7;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
@@ -1423,14 +1450,14 @@ private:
         if (value == 30)
         {
           currentMap = 3;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 29)
         {
           currentMap = 6;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
@@ -1444,14 +1471,14 @@ private:
           {
             currentMap = 2;
           }
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }
         else if (value == 18)
         {
           currentMap = 4;
-          clearMap();
+          clearMap(stats);
           clearPlayerPosition();
           return 1;
         }

@@ -23,14 +23,14 @@ struct Stats
     seedTwo = 0;
     seedThree = 0;
 
-    sheepAmount = 8;
+    sheepAmount = 1;
     seedOneAmount = 0;
     seedTwoAmount = 0;
     seedThreeAmount = 0;
     potionsAmount = 0;
     woolAmount = 0;
 
-    money = 2;
+    money = 200;
     rest();
   }
 
@@ -155,7 +155,27 @@ struct Stats
 
   uint8_t getMoney()
   {
-    return min(money, MAX_CAPACITY);
+    switch (money)
+    {
+    case 0 ... 10:
+      return 1;
+    case 11 ... 100:
+      return 2;
+    case 101 ... 500:
+      return 3;
+    case 501 ... 1000:
+      return 4;
+    case 1001 ... 2500:
+      return 5;
+    case 2501 ... 5000:
+      return 6;
+    case 5001 ... 7500:
+      return 7;
+    case 7501 ... 9000:
+      return 8;
+    default:
+      return 9;
+    }
   }
 
   uint16_t getRealMoney()
