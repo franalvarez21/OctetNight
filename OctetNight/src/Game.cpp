@@ -4,6 +4,7 @@
 #include "utils/Utils.h"
 #include "utils/Stats.h"
 #include "utils/Effects.h"
+#include "utils/Numbers.h"
 #include "world/World.h"
 
 #include "menus/Menu.h"
@@ -19,6 +20,7 @@ uint8_t action;
 
 Utils utils;
 Stats stats;
+Numbers numbers;
 Effects effects;
 World world;
 
@@ -92,7 +94,7 @@ void Game::mainMenuTick(void)
 
 void Game::mainPauseTick()
 {
-  pauseMenu.eventDisplay(&utils);
+  pauseMenu.eventDisplay(&utils, &stats, &numbers);
   switch (pauseMenu.action(&utils))
   {
   case 1:

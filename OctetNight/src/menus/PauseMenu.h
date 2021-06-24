@@ -3,7 +3,7 @@
 class PauseMenu : public Menu
 {
 public:
-  PauseMenu() : Menu(3){};
+  PauseMenu() : Menu(5){};
 
   void refresh()
   {
@@ -16,19 +16,29 @@ public:
 
     if (okMovement())
     {
-      if (option == 3)
+      if (option == 5)
       {
         utils->okBeep();
         return 3;
       }
-      else if (option == 2)
+      else if (option == 4)
+      {
+        utils->okBeep();
+        // Load Game message
+      }
+      else if (option == 3)
       {
         utils->changesoundFlag();
+      }
+      else if (option == 2)
+      {
+        utils->okBeep();
+        return 2;
       }
       else if (option == 1)
       {
         utils->okBeep();
-        return 2;
+        // Save Game message
       }
       else if (option == 0)
       {
@@ -44,21 +54,53 @@ public:
     return 0;
   }
 
-  void eventDisplay(Utils *utils)
+  void eventDisplay(Utils *utils, Stats *stats, Numbers *numbers)
   {
-    Arduboy2Base::drawBitmap(48, 8, Lines::options, 34, 4, WHITE);
-    Arduboy2Base::drawBitmap(54, 20, Lines::back, 34, 4, WHITE);
-    Arduboy2Base::drawBitmap(54, 28, Lines::nDay, 34, 4, WHITE);
+    // Stats
+    Arduboy2Base::drawBitmap(5, 4, Lines::stats, 33, 22, WHITE);
+    printBigNumber(numbers, 26, 10, stats->getRealMoney());
+    numbers->print(26, 16, stats->potionsAmount);
+    numbers->print(26, 22, stats->woolAmount);
+
+    Arduboy2Base::drawBitmap(5, 34, Lines::crops, 51, 22, WHITE); // crops
+    numbers->print(10, 40, stats->seedOneAmount);
+    numbers->print(10, 46, stats->seedTwoAmount);
+    numbers->print(10, 52, stats->seedThreeAmount);
+    numbers->print(43, 40, stats->seedFourAmount);
+    numbers->print(43, 46, stats->seedFiveAmount);
+    numbers->print(43, 52, stats->seedSixAmount);
+
+    // Menu
+    Arduboy2Base::drawBitmap(74, 4, Lines::options, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(82, 22, Lines::back, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(82, 28, Lines::save, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(82, 34, Lines::nDay, 34, 4, WHITE);
     if (utils->soundFlag)
     {
-      Arduboy2Base::drawBitmap(54, 36, Lines::sOn, 34, 4, WHITE);
+      Arduboy2Base::drawBitmap(82, 40, Lines::sOn, 34, 4, WHITE);
     }
     else
     {
-      Arduboy2Base::drawBitmap(54, 36, Lines::sOff, 34, 4, WHITE);
+      Arduboy2Base::drawBitmap(82, 40, Lines::sOff, 34, 4, WHITE);
     }
-    Arduboy2Base::drawBitmap(54, 44, Lines::mMenu, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(82, 46, Lines::load, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(82, 52, Lines::mMenu, 34, 4, WHITE);
+    displayMenuCursor(76, 22, 6);
 
-    displayMenuCursor(48, 20);
+    // Hub
+    Arduboy2Base::drawBitmap(110, 2, Hub::hub_0, 16, 60, WHITE);
+    Arduboy2Base::drawBitmap(12, 59, Hub::hub_1, 100, 2, WHITE);
+    if (stats->getHP() < 3)
+    {
+      Arduboy2Base::drawBitmap(115, 6, Hub::smile_2, 6, 6, BLACK);
+    }
+    else if (stats->getHP() < 6)
+    {
+      Arduboy2Base::drawBitmap(115, 6, Hub::smile_1, 6, 6, BLACK);
+    }
+    else
+    {
+      Arduboy2Base::drawBitmap(115, 6, Hub::smile_0, 6, 6, BLACK);
+    }
   }
 };

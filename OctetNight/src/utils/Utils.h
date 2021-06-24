@@ -13,6 +13,8 @@
 #include "const/Title.h"
 #include "const/Cards.h"
 #include "const/Seeds.h"
+#include "const/Hub.h"
+#include "const/Digits.h"
 
 struct Utils
 {

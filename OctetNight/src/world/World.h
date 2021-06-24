@@ -411,7 +411,10 @@ public:
       }
       else if (currentAction == 1)
       {
-        currentAction++;
+        if (!(currentToolSelected == 1 && !stats->hasWoolTool || currentToolSelected == 2 && !stats->hasSwordTool || currentToolSelected == 3 && stats->potionsAmount == 0))
+        {
+          currentAction++;
+        }
       }
       else if (currentAction < 1)
       {
@@ -526,6 +529,11 @@ public:
     }
   }
 
+  void displayEmptyTool()
+  {
+    Arduboy2Base::drawBitmap(106, 5, Cards::empty, 20, 17, BLACK);
+  }
+
   void displayTime(Utils *utils, Stats *stats)
   {
     if (currentAction > 0)
@@ -537,12 +545,24 @@ public:
         break;
       case 1:
         Arduboy2Base::drawBitmap(106, 2, Mini::sheers_tool, 20, 20, WHITE);
+        if (!stats->hasWoolTool)
+        {
+          displayEmptyTool();
+        }
         break;
       case 2:
         Arduboy2Base::drawBitmap(106, 2, Mini::sword_tool, 20, 20, WHITE);
+        if (!stats->hasSwordTool)
+        {
+          displayEmptyTool();
+        }
         break;
       case 3:
         Arduboy2Base::drawBitmap(106, 2, Mini::items_tool, 20, 20, WHITE);
+        if (stats->potionsAmount == 0)
+        {
+          displayEmptyTool();
+        }
         break;
       }
     }
@@ -814,11 +834,11 @@ private:
   {
     if (utils->halfCycleCheck())
     {
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * playerXPosition, SQUARE_SIZE * playerYPosition, Common::player_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * playerXPosition, SQUARE_SIZE * playerYPosition, (currentToolSelected == 2 && currentAction > 1) ? Common::player_4 : Common::player_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
     }
     else
     {
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * playerXPosition, SQUARE_SIZE * playerYPosition, Common::player_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * playerXPosition, SQUARE_SIZE * playerYPosition, (currentToolSelected == 2 && currentAction > 1) ? Common::player_5 : Common::player_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
     }
   }
 
@@ -826,11 +846,11 @@ private:
   {
     if (utils->halfCycleCheck())
     {
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * playerXPosition, SQUARE_SIZE * playerYPosition, Common::player_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * playerXPosition, SQUARE_SIZE * playerYPosition, (currentToolSelected == 2 && currentAction > 1) ? Common::player_6 : Common::player_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
     }
     else
     {
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * playerXPosition, SQUARE_SIZE * playerYPosition, Common::player_3, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * playerXPosition, SQUARE_SIZE * playerYPosition, (currentToolSelected == 2 && currentAction > 1) ? Common::player_7 : Common::player_3, SQUARE_SIZE, SQUARE_SIZE, WHITE);
     }
   }
 
@@ -941,40 +961,40 @@ private:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::tree_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 3:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::home_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_door_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 4:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::home_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_door_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 5:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::home_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_tombstone_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 6:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::home_3, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_flag_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 7:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::home_4, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        // Free
         break;
       case 8:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::home_5, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        // Free
         break;
       case 9:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        // Free
         break;
       case 10:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 11:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 12:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_3, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_2, SQUARE_SIZE * 2, SQUARE_SIZE * 2, WHITE);
         break;
       case 13:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_4, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_home_0, SQUARE_SIZE * 3, SQUARE_SIZE * 2, WHITE);
         break;
       case 14:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_5, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_store_0, SQUARE_SIZE * 4, SQUARE_SIZE * 3, WHITE);
         break;
       case 15:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::home_hay, SQUARE_SIZE, SQUARE_SIZE, WHITE);
@@ -1116,21 +1136,6 @@ private:
       case 48:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_wall_5, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
-      case 49:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_door_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        break;
-      case 50:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_door_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        break;
-      case 51:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_tombstone_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        break;
-      case 52:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_flag_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        break;
-      case 62:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_store_0, SQUARE_SIZE * 4, SQUARE_SIZE * 3, WHITE);
-        break;
       case 63:
         // Reserve as weird blocker
         break;
@@ -1251,19 +1256,19 @@ private:
 
       if (value == SEED_1_NUMBER + 10)
       {
-        stats->plusSeedOne(utils);
+        stats->plusSeedFour(utils);
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_2_NUMBER + 10)
       {
-        stats->plusSeedTwo(utils);
+        stats->plusSeedFive(utils);
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_3_NUMBER + 10)
       {
-        stats->plusSeedThree(utils);
+        stats->plusSeedSix(utils);
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }

@@ -1,0 +1,44 @@
+#pragma once
+
+namespace Digits
+{
+  const uint8_t PROGMEM zero[] = {
+      0x0f, 0x09, 0x09, 0x0f, 
+  };
+
+  const uint8_t PROGMEM one[] = {
+      0x00, 0x0a, 0x0f, 0x08, 
+  };
+
+  const uint8_t PROGMEM two[] = {
+      0x0d, 0x0d, 0x0b, 0x0b, 
+  };
+
+  const uint8_t PROGMEM three[] = {
+      0x09, 0x09, 0x0d, 0x0f, 
+  };
+
+  const uint8_t PROGMEM four[] = {
+      0x03, 0x02, 0x02, 0x0f, 
+  };
+
+  const uint8_t PROGMEM five[] = {
+      0x0b, 0x0b, 0x0d, 0x0d, 
+  };
+
+  const uint8_t PROGMEM six[] = {
+      0x0f, 0x0d, 0x0d, 0x0d, 
+  };
+
+  const uint8_t PROGMEM seven[] = {
+      0x01, 0x09, 0x05, 0x03, 
+  };
+
+  const uint8_t PROGMEM eight[] = {
+      0x0f, 0x0d, 0x0d, 0x0f, 
+  };
+
+  const uint8_t PROGMEM nine[] = {
+      0x07, 0x05, 0x05, 0x0f, 
+  };
+}

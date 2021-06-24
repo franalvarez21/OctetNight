@@ -6,31 +6,49 @@ struct Stats
   uint16_t money;
   uint8_t energy;
 
+  bool hasWoolTool;
+  bool hasSwordTool;
+
   uint16_t seedOne;
   uint16_t seedTwo;
   uint16_t seedThree;
+  uint16_t seedFour;
+  uint16_t seedFive;
+  uint16_t seedSix;
 
   uint8_t sheepAmount;
   uint16_t potionsAmount;
   uint16_t seedOneAmount;
   uint16_t seedTwoAmount;
   uint16_t seedThreeAmount;
+  uint16_t seedFourAmount;
+  uint16_t seedFiveAmount;
+  uint16_t seedSixAmount;
   uint16_t woolAmount;
 
   void init()
   {
+    hasWoolTool = true;
+    hasSwordTool = true;
+
     seedOne = 0;
     seedTwo = 0;
     seedThree = 0;
+    seedFour = 0;
+    seedFive = 0;
+    seedSix = 0;
 
-    sheepAmount = 1;
+    sheepAmount = 0;
     seedOneAmount = 0;
     seedTwoAmount = 0;
     seedThreeAmount = 0;
-    potionsAmount = 0;
+    seedFourAmount = 0;
+    seedFiveAmount = 0;
+    seedSixAmount = 0;
+    potionsAmount = 10;
     woolAmount = 0;
 
-    money = 200;
+    money = 500;
     rest();
   }
 
@@ -100,22 +118,52 @@ struct Stats
     seedThree = max(seedThree - val, 0);
   }
 
-  void plusSeedOne(Utils *utils)
+  void incSeedFour(uint8_t val)
   {
-    utils->subtleOkBeep();
-    seedOneAmount = min(seedOneAmount + 1, REAL_MAX_CAPACITY);
+    seedFour = min(seedFour + val, REAL_MAX_CAPACITY);
   }
 
-  void plusSeedTwo(Utils *utils)
+  void decSeedFour(uint8_t val)
   {
-    utils->subtleOkBeep();
-    seedTwoAmount = min(seedTwoAmount + 1, REAL_MAX_CAPACITY);
+    seedFour = max(seedFour - val, 0);
   }
 
-  void plusSeedThree(Utils *utils)
+  void incSeedFive(uint8_t val)
+  {
+    seedFive = min(seedFive + val, REAL_MAX_CAPACITY);
+  }
+
+  void decSeedFive(uint8_t val)
+  {
+    seedFive = max(seedFive - val, 0);
+  }
+
+  void incSeedSix(uint8_t val)
+  {
+    seedSix = min(seedSix + val, REAL_MAX_CAPACITY);
+  }
+
+  void decSeedSix(uint8_t val)
+  {
+    seedSix = max(seedSix - val, 0);
+  }
+
+  void plusSeedFour(Utils *utils)
   {
     utils->subtleOkBeep();
-    seedThreeAmount = min(seedThreeAmount + 1, REAL_MAX_CAPACITY);
+    seedFourAmount = min(seedFourAmount + 1, REAL_MAX_CAPACITY);
+  }
+
+  void plusSeedFive(Utils *utils)
+  {
+    utils->subtleOkBeep();
+    seedFiveAmount = min(seedFiveAmount + 1, REAL_MAX_CAPACITY);
+  }
+
+  void plusSeedSix(Utils *utils)
+  {
+    utils->subtleOkBeep();
+    seedSixAmount = min(seedSixAmount + 1, REAL_MAX_CAPACITY);
   }
 
   void plusWool(Utils *utils)
@@ -140,11 +188,14 @@ struct Stats
     sheepAmount = min(sheepAmount + 1, SHEEP_MAX_AMOUNT);
   }
 
-  void sellAll(uint8_t val)
+  void sellAll()
   {
     seedOneAmount = 0;
     seedTwoAmount = 0;
     seedThreeAmount = 0;
+    seedFourAmount = 0;
+    seedFiveAmount = 0;
+    seedSixAmount = 0;
     woolAmount = 0;
   }
 

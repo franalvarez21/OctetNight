@@ -40,8 +40,24 @@ public:
     return Arduboy2Base::justPressed(A_BUTTON) || Arduboy2Base::justPressed(LEFT_BUTTON);
   }
 
-  void displayMenuCursor(uint8_t x, uint8_t y)
+  void displayMenuCursor(uint8_t x, uint8_t y, uint8_t jumps = SQUARE_SIZE)
   {
-    Arduboy2Base::drawBitmap(x, y + (SQUARE_SIZE * option), Lines::x, 4, 4, WHITE);
+    Arduboy2Base::drawBitmap(x, y + (jumps * option), Lines::x, 4, 4, WHITE);
+  }
+
+  void printBigNumber(Numbers *numbers, uint8_t x, uint8_t y, uint16_t value)
+  {
+    if (value < 100)
+    {
+      numbers->print(x, y, value, 2);
+    }
+    else if (value < 1000)
+    {
+      numbers->print(x + 5, y, value, 4);
+    }
+    else
+    {
+      numbers->print(x + 10, y, value, 4);
+    }
   }
 };

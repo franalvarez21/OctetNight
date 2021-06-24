@@ -5,9 +5,9 @@ namespace Map
   const PROGMEM uint8_t map_0[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT] = {
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
       { 0, 2, 2, 20, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
-      { 3, 6, 19, 1, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
-      { 4, 7, 1, 1, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
-      { 5, 8, 1, 1, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
+      { 13, 64, 19, 1, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
+      { 64, 64, 1, 1, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
+      { 64, 64, 1, 1, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
       { 0, 1, 1, 1, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
       { 0, 20, 1, 1, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
       { 0, 15, 1, 1, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
@@ -15,9 +15,9 @@ namespace Map
       { 0, 15, 1, 1, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, EMPTY_NUMBER, 0, },
       { 0, 1, 1, 1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 0, },
       { 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
-      { 9, 12, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
-      { 10, 13, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
-      { 11, 14, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
+      { 10, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
+      { 12, 64, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
+      { 64, 64, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
       { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
       { 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
       { 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
@@ -38,9 +38,9 @@ namespace Map
       { 0, 1, 1, 1, 1, 1, 2, 0, 0, 1, 1, 1, 20, 0, },
       { 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, },
       { 0, 0, 0, 1, 1, 0, 0, 36, 34, 1, 1, 1, 0, 0, },
-      { 0, 0, 0, 0, 0, 0, 1, 1, 52, 1, 1, 1, 20, 0, },
+      { 0, 0, 0, 0, 0, 0, 1, 1, 6, 1, 1, 1, 20, 0, },
       { 0, 0, 20, 20, 20, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
-      { 0, 62, 64, 64, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
+      { 0, 14, 64, 64, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
       { 0, 64, 64, 64, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
       { 0, 64, 64, 64, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, },
       { 0, 64, 64, 64, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, },
@@ -55,7 +55,7 @@ namespace Map
       { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 47, 20, 0, },
       { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 44, 20, 0, },
       { 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 20, 0, },
-      { 0, 51, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, },
+      { 0, 5, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, },
       { 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, },
       { 18, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 30, },
       { 0, 1, 1, 1, 1, 1, 2, 0, 0, 1, 1, 1, 2, 0, },
@@ -84,7 +84,7 @@ namespace Map
       { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, },
       { 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, },
       { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
-      { 0, 51, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
+      { 0, 5, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
       { 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, },
       { 0, 0, 1, 1, 2, 0, 1, 1, 1, 1, 1, 1, 1, 0, },
       { 0, 1, 1, 1, 1, 2, 0, 1, 1, 1, 1, 1, 1, 0, },
@@ -103,7 +103,7 @@ namespace Map
       { 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, },
       { 0, 1, 1, 1, 1, 0, 0, 1, 1, 2, 0, 1, 1, 0, },
       { 0, 1, 1, 1, 1, 0, 0, 20, 2, 0, 1, 1, 1, 0, },
-      { 18, 1, 1, 1, 20, 0, 0, 0, 0, 51, 1, 1, 1, 30, },
+      { 18, 1, 1, 1, 20, 0, 0, 0, 0, 5, 1, 1, 1, 30, },
       { 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, },
       { 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, },
       { 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
@@ -149,7 +149,7 @@ namespace Map
       { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, },
       { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, },
       { 1, 1, 1, 1, 1, 1, 1, 1, 48, 0, 0, 1, 1, 0, },
-      { 1, 1, 1, 1, 1, 47, 1, 1, 1, 0, 51, 1, 1, 30, },
+      { 1, 1, 1, 1, 1, 47, 1, 1, 1, 0, 5, 1, 1, 30, },
       { 1, 2, 1, 43, 45, 44, 1, 1, 0, 0, 0, 1, 1, 0, },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 0, },
       { 0, 0, 0, 1, 1, 0, 0, 0, 2, 1, 1, 1, 1, 0, },
@@ -198,52 +198,16 @@ namespace Map
       0x00, 0x12, 0x24, 0x79, 0x6e, 0x34, 0x12, 0x00,
   };
 
-  const uint8_t PROGMEM home_0[] = {
-      0xc0, 0xa0, 0x90, 0x90, 0x88, 0x84, 0xa4, 0x92, 
-  };
-
-  const uint8_t PROGMEM home_1[] = {
-      0x82, 0xfd, 0xd5, 0xfd, 0xd5, 0xd5, 0xfd, 0x82, 
-  };
-
-  const uint8_t PROGMEM home_2[] = {
-      0x92, 0xa4, 0x84, 0x88, 0x90, 0x90, 0xa0, 0xc0, 
-  };
-
-  const uint8_t PROGMEM home_3[] = {
-      0x7e, 0x83, 0x7c, 0x92, 0x82, 0x82, 0x82, 0x7c, 
-  };
-
-  const uint8_t PROGMEM home_4[] = {
-      0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 
-  };
-
-  const uint8_t PROGMEM home_5[] = {
-      0x80, 0x80, 0x80, 0x80, 0x80, 0x7c, 0x83, 0x7e, 
-  };
-
   const uint8_t PROGMEM ranch_0[] = {
-      0xe0, 0x90, 0xd0, 0xa8, 0xa8, 0x94, 0x54, 0x4a, 
+      0xf0, 0x08, 0x04, 0x84, 0x42, 0x42, 0x42, 0x82, 
   };
 
   const uint8_t PROGMEM ranch_1[] = {
-      0x0a, 0x65, 0x93, 0x91, 0x91, 0x93, 0x65, 0x0a, 
+      0x1f, 0x20, 0x47, 0x48, 0x50, 0x50, 0x58, 0x4c, 
   };
 
   const uint8_t PROGMEM ranch_2[] = {
-      0x4a, 0x54, 0x94, 0xa8, 0xa8, 0xd0, 0x90, 0xe0, 
-  };
-
-  const uint8_t PROGMEM ranch_3[] = {
-      0x7e, 0xab, 0x80, 0xfc, 0x8a, 0x8e, 0x8a, 0x8a, 
-  };
-
-  const uint8_t PROGMEM ranch_4[] = {
-      0x8a, 0x8a, 0x8a, 0x8e, 0x8e, 0x8a, 0x8a, 0x8a, 
-  };
-
-  const uint8_t PROGMEM ranch_5[] = {
-      0x8a, 0x8a, 0x8e, 0x8a, 0xfc, 0x80, 0xab, 0x7e, 
+      0x02, 0x02, 0x82, 0x42, 0xc2, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0xc2, 0x44, 0x84, 0x08, 0xf0, 0x47, 0x40, 0x7f, 0x00, 0x81, 0x41, 0x01, 0x81, 0x41, 0x01, 0x81, 0x41, 0x00, 0x7f, 0x20, 0x1f, 
   };
 
   const uint8_t PROGMEM home_hay[] = {
@@ -372,6 +336,10 @@ namespace Map
 
   const uint8_t PROGMEM world_store_0[] = {
       0xf0, 0x08, 0x04, 0x32, 0x49, 0x85, 0xc5, 0x69, 0x31, 0x01, 0x01, 0x02, 0x04, 0x08, 0xf4, 0x04, 0x04, 0x04, 0x0c, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x04, 0xfc, 0x00, 0x43, 0xb4, 0x48, 0x10, 0x20, 0x20, 0x60, 0xa0, 0xa0, 0x60, 0x20, 0x20, 0x10, 0xc8, 0x27, 0x28, 0x28, 0x28, 0x28, 0x28, 0x28, 0xc8, 0x08, 0x08, 0x18, 0x68, 0x88, 0x04, 0xe2, 0x1d, 0xc0, 0x00, 0x80, 0x40, 0x20, 0x10, 0x08, 0x84, 0x42, 0x21, 0x13, 0xec, 0xf0, 0x20, 0xa7, 0x78, 0x20, 0x24, 0x20, 0x20, 0x20, 0x20, 0x20, 0x78, 0xa7, 0x20, 0xf0, 0xec, 0x0b, 0x10, 0x20, 0x41, 0x80, 0x00, 
+  };
+
+  const uint8_t PROGMEM world_home_0[] = {
+      0xe0, 0x10, 0x08, 0x08, 0x08, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x84, 0x44, 0x44, 0x48, 0x88, 0x08, 0x14, 0x22, 0xd1, 0x11, 0x20, 0xef, 0xd0, 0x3e, 0x89, 0x81, 0x81, 0x81, 0x3e, 0x40, 0x40, 0x40, 0x40, 0x43, 0x44, 0x48, 0x48, 0xcc, 0x46, 0x43, 0x20, 0xd0, 0xef, 0x00, 0x00, 
   };
 
   const uint8_t PROGMEM map_top[] = {
