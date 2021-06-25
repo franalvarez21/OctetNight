@@ -28,17 +28,17 @@ struct Stats
 
   void init()
   {
-    hasWoolTool = true;
-    hasSwordTool = true;
+    hasWoolTool = false;
+    hasSwordTool = false;
 
-    seedOne = 0;
+    seedOne = 20;
     seedTwo = 0;
     seedThree = 0;
     seedFour = 0;
     seedFive = 0;
     seedSix = 0;
 
-    sheepAmount = 0;
+    sheepAmount = 2;
     seedOneAmount = 0;
     seedTwoAmount = 0;
     seedThreeAmount = 0;
@@ -148,6 +148,24 @@ struct Stats
     seedSix = max(seedSix - val, 0);
   }
 
+  void plusSeedOne(Utils *utils)
+  {
+    utils->subtleOkBeep();
+    seedOneAmount = min(seedOneAmount + 1, REAL_MAX_CAPACITY);
+  }
+
+  void plusSeedTwo(Utils *utils)
+  {
+    utils->subtleOkBeep();
+    seedTwoAmount = min(seedTwoAmount + 1, REAL_MAX_CAPACITY);
+  }
+
+  void plusSeedThree(Utils *utils)
+  {
+    utils->subtleOkBeep();
+    seedThreeAmount = min(seedThreeAmount + 1, REAL_MAX_CAPACITY);
+  }
+
   void plusSeedFour(Utils *utils)
   {
     utils->subtleOkBeep();
@@ -172,7 +190,7 @@ struct Stats
     woolAmount = min(woolAmount + 1, REAL_MAX_CAPACITY);
   }
 
-  void addPotion(Utils *utils)
+  void addPotion()
   {
     potionsAmount = min(potionsAmount + 1, REAL_MAX_CAPACITY);
   }
@@ -185,11 +203,25 @@ struct Stats
 
   void buySheep()
   {
+    hasWoolTool = true;
     sheepAmount = min(sheepAmount + 1, SHEEP_MAX_AMOUNT);
+  }
+
+  void buySword()
+  {
+    hasSwordTool = true;
   }
 
   void sellAll()
   {
+    incMoney(seedOneAmount * 10);
+    incMoney(seedTwoAmount * 12);
+    incMoney(seedThreeAmount * 15);
+    incMoney(seedFourAmount * 20);
+    incMoney(seedFiveAmount * 25);
+    incMoney(seedSixAmount * 50);
+    incMoney(woolAmount * 100);
+
     seedOneAmount = 0;
     seedTwoAmount = 0;
     seedThreeAmount = 0;

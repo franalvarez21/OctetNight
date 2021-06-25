@@ -30,15 +30,15 @@ public:
     Arduboy2Base::drawBitmap(65, 0, Title::title_2, 60, 25, WHITE);
     if (utils->halfCycleCheck())
     {
-      Arduboy2Base::drawBitmap(15, 22, Title::title_0, 23, 23, WHITE);
-      Arduboy2Base::drawBitmap(60, 34, Title::title_3, 12, 12, WHITE);
+      Arduboy2Base::drawBitmap(15, 20, Title::title_0, 23, 23, WHITE);
+      Arduboy2Base::drawBitmap(60, 32, Title::title_3, 12, 12, WHITE);
     }
     else
     {
-      Arduboy2Base::drawBitmap(15, 22, Title::title_1, 23, 23, WHITE);
-      Arduboy2Base::drawBitmap(60, 34, Title::title_4, 12, 12, WHITE);
+      Arduboy2Base::drawBitmap(15, 20, Title::title_1, 23, 23, WHITE);
+      Arduboy2Base::drawBitmap(60, 32, Title::title_4, 12, 12, WHITE);
     }
-    Arduboy2Base::drawBitmap(15, 45, Title::title_5, 60, 8, WHITE);
+    Arduboy2Base::drawBitmap(15, 43, Title::title_5, 60, 8, WHITE);
 
     Arduboy2Base::drawBitmap(98, 52, Lines::start, 24, 4, WHITE);
     Arduboy2Base::drawBitmap(98, 60, Lines::sound, 24, 4, WHITE);

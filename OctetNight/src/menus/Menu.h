@@ -42,7 +42,7 @@ public:
 
   void displayMenuCursor(uint8_t x, uint8_t y, uint8_t jumps = SQUARE_SIZE)
   {
-    Arduboy2Base::drawBitmap(x, y + (jumps * option), Lines::x, 4, 4, WHITE);
+    Arduboy2Base::drawBitmap(x, y - 1 + (jumps * option), Common::cursor, 4, 5, WHITE);
   }
 
   void printBigNumber(Numbers *numbers, uint8_t x, uint8_t y, uint16_t value)

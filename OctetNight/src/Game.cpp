@@ -11,6 +11,7 @@
 #include "menus/TitleMenu.h"
 #include "menus/PauseMenu.h"
 #include "menus/StoreMenu.h"
+#include "menus/GameOver.h"
 
 Arduboy2Base arduboy;
 ArduboyTones sound(arduboy.audio.enabled);
@@ -27,6 +28,7 @@ World world;
 TitleMenu titleMenu;
 PauseMenu pauseMenu;
 StoreMenu storeMenu;
+GameOver gameOver;
 
 void Game::setup(void)
 {
@@ -71,6 +73,9 @@ void Game::loop(void)
   case 3:
     mainStoreMenuTick();
     break;
+  case 4:
+    mainGameOverTick();
+    break;
   }
 
   utils.tick();
@@ -88,8 +93,6 @@ void Game::mainMenuTick(void)
   }
   effects.displayErrorLine(65, 25, 60);
   effects.displayBistercianBar(0, 2, 10);
-  effects.displayBistercianColumn(118, 30, 3);
-  effects.displayBistercianColumn(0, 8, 8);
 }
 
 void Game::mainPauseTick()
@@ -115,8 +118,8 @@ void Game::mainPauseTick()
 
 void Game::mainStoreMenuTick(void)
 {
-  storeMenu.eventDisplay();
-  switch (storeMenu.action(&utils))
+  storeMenu.eventDisplay(&stats, &numbers);
+  switch (storeMenu.action(&utils, &stats))
   {
   case 1:
     onStage = 2;
@@ -130,7 +133,7 @@ void Game::mainStoreMenuTick(void)
 
 void Game::mainGameTick(void)
 {
-  if (world.canPause() && !world.inAction())
+  if (arduboy.justPressed(A_BUTTON) && !world.inAction())
   {
     onStage = 1;
     pauseMenu.refresh();
@@ -138,7 +141,18 @@ void Game::mainGameTick(void)
   }
   else
   {
-    if (world.action(&utils, &stats) == 2)
+    uint8_t action = world.action(&utils, &stats);
+
+    if (action == 4)
+    {
+      onStage = 4;
+      gameOver.refresh();
+    }
+    else if (action == 3 && stats.getEnergy() < 4)
+    {
+      world.newDay(&stats);
+    }
+    else if (action == 2)
     {
       onStage = 3;
       storeMenu.refresh();
@@ -153,4 +167,13 @@ void Game::mainGameTick(void)
       world.canvas();
     }
   }
+}
+
+void Game::mainGameOverTick(void)
+{
+  if (gameOver.action())
+  {
+    onStage = 0;
+  }
+  world.completeCanvas();
 }

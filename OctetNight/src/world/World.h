@@ -16,11 +16,12 @@ private:
   uint8_t currentAction;
   uint8_t speedTick;
   uint8_t currentToolSelected;
+  uint8_t currentSeedSelected;
   bool justPressedLock;
   uint8_t plusAnimation;
+  uint8_t sleepAnimation;
   uint8_t currentMap;
   uint8_t lastArrowUsed;
-  uint8_t pauseTemp;
 
 public:
   uint8_t mapGet(uint8_t x, uint8_t y)
@@ -62,7 +63,9 @@ public:
     speedTick = 0;
     currentAction = 0;
     currentToolSelected = 0;
+    currentSeedSelected = 0;
     plusAnimation = 0;
+    sleepAnimation = 0;
     justPressedLock = true;
   }
 
@@ -248,13 +251,37 @@ public:
 
   void seedGrowth(uint8_t i, uint8_t j, uint8_t seed_number)
   {
-    if (map[i][j] > seed_number + 2 && map[i][j] < seed_number + 10)
+    if (seed_number == SEED_1_NUMBER || seed_number == SEED_2_NUMBER || seed_number == SEED_3_NUMBER)
     {
-      map[i][j]++;
+      if (map[i][j] > seed_number + 2 && map[i][j] < seed_number + 10)
+      {
+        map[i][j]++;
+      }
+      else if (map[i][j] > seed_number - 1 && map[i][j] < seed_number + 3)
+      {
+        map[i][j] = seed_number + 3;
+      }
     }
-    else if (map[i][j] > seed_number - 1 && map[i][j] < seed_number + 3)
+    else if (seed_number == SEED_4_NUMBER)
     {
-      map[i][j] = seed_number + 3;
+      if (map[i][j] >= SEED_4_NUMBER && map[i][j] < SEED_5_NUMBER - 1)
+      {
+        map[i][j]++;
+      }
+    }
+    else if (seed_number == SEED_5_NUMBER)
+    {
+      if (map[i][j] >= SEED_5_NUMBER && map[i][j] < SEED_6_NUMBER - 1)
+      {
+        map[i][j]++;
+      }
+    }
+    else if (seed_number == SEED_6_NUMBER)
+    {
+      if (map[i][j] >= SEED_6_NUMBER && map[i][j] < 109)
+      {
+        map[i][j]++;
+      }
     }
   }
 
@@ -308,6 +335,9 @@ public:
           seedGrowth(i, j, SEED_1_NUMBER);
           seedGrowth(i, j, SEED_2_NUMBER);
           seedGrowth(i, j, SEED_3_NUMBER);
+          seedGrowth(i, j, SEED_4_NUMBER);
+          seedGrowth(i, j, SEED_5_NUMBER);
+          seedGrowth(i, j, SEED_6_NUMBER);
         }
       }
     }
@@ -372,15 +402,6 @@ public:
     }
   }
 
-  bool canPause()
-  {
-    if (pauseTemp == 0)
-    {
-      return Arduboy2Base::justPressed(A_BUTTON);
-    }
-    return false;
-  }
-
   bool inAction()
   {
     return (currentAction > 0);
@@ -388,16 +409,10 @@ public:
 
   uint8_t action(Utils *utils, Stats *stats)
   {
-    if (pauseTemp > 0)
-    {
-      pauseTemp--;
-    }
-
     if (Arduboy2Base::justPressed(A_BUTTON))
     {
       if (currentAction > 0)
       {
-        pauseTemp = 5;
         currentAction--;
         return 1;
       }
@@ -405,9 +420,20 @@ public:
 
     if (Arduboy2Base::justPressed(B_BUTTON))
     {
-      if (currentAction == 2)
+      if (currentAction == 3)
       {
         return useTool(utils, stats);
+      }
+      else if (currentAction == 2)
+      {
+        if (currentToolSelected == 0)
+        {
+          currentAction++;
+        }
+        else
+        {
+          return useTool(utils, stats);
+        }
       }
       else if (currentAction == 1)
       {
@@ -419,12 +445,31 @@ public:
       else if (currentAction < 1)
       {
         currentToolSelected = 0;
+        currentSeedSelected = 0;
         currentAction++;
         return 1;
       }
     }
 
-    if (currentAction == 1)
+    if (currentAction == 2 && currentToolSelected == 0)
+    {
+      if (Arduboy2Base::justPressed(UP_BUTTON))
+      {
+        if (currentSeedSelected > 0)
+        {
+          currentSeedSelected--;
+        }
+      }
+
+      if (Arduboy2Base::justPressed(DOWN_BUTTON))
+      {
+        if (currentSeedSelected < SEEDS_AVAILABLE - 1)
+        {
+          currentSeedSelected++;
+        }
+      }
+    }
+    else if (currentAction == 1)
     {
       if (Arduboy2Base::justPressed(UP_BUTTON))
       {
@@ -509,6 +554,11 @@ public:
       }
     }
 
+    if (stats->getHP() < 1)
+    {
+      return 4;
+    }
+
     return 0;
   }
 
@@ -529,9 +579,9 @@ public:
     }
   }
 
-  void displayEmptyTool()
+  void displayEmpty()
   {
-    Arduboy2Base::drawBitmap(106, 5, Cards::empty, 20, 17, BLACK);
+    Arduboy2Base::drawBitmap(106, 4, Cards::empty, 20, 17, BLACK);
   }
 
   void displayTime(Utils *utils, Stats *stats)
@@ -541,27 +591,78 @@ public:
       switch (currentToolSelected)
       {
       case 0:
-        Arduboy2Base::drawBitmap(106, 2, Mini::plant_tool, 20, 20, WHITE);
+        if (currentAction > 1)
+        {
+          switch (currentSeedSelected)
+          {
+          case 0:
+            Arduboy2Base::drawBitmap(106, 2, Mini::seed_0, 20, 20, WHITE);
+            if (!stats->seedOne > 0)
+            {
+              displayEmpty();
+            }
+            break;
+          case 1:
+            Arduboy2Base::drawBitmap(106, 2, Mini::seed_1, 20, 20, WHITE);
+            if (!stats->seedTwo > 0)
+            {
+              displayEmpty();
+            }
+            break;
+          case 2:
+            Arduboy2Base::drawBitmap(106, 2, Mini::seed_2, 20, 20, WHITE);
+            if (!stats->seedThree > 0)
+            {
+              displayEmpty();
+            }
+            break;
+          case 3:
+            Arduboy2Base::drawBitmap(106, 2, Mini::seed_3, 20, 20, WHITE);
+            if (!stats->seedFour > 0)
+            {
+              displayEmpty();
+            }
+            break;
+          case 4:
+            Arduboy2Base::drawBitmap(106, 2, Mini::seed_4, 20, 20, WHITE);
+            if (!stats->seedFive > 0)
+            {
+              displayEmpty();
+            }
+            break;
+          case 5:
+            Arduboy2Base::drawBitmap(106, 2, Mini::seed_5, 20, 20, WHITE);
+            if (!stats->seedSix > 0)
+            {
+              displayEmpty();
+            }
+            break;
+          }
+        }
+        else
+        {
+          Arduboy2Base::drawBitmap(106, 2, Mini::plant_tool, 20, 20, WHITE);
+        }
         break;
       case 1:
         Arduboy2Base::drawBitmap(106, 2, Mini::sheers_tool, 20, 20, WHITE);
         if (!stats->hasWoolTool)
         {
-          displayEmptyTool();
+          displayEmpty();
         }
         break;
       case 2:
         Arduboy2Base::drawBitmap(106, 2, Mini::sword_tool, 20, 20, WHITE);
         if (!stats->hasSwordTool)
         {
-          displayEmptyTool();
+          displayEmpty();
         }
         break;
       case 3:
         Arduboy2Base::drawBitmap(106, 2, Mini::items_tool, 20, 20, WHITE);
         if (stats->potionsAmount == 0)
         {
-          displayEmptyTool();
+          displayEmpty();
         }
         break;
       }
@@ -694,6 +795,13 @@ public:
       Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1), Common::plus_animation_0, 8, 8, BLACK);
       Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1), Common::plus_animation_1, 8, 8, WHITE);
       plusAnimation--;
+    }
+
+    if (sleepAnimation > 0)
+    {
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1), Common::plus_animation_0, 8, 8, BLACK);
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1), Common::sleep_animation_2, 8, 8, WHITE);
+      sleepAnimation--;
     }
   }
 
@@ -910,9 +1018,8 @@ private:
 
   void displayCardOption(Utils *utils)
   {
-    switch (currentAction)
+    if (currentAction == 1 || (currentAction == 2 && currentToolSelected == 0))
     {
-    case 1:
       if (utils->halfCycleCheck())
       {
         Arduboy2Base::drawBitmap(104, 21, Cards::change_1, 24, 8, WHITE);
@@ -921,10 +1028,10 @@ private:
       {
         Arduboy2Base::drawBitmap(104, 21, Cards::change_2, 24, 8, WHITE);
       }
-      break;
-    case 2:
+    }
+    else
+    {
       Arduboy2Base::drawBitmap(104, 21, Cards::use_0, 24, 8, WHITE);
-      break;
     }
   }
 
@@ -1136,6 +1243,12 @@ private:
       case 48:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_wall_5, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
+      case 61:
+        // Reserve as store door
+        break;
+      case 62:
+        // Reserve as home door
+        break;
       case 63:
         // Reserve as weird blocker
         break;
@@ -1244,6 +1357,45 @@ private:
       case 97:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_32, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
+      // Seed 4
+      case SEED_4_NUMBER:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_33, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 99:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_34, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 100:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_35, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 101:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_36, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 102:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_37, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      // Seed 5
+      case SEED_5_NUMBER:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_38, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 104:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_39, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 105:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_40, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 106:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_41, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      // Seed 6
+      case SEED_6_NUMBER:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_42, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 108:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_43, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
+      case 109:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_44, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
       }
     }
   }
@@ -1254,19 +1406,46 @@ private:
     {
       uint8_t value = mapGet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY);
 
+      if (value == 61) // Store
+      {
+        return 2;
+      }
+      if (value == 62) // Home
+      {
+        return 3;
+      }
+
       if (value == SEED_1_NUMBER + 10)
       {
-        stats->plusSeedFour(utils);
+        stats->plusSeedOne(utils);
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_2_NUMBER + 10)
       {
-        stats->plusSeedFive(utils);
+        stats->plusSeedTwo(utils);
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_3_NUMBER + 10)
+      {
+        stats->plusSeedThree(utils);
+        plusAnimation = 5;
+        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
+      }
+      if (value == SEED_4_NUMBER + 4)
+      {
+        stats->plusSeedFour(utils);
+        plusAnimation = 5;
+        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
+      }
+      if (value == SEED_5_NUMBER + 3)
+      {
+        stats->plusSeedFive(utils);
+        plusAnimation = 5;
+        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
+      }
+      if (value == SEED_6_NUMBER + 2)
       {
         stats->plusSeedSix(utils);
         plusAnimation = 5;
@@ -1556,8 +1735,57 @@ private:
       case 0:
         if (currentMap == 0 && canPlace())
         {
-          map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)] = (SEED_1_NUMBER + rand() % 3);
-          stats->decEnergy(1);
+          switch (currentSeedSelected)
+          {
+          case 0:
+            if (stats->seedOne > 0)
+            {
+              stats->seedOne--;
+              map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)] = SEED_6_NUMBER;
+              stats->decEnergy(1);
+            }
+            break;
+          case 1:
+            if (stats->seedTwo > 0)
+            {
+              stats->seedTwo--;
+              map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)] = SEED_5_NUMBER;
+              stats->decEnergy(1);
+            }
+            break;
+          case 2:
+            if (stats->seedThree > 0)
+            {
+              stats->seedThree--;
+              map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)] = SEED_4_NUMBER;
+              stats->decEnergy(1);
+            }
+            break;
+          case 3:
+            if (stats->seedFour > 0)
+            {
+              stats->seedFour--;
+              map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)] = SEED_3_NUMBER;
+              stats->decEnergy(1);
+            }
+            break;
+          case 4:
+            if (stats->seedFive > 0)
+            {
+              stats->seedFive--;
+              map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)] = SEED_2_NUMBER;
+              stats->decEnergy(1);
+            }
+            break;
+          case 5:
+            if (stats->seedSix > 0)
+            {
+              stats->seedSix--;
+              map[playerXPosition + mapOffsetX + (-1 + x)][playerYPosition + mapOffsetY + (-1 + y)] = SEED_1_NUMBER;
+              stats->decEnergy(1);
+            }
+            break;
+          }
           return 1;
         }
         break;
@@ -1586,12 +1814,18 @@ private:
         break;
       }
     }
+    else
+    {
+      stats->decHP(1);
+      utils->subtleKoBeep();
+      sleepAnimation = 5;
+    }
     return 0;
   }
 
   void displayToolAction(Utils *utils)
   {
-    if (currentAction == 2 && currentToolSelected == 0 && canPlace())
+    if (currentAction == 3 && currentToolSelected == 0 && canPlace())
     {
       displayPlaceIcon(utils);
     }

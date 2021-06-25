@@ -8,6 +8,7 @@
 #define SQUARE_AMOUNT_HEIGHT 9
 #define SQUARE_SIZE 8
 #define TOOLS_AVAILABLE 4
+#define SEEDS_AVAILABLE 6
 #define MAX_CAPACITY 9
 #define REAL_MAX_CAPACITY 9999
 #define SHEEP_MAX_AMOUNT 8
@@ -18,8 +19,17 @@
 #define SEED_1_NUMBER 65
 #define SEED_2_NUMBER 76
 #define SEED_3_NUMBER 87
+#define SEED_4_NUMBER 98
+#define SEED_5_NUMBER 103
+#define SEED_6_NUMBER 107
 #define VOID_NUMBER 198
 #define EMPTY_NUMBER 199
+
+#define POTION_PRICE 150
+#define BASIC_SEED_PACK_PRICE 50
+#define MEDIUM_SEED_PACK_PRICE 200
+#define SHEEP_PRICE 1000
+#define RANDOM_PACK_BENEFITS 5
 
 class Game
 {
@@ -32,4 +42,5 @@ public:
   void mainGameTick(void);
   void mainPauseTick(void);
   void mainStoreMenuTick(void);
+  void mainGameOverTick(void);
 };

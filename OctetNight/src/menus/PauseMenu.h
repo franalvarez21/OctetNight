@@ -28,17 +28,17 @@ public:
       }
       else if (option == 3)
       {
-        utils->changesoundFlag();
+        utils->okBeep();
+        // Save Game message
       }
       else if (option == 2)
       {
-        utils->okBeep();
-        return 2;
+        utils->changesoundFlag();
       }
       else if (option == 1)
       {
         utils->okBeep();
-        // Save Game message
+        return 2;
       }
       else if (option == 0)
       {
@@ -63,26 +63,26 @@ public:
     numbers->print(26, 22, stats->woolAmount);
 
     Arduboy2Base::drawBitmap(5, 34, Lines::crops, 51, 22, WHITE); // crops
-    numbers->print(10, 40, stats->seedOneAmount);
-    numbers->print(10, 46, stats->seedTwoAmount);
-    numbers->print(10, 52, stats->seedThreeAmount);
-    numbers->print(43, 40, stats->seedFourAmount);
-    numbers->print(43, 46, stats->seedFiveAmount);
-    numbers->print(43, 52, stats->seedSixAmount);
+    numbers->print(10, 40, stats->seedSixAmount);
+    numbers->print(10, 46, stats->seedFiveAmount);
+    numbers->print(10, 52, stats->seedFourAmount);
+    numbers->print(43, 40, stats->seedThreeAmount);
+    numbers->print(43, 46, stats->seedTwoAmount);
+    numbers->print(43, 52, stats->seedOneAmount);
 
     // Menu
     Arduboy2Base::drawBitmap(74, 4, Lines::options, 34, 4, WHITE);
     Arduboy2Base::drawBitmap(82, 22, Lines::back, 34, 4, WHITE);
-    Arduboy2Base::drawBitmap(82, 28, Lines::save, 34, 4, WHITE);
-    Arduboy2Base::drawBitmap(82, 34, Lines::nDay, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(82, 28, Lines::nDay, 34, 4, WHITE);
     if (utils->soundFlag)
     {
-      Arduboy2Base::drawBitmap(82, 40, Lines::sOn, 34, 4, WHITE);
+      Arduboy2Base::drawBitmap(82, 34, Lines::sOn, 34, 4, WHITE);
     }
     else
     {
-      Arduboy2Base::drawBitmap(82, 40, Lines::sOff, 34, 4, WHITE);
+      Arduboy2Base::drawBitmap(82, 34, Lines::sOff, 34, 4, WHITE);
     }
+    Arduboy2Base::drawBitmap(82, 40, Lines::save, 34, 4, WHITE);
     Arduboy2Base::drawBitmap(82, 46, Lines::load, 34, 4, WHITE);
     Arduboy2Base::drawBitmap(82, 52, Lines::mMenu, 34, 4, WHITE);
     displayMenuCursor(76, 22, 6);
