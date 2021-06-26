@@ -111,7 +111,7 @@ void Game::mainPauseTick()
     changeStage(STAGE_GAME);
     break;
   case 2:
-    if (stats.getEnergy() < RANDOM_PACK_BENEFITS)
+    if (stats.getEnergy() < MIN_HEALTH_ACTION)
     {
       dialogs.displayDialogs(6);
       world.newDay(&stats, &effects);
@@ -169,7 +169,7 @@ void Game::mainGameTick(void)
     {
       changeStage(STAGE_GAMEOVER);
     }
-    else if (action == 3 && stats.getEnergy() < 4)
+    else if (action == 3 && stats.getEnergy() < MIN_HEALTH_ACTION)
     {
       dialogs.displayDialogs(6);
       world.newDay(&stats, &effects);

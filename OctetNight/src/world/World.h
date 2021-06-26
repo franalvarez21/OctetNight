@@ -713,7 +713,7 @@ public:
     }
     else
     {
-      if (stats->getEnergy() > MIN_HEALTH_ACTION)
+      if (stats->getEnergy() > MIN_HEALTH_ACTION - 1)
       {
         stats->decEnergy(1);
       }
@@ -961,13 +961,13 @@ private:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_flag_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 7:
-        // Free
+        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 2, rand() % 10000);
         break;
       case 8:
-        // Free
+        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 2, rand() % 10000);
         break;
       case 9:
-        // Free
+        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 2, rand() % 10000);
         break;
       case 10:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
