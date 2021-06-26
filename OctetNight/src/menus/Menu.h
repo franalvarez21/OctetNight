@@ -44,20 +44,4 @@ public:
   {
     Arduboy2Base::drawBitmap(x, y - 1 + (jumps * option), Common::cursor, 4, 5, WHITE);
   }
-
-  void printBigNumber(Numbers *numbers, uint8_t x, uint8_t y, uint16_t value)
-  {
-    if (value < 100)
-    {
-      numbers->print(x, y, value, 2);
-    }
-    else if (value < 1000)
-    {
-      numbers->print(x + 5, y, value, 4);
-    }
-    else
-    {
-      numbers->print(x + 10, y, value, 4);
-    }
-  }
 };

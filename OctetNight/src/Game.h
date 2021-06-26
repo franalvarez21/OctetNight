@@ -12,7 +12,9 @@
 #define MAX_CAPACITY 9
 #define REAL_MAX_CAPACITY 9999
 #define SHEEP_MAX_AMOUNT 8
+
 #define CYCLE_TIME 20
+#define DIALOG_COOLDOWN 30
 
 #define START_ENEMY_NUMBER 39
 #define END_ENEMY_NUMBER 64
@@ -43,4 +45,6 @@ public:
   void mainPauseTick(void);
   void mainStoreMenuTick(void);
   void mainGameOverTick(void);
+  void dialogNotTired(void);
+  void dialogNewDay(void);
 };

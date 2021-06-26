@@ -5,55 +5,45 @@ class TitleMenu : public Menu
 public:
   TitleMenu() : Menu(1){};
 
-  bool action(Utils *utils)
+  uint8_t action()
   {
     upDownMovement();
 
     if (okMovement())
     {
-      if (option == 1)
+      if (option == 0)
       {
-        utils->changesoundFlag();
+        return 1;
       }
-      else if (option == 0)
+      else if (option == 1)
       {
-        utils->okBeep();
-        return false;
+        return 2;
       }
     }
 
-    return true;
+    return 0;
   }
 
   void eventDisplay(Utils *utils)
   {
-    Arduboy2Base::drawBitmap(65, 0, Title::title_2, 60, 25, WHITE);
+    Arduboy2Base::drawBitmap(73, 0, Title::title_2, 52, 24, WHITE);
     if (utils->halfCycleCheck())
     {
-      Arduboy2Base::drawBitmap(15, 20, Title::title_0, 23, 23, WHITE);
-      Arduboy2Base::drawBitmap(60, 32, Title::title_3, 12, 12, WHITE);
+      Arduboy2Base::drawBitmap(20, 18, Title::title_0, 23, 23, WHITE);
+      Arduboy2Base::drawBitmap(65, 30, Title::title_3, 12, 12, WHITE);
     }
     else
     {
-      Arduboy2Base::drawBitmap(15, 20, Title::title_1, 23, 23, WHITE);
-      Arduboy2Base::drawBitmap(60, 32, Title::title_4, 12, 12, WHITE);
+      Arduboy2Base::drawBitmap(20, 18, Title::title_1, 23, 23, WHITE);
+      Arduboy2Base::drawBitmap(65, 30, Title::title_4, 12, 12, WHITE);
     }
-    Arduboy2Base::drawBitmap(15, 43, Title::title_5, 60, 8, WHITE);
+    Arduboy2Base::drawBitmap(20, 41, Title::title_5, 60, 8, WHITE);
 
     Arduboy2Base::drawBitmap(98, 52, Lines::start, 24, 4, WHITE);
-    Arduboy2Base::drawBitmap(98, 60, Lines::sound, 24, 4, WHITE);
-    if (utils->soundFlag)
-    {
-      Arduboy2Base::drawBitmap(76, 60, Lines::on, 14, 4, WHITE);
-    }
-    else
-    {
-      Arduboy2Base::drawBitmap(76, 60, Lines::off, 14, 4, WHITE);
-    }
-
+    Arduboy2Base::drawBitmap(103, 60, Lines::load, 24, 4, WHITE);
     displayMenuCursor(92, 52);
 
     Arduboy2Base::drawBitmap(0, 56, Title::g_rating, 8, 8, WHITE);
-    Arduboy2Base::drawBitmap(10, 60, Lines::version, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(15, 60, Lines::version, 34, 4, WHITE);
   }
 };

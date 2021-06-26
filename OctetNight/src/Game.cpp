@@ -5,6 +5,7 @@
 #include "utils/Stats.h"
 #include "utils/Effects.h"
 #include "utils/Numbers.h"
+#include "utils/Dialogs.h"
 #include "world/World.h"
 
 #include "menus/Menu.h"
@@ -14,15 +15,17 @@
 #include "menus/GameOver.h"
 
 Arduboy2Base arduboy;
-ArduboyTones sound(arduboy.audio.enabled);
 
 uint8_t onStage;
 uint8_t action;
+uint8_t displayDialog;
+uint8_t displayCooldown;
 
 Utils utils;
 Stats stats;
 Numbers numbers;
 Effects effects;
+Dialogs dialogs;
 World world;
 
 TitleMenu titleMenu;
@@ -47,6 +50,8 @@ void Game::restart(void)
   world.reset(&stats);
   stats.init();
   action = 0;
+  displayDialog = 0;
+  displayCooldown = 0;
 }
 
 void Game::loop(void)
@@ -86,13 +91,17 @@ void Game::mainMenuTick(void)
 {
   rand() % analogRead(0);
   titleMenu.eventDisplay(&utils);
-  if (!titleMenu.action(&utils))
+  switch (titleMenu.action())
   {
+  case 1:
     restart();
     onStage = 2;
+    break;
+  case 2:
+    break;
   }
   effects.displayErrorLine(65, 25, 60);
-  effects.displayBistercianBar(0, 2, 10);
+  effects.displayBistercianColumn(2, 2, 9);
 }
 
 void Game::mainPauseTick()
@@ -104,7 +113,14 @@ void Game::mainPauseTick()
     onStage = 2;
     break;
   case 2:
-    world.newDay(&stats);
+    if (stats.getEnergy() < 4)
+    {
+      dialogNewDay();
+    }
+    else
+    {
+      dialogNotTired();
+    }
     onStage = 2;
     break;
   case 3:
@@ -119,13 +135,16 @@ void Game::mainPauseTick()
 void Game::mainStoreMenuTick(void)
 {
   storeMenu.eventDisplay(&stats, &numbers);
-  switch (storeMenu.action(&utils, &stats))
+  switch (storeMenu.action(&stats, &numbers))
   {
   case 1:
     onStage = 2;
     break;
   case 2:
-    onStage = 2;
+    dialogs.displayDialogs(1, true);
+    break;
+  case 3:
+    dialogs.displayDialogs(2, true);
     break;
   }
   world.completeCanvas();
@@ -150,7 +169,7 @@ void Game::mainGameTick(void)
     }
     else if (action == 3 && stats.getEnergy() < 4)
     {
-      world.newDay(&stats);
+      dialogNewDay();
     }
     else if (action == 2)
     {
@@ -159,12 +178,40 @@ void Game::mainGameTick(void)
     }
     else
     {
+      if (action > 4 && action < 7)
+      {
+        displayCooldown = DIALOG_COOLDOWN;
+      }
+
+      if (action == 3)
+      {
+        dialogNotTired();
+      }
+      else if (action == 5)
+      {
+        displayDialog = 3;
+      }
+      else if (action == 6)
+      {
+        displayDialog = 5;
+      }
+
       if (utils.cycle == 1)
       {
         world.environmentChange(&utils);
       }
-      world.display(&utils, &stats, &effects);
+      world.display(&utils, &stats, &effects, &numbers);
       world.canvas();
+
+      if (displayDialog > 0 && displayCooldown > 0)
+      {
+        dialogs.displayDialogs(displayDialog);
+        displayCooldown--;
+      }
+      else
+      {
+        displayDialog = 0;
+      }
     }
   }
 }
@@ -176,4 +223,17 @@ void Game::mainGameOverTick(void)
     onStage = 0;
   }
   world.completeCanvas();
+}
+
+void Game::dialogNotTired()
+{
+  displayCooldown = DIALOG_COOLDOWN;
+  displayDialog = 4;
+}
+
+void Game::dialogNewDay()
+{
+  displayCooldown = DIALOG_COOLDOWN;
+  displayDialog = 6;
+  world.newDay(&stats);
 }

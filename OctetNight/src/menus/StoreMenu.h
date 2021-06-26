@@ -2,15 +2,19 @@
 
 class StoreMenu : public Menu
 {
+private:
+  bool sell;
+
 public:
-  StoreMenu() : Menu(6){};
+  StoreMenu() : Menu(5){};
 
   void refresh()
   {
     option = 0;
+    sell = false;
   }
 
-  uint8_t action(Utils *utils, Stats *stats)
+  uint8_t action(Stats *stats, Numbers *numbers)
   {
     upDownMovement();
 
@@ -20,14 +24,13 @@ public:
       {
       case 0:
         stats->sellAll();
-        utils->okBeep();
         break;
       case 1:
         if (stats->getRealMoney() > POTION_PRICE - 1)
         {
           stats->addPotion();
           stats->decMoney(POTION_PRICE);
-          utils->okBeep();
+          sell = true;
         }
         break;
       case 2:
@@ -37,7 +40,7 @@ public:
           stats->incSeedTwo(2 * rand() % RANDOM_PACK_BENEFITS);
           stats->incSeedThree(1 * rand() % RANDOM_PACK_BENEFITS);
           stats->decMoney(BASIC_SEED_PACK_PRICE);
-          utils->okBeep();
+          sell = true;
         }
         break;
       case 3:
@@ -47,7 +50,7 @@ public:
           stats->incSeedFive(2 * rand() % RANDOM_PACK_BENEFITS);
           stats->incSeedSix(2 * rand() % RANDOM_PACK_BENEFITS);
           stats->decMoney(MEDIUM_SEED_PACK_PRICE);
-          utils->okBeep();
+          sell = true;
         }
         break;
       case 4:
@@ -55,11 +58,8 @@ public:
         {
           stats->decMoney(SHEEP_PRICE);
           stats->buySheep();
-          utils->okBeep();
+          sell = true;
         }
-        break;
-      case 5:
-        stats->buySword();
         break;
       default:
         return 1;
@@ -72,26 +72,36 @@ public:
       return 1;
     }
 
-    return 0;
+    return sell ? 3 : 2;
   }
 
   void eventDisplay(Stats *stats, Numbers *numbers)
   {
-    Arduboy2Base::drawBitmap(4, 6, Lines::buy, 38, 4, WHITE);
+    Arduboy2Base::drawBitmap(45, 6, Lines::shop, 66, 34, WHITE);
+    displayMenuCursor(40, 6, 6);
 
-    Arduboy2Base::drawBitmap(49, 6, Lines::sAll, 38, 4, WHITE);
-    Arduboy2Base::drawBitmap(49, 14, Lines::bPotion, 38, 4, WHITE);
-    Arduboy2Base::drawBitmap(49, 22, Lines::bBasicSeedsPack, 38, 4, WHITE);
-    Arduboy2Base::drawBitmap(49, 30, Lines::bMediumSeedsPack, 38, 4, WHITE);
-    Arduboy2Base::drawBitmap(49, 38, Lines::bBuySheep, 38, 4, WHITE);
-    Arduboy2Base::drawBitmap(49, 46, Lines::bBuySword, 38, 4, WHITE);
-    Arduboy2Base::drawBitmap(49, 54, Lines::bBack, 38, 4, WHITE);
-    displayMenuCursor(43, 6);
+    numbers->print(10, 6, stats->getRealMoney(), 4);
 
-    printBigNumber(numbers, 95, 6, stats->getRealMoney());
+    if (option > 0 && option < 5)
+    {
+      Arduboy2Base::drawBitmap(8, 14, Common::bar, 4, 1, WHITE);
+    }
 
-    Arduboy2Base::drawBitmap(3, 35, Hub::portrait_player_0, 31, 32, BLACK);
-    Arduboy2Base::drawBitmap(4, 36, Hub::portrait_player_1, 29, 30, WHITE);
+    switch (option)
+    {
+    case 1:
+      numbers->print(10, 12, POTION_PRICE, 4);
+      break;
+    case 2:
+      numbers->print(10, 12, BASIC_SEED_PACK_PRICE, 4);
+      break;
+    case 3:
+      numbers->print(10, 12, MEDIUM_SEED_PACK_PRICE, 4);
+      break;
+    case 4:
+      numbers->print(10, 12, SHEEP_PRICE, 4);
+      break;
+    }
 
     Arduboy2Base::drawBitmap(96, 35, Hub::portrait_shop_0, 29, 32, BLACK);
     Arduboy2Base::drawBitmap(97, 36, Hub::portrait_shop_1, 27, 30, WHITE);

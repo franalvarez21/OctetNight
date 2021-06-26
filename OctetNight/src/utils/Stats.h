@@ -6,9 +6,6 @@ struct Stats
   uint16_t money;
   uint8_t energy;
 
-  bool hasWoolTool;
-  bool hasSwordTool;
-
   uint16_t seedOne;
   uint16_t seedTwo;
   uint16_t seedThree;
@@ -28,9 +25,6 @@ struct Stats
 
   void init()
   {
-    hasWoolTool = false;
-    hasSwordTool = false;
-
     seedOne = 20;
     seedTwo = 0;
     seedThree = 0;
@@ -45,7 +39,7 @@ struct Stats
     seedFourAmount = 0;
     seedFiveAmount = 0;
     seedSixAmount = 0;
-    potionsAmount = 10;
+    potionsAmount = 99;
     woolAmount = 0;
 
     money = 500;
@@ -148,45 +142,38 @@ struct Stats
     seedSix = max(seedSix - val, 0);
   }
 
-  void plusSeedOne(Utils *utils)
+  void plusSeedOne()
   {
-    utils->subtleOkBeep();
     seedOneAmount = min(seedOneAmount + 1, REAL_MAX_CAPACITY);
   }
 
-  void plusSeedTwo(Utils *utils)
+  void plusSeedTwo()
   {
-    utils->subtleOkBeep();
     seedTwoAmount = min(seedTwoAmount + 1, REAL_MAX_CAPACITY);
   }
 
-  void plusSeedThree(Utils *utils)
+  void plusSeedThree()
   {
-    utils->subtleOkBeep();
     seedThreeAmount = min(seedThreeAmount + 1, REAL_MAX_CAPACITY);
   }
 
-  void plusSeedFour(Utils *utils)
+  void plusSeedFour()
   {
-    utils->subtleOkBeep();
     seedFourAmount = min(seedFourAmount + 1, REAL_MAX_CAPACITY);
   }
 
-  void plusSeedFive(Utils *utils)
+  void plusSeedFive()
   {
-    utils->subtleOkBeep();
     seedFiveAmount = min(seedFiveAmount + 1, REAL_MAX_CAPACITY);
   }
 
-  void plusSeedSix(Utils *utils)
+  void plusSeedSix()
   {
-    utils->subtleOkBeep();
     seedSixAmount = min(seedSixAmount + 1, REAL_MAX_CAPACITY);
   }
 
-  void plusWool(Utils *utils)
+  void plusWool()
   {
-    utils->subtleOkBeep();
     woolAmount = min(woolAmount + 1, REAL_MAX_CAPACITY);
   }
 
@@ -203,13 +190,7 @@ struct Stats
 
   void buySheep()
   {
-    hasWoolTool = true;
     sheepAmount = min(sheepAmount + 1, SHEEP_MAX_AMOUNT);
-  }
-
-  void buySword()
-  {
-    hasSwordTool = true;
   }
 
   void sellAll()
@@ -229,6 +210,16 @@ struct Stats
     seedFiveAmount = 0;
     seedSixAmount = 0;
     woolAmount = 0;
+  }
+
+  uint16_t getTotalSeedAmount()
+  {
+    return seedOne + seedTwo + seedThree + seedFour + seedFive + seedSix;
+  }
+
+  uint16_t getTotalCropAmount()
+  {
+    return seedOneAmount + seedTwoAmount + seedThreeAmount + seedFourAmount + seedFiveAmount + seedSixAmount;
   }
 
   uint8_t getHP()

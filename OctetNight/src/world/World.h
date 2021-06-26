@@ -52,7 +52,7 @@ public:
     clearMap(stats);
     clearPlayerPosition();
     playerXPosition = 3;
-    playerYPosition = 3;
+    playerYPosition = 2;
     playerOrientation = 1;
     playerXOrientation = true;
     lastArrowUsed = 0;
@@ -422,7 +422,7 @@ public:
     {
       if (currentAction == 3)
       {
-        return useTool(utils, stats);
+        return useTool(stats);
       }
       else if (currentAction == 2)
       {
@@ -432,12 +432,12 @@ public:
         }
         else
         {
-          return useTool(utils, stats);
+          return useTool(stats);
         }
       }
       else if (currentAction == 1)
       {
-        if (!(currentToolSelected == 1 && !stats->hasWoolTool || currentToolSelected == 2 && !stats->hasSwordTool || currentToolSelected == 3 && stats->potionsAmount == 0))
+        if (!(currentToolSelected == 3 && stats->potionsAmount == 0))
         {
           currentAction++;
         }
@@ -494,7 +494,7 @@ public:
         playerOrientation = 1;
         if (playerXPosition < SQUARE_AMOUNT_WEIGHT - 2)
         {
-          return move(utils, stats, 1, 0);
+          return move(stats, 1, 0);
         }
         else
         {
@@ -510,7 +510,7 @@ public:
         playerOrientation = 3;
         if (playerXPosition > 0)
         {
-          return move(utils, stats, -1, 0);
+          return move(stats, -1, 0);
         }
         else
         {
@@ -526,7 +526,7 @@ public:
         playerOrientation = 2;
         if (playerYPosition < SQUARE_AMOUNT_HEIGHT - 2)
         {
-          return move(utils, stats, 0, 1);
+          return move(stats, 0, 1);
         }
         else
         {
@@ -542,7 +542,7 @@ public:
         playerOrientation = 0;
         if (playerYPosition > 0)
         {
-          return move(utils, stats, 0, -1);
+          return move(stats, 0, -1);
         }
         else
         {
@@ -579,12 +579,7 @@ public:
     }
   }
 
-  void displayEmpty()
-  {
-    Arduboy2Base::drawBitmap(106, 4, Cards::empty, 20, 17, BLACK);
-  }
-
-  void displayTime(Utils *utils, Stats *stats)
+  void displayTime(Utils *utils, Stats *stats, Numbers *numbers)
   {
     if (currentAction > 0)
     {
@@ -597,44 +592,44 @@ public:
           {
           case 0:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_0, 20, 20, WHITE);
-            if (!stats->seedOne > 0)
+            if (currentAction > 2)
             {
-              displayEmpty();
+              numbers->print(101, 23, stats->seedOne, 2);
             }
             break;
           case 1:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_1, 20, 20, WHITE);
-            if (!stats->seedTwo > 0)
+            if (currentAction > 2)
             {
-              displayEmpty();
+              numbers->print(101, 23, stats->seedTwo, 2);
             }
             break;
           case 2:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_2, 20, 20, WHITE);
-            if (!stats->seedThree > 0)
+            if (currentAction > 2)
             {
-              displayEmpty();
+              numbers->print(101, 23, stats->seedThree, 2);
             }
             break;
           case 3:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_3, 20, 20, WHITE);
-            if (!stats->seedFour > 0)
+            if (currentAction > 2)
             {
-              displayEmpty();
+              numbers->print(101, 23, stats->seedFour, 2);
             }
             break;
           case 4:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_4, 20, 20, WHITE);
-            if (!stats->seedFive > 0)
+            if (currentAction > 2)
             {
-              displayEmpty();
+              numbers->print(101, 23, stats->seedFive, 2);
             }
             break;
           case 5:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_5, 20, 20, WHITE);
-            if (!stats->seedSix > 0)
+            if (currentAction > 2)
             {
-              displayEmpty();
+              numbers->print(101, 23, stats->seedSix, 2);
             }
             break;
           }
@@ -646,70 +641,22 @@ public:
         break;
       case 1:
         Arduboy2Base::drawBitmap(106, 2, Mini::sheers_tool, 20, 20, WHITE);
-        if (!stats->hasWoolTool)
-        {
-          displayEmpty();
-        }
         break;
       case 2:
         Arduboy2Base::drawBitmap(106, 2, Mini::sword_tool, 20, 20, WHITE);
-        if (!stats->hasSwordTool)
-        {
-          displayEmpty();
-        }
         break;
       case 3:
         Arduboy2Base::drawBitmap(106, 2, Mini::items_tool, 20, 20, WHITE);
-        if (stats->potionsAmount == 0)
+        if (currentAction > 1)
         {
-          displayEmpty();
+          numbers->print(101, 23, stats->potionsAmount, 2);
         }
         break;
       }
     }
     else
     {
-      Arduboy2Base::drawBitmap(107, 2, Mini::clock, 18, 19, WHITE);
-
-      if (!(stats->getEnergy() < 2) && !(stats->getEnergy() == 9))
-      {
-        Arduboy2Base::drawBitmap(113, 1, Mini::clock_empty, 6, 7, BLACK);
-      }
-
-      if (!(stats->getEnergy() == 2))
-      {
-        Arduboy2Base::drawBitmap(106, 1, Mini::clock_empty, 7, 7, BLACK);
-      }
-
-      if (!(stats->getEnergy() == 3))
-      {
-        Arduboy2Base::drawBitmap(106, 8, Mini::clock_empty, 7, 7, BLACK);
-      }
-
-      if (!(stats->getEnergy() == 4))
-      {
-        Arduboy2Base::drawBitmap(106, 15, Mini::clock_empty, 7, 7, BLACK);
-      }
-
-      if (!(stats->getEnergy() == 5))
-      {
-        Arduboy2Base::drawBitmap(113, 15, Mini::clock_empty, 6, 7, BLACK);
-      }
-
-      if (!(stats->getEnergy() == 6))
-      {
-        Arduboy2Base::drawBitmap(119, 15, Mini::clock_empty, 7, 7, BLACK);
-      }
-
-      if (!(stats->getEnergy() == 7))
-      {
-        Arduboy2Base::drawBitmap(119, 8, Mini::clock_empty, 7, 7, BLACK);
-      }
-
-      if (!(stats->getEnergy() == 8))
-      {
-        Arduboy2Base::drawBitmap(119, 1, Mini::clock_empty, 7, 7, BLACK);
-      }
+      Arduboy2Base::drawBitmap(106, 2, Mini::clock, 20, 19, WHITE);
     }
   }
 
@@ -749,7 +696,7 @@ public:
     }
   }
 
-  void display(Utils *utils, Stats *stats, Effects *effects)
+  void display(Utils *utils, Stats *stats, Effects *effects, Numbers *numbers)
   {
     if (playerXPosition + mapOffsetX == 9)
     {
@@ -775,7 +722,7 @@ public:
       mapOffsetY = 0;
     }
 
-    displayTime(utils, stats);
+    displayTime(utils, stats, numbers);
     displayToolAction(utils);
     displayPlayerPointer(utils);
     displayBuilderSelector(utils);
@@ -1029,7 +976,7 @@ private:
         Arduboy2Base::drawBitmap(104, 21, Cards::change_2, 24, 8, WHITE);
       }
     }
-    else
+    else if (currentAction > 1 && currentToolSelected != 0 && currentToolSelected != 3)
     {
       Arduboy2Base::drawBitmap(104, 21, Cards::use_0, 24, 8, WHITE);
     }
@@ -1400,7 +1347,7 @@ private:
     }
   }
 
-  uint8_t move(Utils *utils, Stats *stats, const int extX, const int extY)
+  uint8_t move(Stats *stats, const int extX, const int extY)
   {
     if (playerXPosition + extX >= 0 && playerYPosition + extY >= 0 && playerXPosition + extX < SQUARE_AMOUNT_WEIGHT - 1 && playerYPosition + extY < SQUARE_AMOUNT_HEIGHT - 1)
     {
@@ -1414,40 +1361,51 @@ private:
       {
         return 3;
       }
+      if (value == 6 && currentMap == 1)
+      {
+        if (playerXPosition + mapOffsetX < 10)
+        {
+          return 6;
+        }
+        else
+        {
+          return 5;
+        }
+      }
 
       if (value == SEED_1_NUMBER + 10)
       {
-        stats->plusSeedOne(utils);
+        stats->plusSeedOne();
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_2_NUMBER + 10)
       {
-        stats->plusSeedTwo(utils);
+        stats->plusSeedTwo();
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_3_NUMBER + 10)
       {
-        stats->plusSeedThree(utils);
+        stats->plusSeedThree();
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_4_NUMBER + 4)
       {
-        stats->plusSeedFour(utils);
+        stats->plusSeedFour();
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_5_NUMBER + 3)
       {
-        stats->plusSeedFive(utils);
+        stats->plusSeedFive();
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
       if (value == SEED_6_NUMBER + 2)
       {
-        stats->plusSeedSix(utils);
+        stats->plusSeedSix();
         plusAnimation = 5;
         mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
       }
@@ -1708,7 +1666,7 @@ private:
     }
   }
 
-  uint8_t useTool(Utils *utils, Stats *stats)
+  uint8_t useTool(Stats *stats)
   {
     uint8_t x = 1, y = 1;
     switch (playerOrientation)
@@ -1727,12 +1685,12 @@ private:
       break;
     }
 
-    if (stats->getEnergy() > 0)
+    uint8_t value = mapGet(playerXPosition + mapOffsetX + (-1 + x), playerYPosition + mapOffsetY + (-1 + y));
+    switch (currentToolSelected)
     {
-      uint8_t value = mapGet(playerXPosition + mapOffsetX + (-1 + x), playerYPosition + mapOffsetY + (-1 + y));
-      switch (currentToolSelected)
+    case 0:
+      if (stats->getEnergy() > 0)
       {
-      case 0:
         if (currentMap == 0 && canPlace())
         {
           switch (currentSeedSelected)
@@ -1788,38 +1746,36 @@ private:
           }
           return 1;
         }
-        break;
-      case 1:
-        if (value == 21 || value == 25)
-        {
-          mapSet(playerXPosition + mapOffsetX + (-1 + x), playerYPosition + mapOffsetY + (-1 + y), value + 2);
-          stats->plusWool(utils);
-          plusAnimation = 5;
-          return 1;
-        }
-        break;
-      case 2:
-        if (attackEnemy(value))
-        {
-          mapSet(playerXPosition + mapOffsetX + (-1 + x), playerYPosition + mapOffsetY + (-1 + y), VOID_NUMBER);
-          utils->subtleOkBeep();
-        }
-        break;
-      case 3:
-        if (stats->potionsAmount > 0 && stats->getHP() < MAX_CAPACITY)
-        {
-          utils->okBeep();
-          stats->usePotion();
-        }
-        break;
       }
+      else
+      {
+        stats->decHP(1);
+        sleepAnimation = 5;
+      }
+      break;
+    case 1:
+      if (value == 21 || value == 25)
+      {
+        mapSet(playerXPosition + mapOffsetX + (-1 + x), playerYPosition + mapOffsetY + (-1 + y), value + 2);
+        stats->plusWool();
+        plusAnimation = 5;
+        return 1;
+      }
+      break;
+    case 2:
+      if (attackEnemy(value))
+      {
+        mapSet(playerXPosition + mapOffsetX + (-1 + x), playerYPosition + mapOffsetY + (-1 + y), VOID_NUMBER);
+      }
+      break;
+    case 3:
+      if (stats->potionsAmount > 0 && stats->getHP() < MAX_CAPACITY)
+      {
+        stats->usePotion();
+      }
+      break;
     }
-    else
-    {
-      stats->decHP(1);
-      utils->subtleKoBeep();
-      sleepAnimation = 5;
-    }
+
     return 0;
   }
 
