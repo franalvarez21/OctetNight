@@ -20,10 +20,16 @@ private:
   bool justPressedLock;
   uint8_t plusAnimation;
   uint8_t sleepAnimation;
+  uint8_t energyCycle;
   uint8_t currentMap;
   uint8_t lastArrowUsed;
 
 public:
+  bool isMainMap()
+  {
+    return currentMap == 0;
+  }
+
   uint8_t mapGet(uint8_t x, uint8_t y)
   {
     if (currentMap == 0)
@@ -53,8 +59,8 @@ public:
     clearPlayerPosition();
     playerXPosition = 3;
     playerYPosition = 2;
-    playerOrientation = 1;
-    playerXOrientation = true;
+    mapOffsetX = 0;
+    mapOffsetY = 0;
     lastArrowUsed = 0;
   }
 
@@ -66,7 +72,10 @@ public:
     currentSeedSelected = 0;
     plusAnimation = 0;
     sleepAnimation = 0;
+    energyCycle = ENERGY_TIME;
     justPressedLock = true;
+    playerOrientation = 1;
+    playerXOrientation = true;
   }
 
   void clearPlayerPosition()
@@ -80,7 +89,7 @@ public:
       if (lastArrowUsed == 0)
       {
         playerXPosition = 3;
-        playerYPosition = 3;
+        playerYPosition = 2;
       }
       else if (lastArrowUsed == 1)
       {
@@ -413,6 +422,11 @@ public:
     {
       if (currentAction > 0)
       {
+        if (currentAction > 2)
+        {
+          currentSeedSelected = 0;
+          currentAction--;
+        }
         currentAction--;
         return 1;
       }
@@ -442,7 +456,7 @@ public:
           currentAction++;
         }
       }
-      else if (currentAction < 1)
+      else
       {
         currentToolSelected = 0;
         currentSeedSelected = 0;
@@ -594,42 +608,42 @@ public:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_0, 20, 20, WHITE);
             if (currentAction > 2)
             {
-              numbers->print(101, 23, stats->seedOne, 2);
+              numbers->print(102, 23, stats->seedOne);
             }
             break;
           case 1:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_1, 20, 20, WHITE);
             if (currentAction > 2)
             {
-              numbers->print(101, 23, stats->seedTwo, 2);
+              numbers->print(102, 23, stats->seedTwo);
             }
             break;
           case 2:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_2, 20, 20, WHITE);
             if (currentAction > 2)
             {
-              numbers->print(101, 23, stats->seedThree, 2);
+              numbers->print(102, 23, stats->seedThree);
             }
             break;
           case 3:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_3, 20, 20, WHITE);
             if (currentAction > 2)
             {
-              numbers->print(101, 23, stats->seedFour, 2);
+              numbers->print(102, 23, stats->seedFour);
             }
             break;
           case 4:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_4, 20, 20, WHITE);
             if (currentAction > 2)
             {
-              numbers->print(101, 23, stats->seedFive, 2);
+              numbers->print(102, 23, stats->seedFive);
             }
             break;
           case 5:
             Arduboy2Base::drawBitmap(106, 2, Mini::seed_5, 20, 20, WHITE);
             if (currentAction > 2)
             {
-              numbers->print(101, 23, stats->seedSix, 2);
+              numbers->print(102, 23, stats->seedSix);
             }
             break;
           }
@@ -649,7 +663,7 @@ public:
         Arduboy2Base::drawBitmap(106, 2, Mini::items_tool, 20, 20, WHITE);
         if (currentAction > 1)
         {
-          numbers->print(101, 23, stats->potionsAmount, 2);
+          numbers->print(102, 23, stats->potionsAmount);
         }
         break;
       }
@@ -749,6 +763,19 @@ public:
       Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1), Common::plus_animation_0, 8, 8, BLACK);
       Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1), Common::sleep_animation_2, 8, 8, WHITE);
       sleepAnimation--;
+    }
+
+    if (energyCycle > 0)
+    {
+      energyCycle--;
+    }
+    else if (energyCycle == 0)
+    {
+      if (stats->getEnergy() > MIN_HEALTH_ACTION)
+      {
+        stats->decEnergy(1);
+      }
+      energyCycle = ENERGY_TIME;
     }
   }
 
@@ -1363,7 +1390,7 @@ private:
       }
       if (value == 6 && currentMap == 1)
       {
-        if (playerXPosition + mapOffsetX < 10)
+        if (playerXPosition + mapOffsetX > 6)
         {
           return 6;
         }

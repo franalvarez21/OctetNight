@@ -2,11 +2,11 @@
 
 struct Numbers
 {
-  void print(uint8_t x, uint8_t y, int16_t number, uint8_t limiter = 2)
+  void print(uint8_t x, uint8_t y, int16_t number)
   {
     number = abs(number);
     uint16_t multiplier = 10;
-    for (uint8_t i = 0; i < 4 && i < limiter; i++)
+    for (uint8_t i = 0; i < 4; i++)
     {
       printDigit(x, y, (number % multiplier) == 0 ? 0 : (number % multiplier) / (multiplier / 10), i);
       multiplier *= 10;

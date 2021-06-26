@@ -13,6 +13,9 @@ struct Dialogs
 
     switch (number)
     {
+    case 0:
+      Arduboy2Base::drawBitmap(44, 51, Hub::text_dialog_0, 43, 13, WHITE);
+      break;
     case 1:
       Arduboy2Base::drawBitmap(44, 51, Hub::text_dialog_1, 43, 13, WHITE);
       break;
@@ -30,6 +33,9 @@ struct Dialogs
       break;
     case 6:
       Arduboy2Base::drawBitmap(44, 51, Hub::text_dialog_6, 43, 13, WHITE);
+      break;
+    case 7:
+      Arduboy2Base::drawBitmap(44, 51, Hub::text_dialog_7, 43, 13, WHITE);
       break;
     }
 

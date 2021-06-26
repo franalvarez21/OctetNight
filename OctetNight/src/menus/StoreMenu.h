@@ -36,9 +36,9 @@ public:
       case 2:
         if (stats->getRealMoney() > BASIC_SEED_PACK_PRICE - 1)
         {
-          stats->incSeedOne(2 * rand() % RANDOM_PACK_BENEFITS);
-          stats->incSeedTwo(2 * rand() % RANDOM_PACK_BENEFITS);
-          stats->incSeedThree(1 * rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedOne(2 + rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedTwo(2 + rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedThree(1 + rand() % RANDOM_PACK_BENEFITS);
           stats->decMoney(BASIC_SEED_PACK_PRICE);
           sell = true;
         }
@@ -46,9 +46,9 @@ public:
       case 3:
         if (stats->getRealMoney() > MEDIUM_SEED_PACK_PRICE - 1)
         {
-          stats->incSeedFour(2 * rand() % RANDOM_PACK_BENEFITS);
-          stats->incSeedFive(2 * rand() % RANDOM_PACK_BENEFITS);
-          stats->incSeedSix(2 * rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedFour(2 + rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedFive(2 + rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedSix(2 + rand() % RANDOM_PACK_BENEFITS);
           stats->decMoney(MEDIUM_SEED_PACK_PRICE);
           sell = true;
         }
@@ -80,7 +80,7 @@ public:
     Arduboy2Base::drawBitmap(45, 6, Lines::shop, 66, 34, WHITE);
     displayMenuCursor(40, 6, 6);
 
-    numbers->print(10, 6, stats->getRealMoney(), 4);
+    numbers->print(10, 6, stats->getRealMoney());
 
     if (option > 0 && option < 5)
     {
@@ -90,16 +90,16 @@ public:
     switch (option)
     {
     case 1:
-      numbers->print(10, 12, POTION_PRICE, 4);
+      numbers->print(10, 12, POTION_PRICE);
       break;
     case 2:
-      numbers->print(10, 12, BASIC_SEED_PACK_PRICE, 4);
+      numbers->print(10, 12, BASIC_SEED_PACK_PRICE);
       break;
     case 3:
-      numbers->print(10, 12, MEDIUM_SEED_PACK_PRICE, 4);
+      numbers->print(10, 12, MEDIUM_SEED_PACK_PRICE);
       break;
     case 4:
-      numbers->print(10, 12, SHEEP_PRICE, 4);
+      numbers->print(10, 12, SHEEP_PRICE);
       break;
     }
 

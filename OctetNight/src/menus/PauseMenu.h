@@ -50,7 +50,7 @@ public:
   {
     // Stats
     Arduboy2Base::drawBitmap(5, 20, Lines::stats, 34, 36, WHITE);
-    numbers->print(37, 28, stats->getRealMoney(), 4);
+    numbers->print(37, 28, stats->getRealMoney());
     numbers->print(37, 34, stats->potionsAmount);
     numbers->print(37, 40, stats->woolAmount);
     numbers->print(37, 46, stats->getTotalCropAmount());

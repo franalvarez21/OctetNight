@@ -12,8 +12,10 @@
 #define MAX_CAPACITY 9
 #define REAL_MAX_CAPACITY 9999
 #define SHEEP_MAX_AMOUNT 8
+#define MIN_HEALTH_ACTION 2
 
 #define CYCLE_TIME 20
+#define ENERGY_TIME 200
 #define DIALOG_COOLDOWN 30
 
 #define START_ENEMY_NUMBER 39
@@ -31,7 +33,7 @@
 #define BASIC_SEED_PACK_PRICE 50
 #define MEDIUM_SEED_PACK_PRICE 200
 #define SHEEP_PRICE 1000
-#define RANDOM_PACK_BENEFITS 5
+#define RANDOM_PACK_BENEFITS 4
 
 class Game
 {
@@ -47,4 +49,5 @@ public:
   void mainGameOverTick(void);
   void dialogNotTired(void);
   void dialogNewDay(void);
+  void dialogNotAtHome(void);
 };

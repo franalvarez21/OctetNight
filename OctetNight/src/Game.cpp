@@ -51,7 +51,7 @@ void Game::restart(void)
   stats.init();
   action = 0;
   displayDialog = 0;
-  displayCooldown = 0;
+  displayCooldown = 40;
 }
 
 void Game::loop(void)
@@ -116,6 +116,10 @@ void Game::mainPauseTick()
     if (stats.getEnergy() < 4)
     {
       dialogNewDay();
+    }
+    else if (!world.isMainMap())
+    {
+      dialogNotAtHome();
     }
     else
     {
@@ -203,7 +207,7 @@ void Game::mainGameTick(void)
       world.display(&utils, &stats, &effects, &numbers);
       world.canvas();
 
-      if (displayDialog > 0 && displayCooldown > 0)
+      if (displayCooldown > 0)
       {
         dialogs.displayDialogs(displayDialog);
         displayCooldown--;
@@ -229,6 +233,12 @@ void Game::dialogNotTired()
 {
   displayCooldown = DIALOG_COOLDOWN;
   displayDialog = 4;
+}
+
+void Game::dialogNotAtHome()
+{
+  displayCooldown = DIALOG_COOLDOWN;
+  displayDialog = 7;
 }
 
 void Game::dialogNewDay()

@@ -32,7 +32,7 @@ struct Stats
     seedFive = 0;
     seedSix = 0;
 
-    sheepAmount = 2;
+    sheepAmount = 1;
     seedOneAmount = 0;
     seedTwoAmount = 0;
     seedThreeAmount = 0;
@@ -42,7 +42,7 @@ struct Stats
     potionsAmount = 99;
     woolAmount = 0;
 
-    money = 500;
+    money = 200;
     rest();
   }
 
@@ -195,13 +195,13 @@ struct Stats
 
   void sellAll()
   {
-    incMoney(seedOneAmount * 10);
-    incMoney(seedTwoAmount * 12);
-    incMoney(seedThreeAmount * 15);
-    incMoney(seedFourAmount * 20);
-    incMoney(seedFiveAmount * 25);
-    incMoney(seedSixAmount * 50);
-    incMoney(woolAmount * 100);
+    incMoney(seedOneAmount * 40);
+    incMoney(seedTwoAmount * 45);
+    incMoney(seedThreeAmount * 60);
+    incMoney(seedFourAmount * 80);
+    incMoney(seedFiveAmount * 85);
+    incMoney(seedSixAmount * 100);
+    incMoney(woolAmount * 200);
 
     seedOneAmount = 0;
     seedTwoAmount = 0;
