@@ -1,5 +1,8 @@
 #pragma once
 
+#include <stdint.h>
+#include <stdlib.h>
+
 #define REAL_MAP_WEIGHT 20
 #define REAL_MAP_HEIGHT 14
 #define MAX_SQUARE_AMOUNT_WEIGHT 17
@@ -35,6 +38,12 @@
 #define SHEEP_PRICE 1000
 #define RANDOM_PACK_BENEFITS 4
 
+#define STAGE_MAINMENU 0
+#define STAGE_PAUSE 1
+#define STAGE_GAME 2
+#define STAGE_STOREMENU 3
+#define STAGE_GAMEOVER 4
+
 class Game
 {
 public:
@@ -47,7 +56,5 @@ public:
   void mainPauseTick(void);
   void mainStoreMenuTick(void);
   void mainGameOverTick(void);
-  void dialogNotTired(void);
-  void dialogNewDay(void);
-  void dialogNotAtHome(void);
+  void changeStage(uint8_t stage);
 };

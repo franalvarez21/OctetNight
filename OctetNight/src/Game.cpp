@@ -18,8 +18,6 @@ Arduboy2Base arduboy;
 
 uint8_t onStage;
 uint8_t action;
-uint8_t displayDialog;
-uint8_t displayCooldown;
 
 Utils utils;
 Stats stats;
@@ -47,11 +45,10 @@ void Game::setup(void)
 
 void Game::restart(void)
 {
-  world.reset(&stats);
+  world.reset(&stats, &effects);
+  dialogs.init();
   stats.init();
   action = 0;
-  displayDialog = 0;
-  displayCooldown = 40;
 }
 
 void Game::loop(void)
@@ -66,19 +63,19 @@ void Game::loop(void)
 
   switch (onStage)
   {
-  case 0:
+  case STAGE_MAINMENU:
     mainMenuTick();
     break;
-  case 1:
+  case STAGE_PAUSE:
     mainPauseTick();
     break;
-  case 2:
+  case STAGE_GAME:
     mainGameTick();
     break;
-  case 3:
+  case STAGE_STOREMENU:
     mainStoreMenuTick();
     break;
-  case 4:
+  case STAGE_GAMEOVER:
     mainGameOverTick();
     break;
   }
@@ -95,9 +92,10 @@ void Game::mainMenuTick(void)
   {
   case 1:
     restart();
-    onStage = 2;
+    changeStage(STAGE_GAME);
     break;
   case 2:
+    //TODO: Load game call
     break;
   }
   effects.displayErrorLine(65, 25, 60);
@@ -110,25 +108,26 @@ void Game::mainPauseTick()
   switch (pauseMenu.action(&utils))
   {
   case 1:
-    onStage = 2;
+    changeStage(STAGE_GAME);
     break;
   case 2:
-    if (stats.getEnergy() < 4)
+    if (stats.getEnergy() < RANDOM_PACK_BENEFITS)
     {
-      dialogNewDay();
+      dialogs.displayDialogs(6);
+      world.newDay(&stats, &effects);
     }
     else if (!world.isMainMap())
     {
-      dialogNotAtHome();
+      dialogs.displayDialogs(7);
     }
     else
     {
-      dialogNotTired();
+      dialogs.displayDialogs(4);
     }
-    onStage = 2;
+    changeStage(STAGE_GAME);
     break;
   case 3:
-    onStage = 0;
+    changeStage(STAGE_MAINMENU);
     break;
   default:
     world.completeCanvas();
@@ -142,7 +141,7 @@ void Game::mainStoreMenuTick(void)
   switch (storeMenu.action(&stats, &numbers))
   {
   case 1:
-    onStage = 2;
+    changeStage(STAGE_GAME);
     break;
   case 2:
     dialogs.displayDialogs(1, true);
@@ -151,6 +150,7 @@ void Game::mainStoreMenuTick(void)
     dialogs.displayDialogs(2, true);
     break;
   }
+  dialogs.tick();
   world.completeCanvas();
 }
 
@@ -158,64 +158,49 @@ void Game::mainGameTick(void)
 {
   if (arduboy.justPressed(A_BUTTON) && !world.inAction())
   {
-    onStage = 1;
-    pauseMenu.refresh();
+    changeStage(STAGE_PAUSE);
     world.canvas();
   }
   else
   {
-    uint8_t action = world.action(&utils, &stats);
+    uint8_t action = world.action(&utils, &stats, &effects);
 
     if (action == 4)
     {
-      onStage = 4;
-      gameOver.refresh();
+      changeStage(STAGE_GAMEOVER);
     }
     else if (action == 3 && stats.getEnergy() < 4)
     {
-      dialogNewDay();
+      dialogs.displayDialogs(6);
+      world.newDay(&stats, &effects);
     }
     else if (action == 2)
     {
-      onStage = 3;
-      storeMenu.refresh();
+      changeStage(STAGE_STOREMENU);
     }
     else
     {
-      if (action > 4 && action < 7)
-      {
-        displayCooldown = DIALOG_COOLDOWN;
-      }
-
       if (action == 3)
       {
-        dialogNotTired();
+        dialogs.displayDialogs(4);
       }
       else if (action == 5)
       {
-        displayDialog = 3;
+        dialogs.displayDialogs(3);
       }
       else if (action == 6)
       {
-        displayDialog = 5;
+        dialogs.displayDialogs(5);
       }
 
       if (utils.cycle == 1)
       {
         world.environmentChange(&utils);
       }
+
       world.display(&utils, &stats, &effects, &numbers);
       world.canvas();
-
-      if (displayCooldown > 0)
-      {
-        dialogs.displayDialogs(displayDialog);
-        displayCooldown--;
-      }
-      else
-      {
-        displayDialog = 0;
-      }
+      dialogs.tick();
     }
   }
 }
@@ -224,26 +209,15 @@ void Game::mainGameOverTick(void)
 {
   if (gameOver.action())
   {
-    onStage = 0;
+    changeStage(STAGE_MAINMENU);
   }
   world.completeCanvas();
 }
 
-void Game::dialogNotTired()
+void Game::changeStage(uint8_t stage)
 {
-  displayCooldown = DIALOG_COOLDOWN;
-  displayDialog = 4;
-}
-
-void Game::dialogNotAtHome()
-{
-  displayCooldown = DIALOG_COOLDOWN;
-  displayDialog = 7;
-}
-
-void Game::dialogNewDay()
-{
-  displayCooldown = DIALOG_COOLDOWN;
-  displayDialog = 6;
-  world.newDay(&stats);
+  onStage = stage;
+  storeMenu.refresh();
+  pauseMenu.refresh();
+  gameOver.refresh();
 }

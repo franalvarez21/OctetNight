@@ -2,7 +2,38 @@
 
 struct Dialogs
 {
-  void displayDialogs(uint8_t number, bool subject = false)
+  bool subject;
+  uint8_t displayDialog;
+  uint8_t displayCooldown;
+
+  void init()
+  {
+    subject = false;
+    displayDialog = 0;
+    displayCooldown = DIALOG_COOLDOWN + 10;
+  }
+
+  void tick()
+  {
+    if (displayCooldown > 0)
+    {
+      display();
+      displayCooldown--;
+    }
+    else
+    {
+      displayDialog = 0;
+    }
+  }
+
+  void displayDialogs(uint8_t number, bool side = false)
+  {
+    subject = side;
+    displayDialog = number;
+    displayCooldown = side ? 2 : DIALOG_COOLDOWN;
+  }
+
+  void display()
   {
     Arduboy2Base::drawBitmap(87, 53, Hub::text_dialog_bubble_right_1, 10, 10, BLACK);
     Arduboy2Base::drawBitmap(34, 53, Hub::text_dialog_bubble_left_1, 10, 10, BLACK);
@@ -11,7 +42,7 @@ struct Dialogs
     Arduboy2Base::drawBitmap(88, 54, subject ? Hub::text_dialog_bubble_right : Hub::text_dialog_bubble_right_2, 8, 8, WHITE);
     Arduboy2Base::drawBitmap(35, 54, subject ? Hub::text_dialog_bubble_left_2 : Hub::text_dialog_bubble_left, 8, 8, WHITE);
 
-    switch (number)
+    switch (displayDialog)
     {
     case 0:
       Arduboy2Base::drawBitmap(44, 51, Hub::text_dialog_0, 43, 13, WHITE);

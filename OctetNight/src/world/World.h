@@ -10,19 +10,20 @@ protected:
 private:
   uint8_t mapOffsetX;
   uint8_t mapOffsetY;
+
+  bool justPressedLock;
+  bool playerXOrientation;
+
   uint8_t map[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
   uint8_t map2[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
-  bool playerXOrientation;
+  uint8_t currentMap;
   uint8_t currentAction;
-  uint8_t speedTick;
   uint8_t currentToolSelected;
   uint8_t currentSeedSelected;
-  bool justPressedLock;
-  uint8_t plusAnimation;
-  uint8_t sleepAnimation;
-  uint8_t energyCycle;
-  uint8_t currentMap;
   uint8_t lastArrowUsed;
+
+  uint8_t speedTick;
+  uint8_t energyCycle;
 
 public:
   bool isMainMap()
@@ -32,7 +33,7 @@ public:
 
   uint8_t mapGet(uint8_t x, uint8_t y)
   {
-    if (currentMap == 0)
+    if (isMainMap())
     {
       return map[x][y];
     }
@@ -41,7 +42,7 @@ public:
 
   void mapSet(uint8_t x, uint8_t y, uint8_t value)
   {
-    if (currentMap == 0)
+    if (isMainMap())
     {
       map[x][y] = value;
     }
@@ -51,208 +52,161 @@ public:
     }
   }
 
-  void reset(Stats *stats)
+  void reset(Stats *stats, Effects *effects)
   {
-    currentMap = 0;
-    refresh();
-    clearMap(stats);
-    clearPlayerPosition();
-    playerXPosition = 3;
-    playerYPosition = 2;
-    mapOffsetX = 0;
-    mapOffsetY = 0;
+    changeCurrentMap(0, stats);
+    refresh(effects);
+    setPlayerPosition(3, 2, 0, 0);
     lastArrowUsed = 0;
   }
 
-  void refresh()
+  void refresh(Effects *effects)
   {
+    effects->refresh();
     speedTick = 0;
     currentAction = 0;
     currentToolSelected = 0;
     currentSeedSelected = 0;
-    plusAnimation = 0;
-    sleepAnimation = 0;
     energyCycle = ENERGY_TIME;
     justPressedLock = true;
     playerOrientation = 1;
     playerXOrientation = true;
   }
 
+  void setPlayerPosition(uint8_t x, uint8_t y, uint8_t xOff, uint8_t yOff)
+  {
+    playerXPosition = x;
+    playerYPosition = y;
+    mapOffsetX = xOff;
+    mapOffsetY = yOff;
+  }
+
   void clearPlayerPosition()
   {
-    mapOffsetX = 0;
-    mapOffsetY = 0;
-
     switch (currentMap)
     {
     case 0:
       if (lastArrowUsed == 0)
       {
-        playerXPosition = 3;
-        playerYPosition = 2;
+        setPlayerPosition(3, 2, 0, 0);
       }
       else if (lastArrowUsed == 1)
       {
-        mapOffsetX = 7;
-        playerXPosition = 11;
-        playerYPosition = 4;
+        setPlayerPosition(11, 4, 7, 0);
       }
       break;
     case 1:
       if (lastArrowUsed == 0)
       {
-        playerXPosition = 1;
-        playerYPosition = 4;
+        setPlayerPosition(1, 4, 0, 0);
       }
       else if (lastArrowUsed == 2)
       {
-        playerXPosition = 8;
-        playerYPosition = 1;
+        setPlayerPosition(8, 1, 0, 0);
       }
       break;
     case 2:
       if (lastArrowUsed == 1)
       {
-        mapOffsetY = 6;
-        playerXPosition = 8;
-        playerYPosition = 6;
+        setPlayerPosition(8, 6, 0, 6);
       }
       else if (lastArrowUsed == 3 || lastArrowUsed == 7)
       {
-        playerXPosition = 1;
-        playerYPosition = 1;
+        setPlayerPosition(1, 1, 0, 0);
       }
       else if (lastArrowUsed == 4 || lastArrowUsed == 5)
       {
-        mapOffsetX = 7;
-        playerXPosition = 11;
-        playerYPosition = 1;
+        setPlayerPosition(11, 1, 7, 0);
       }
       else if (lastArrowUsed == 6)
       {
-        playerXPosition = 8;
-        playerYPosition = 1;
+        setPlayerPosition(8, 1, 0, 0);
       }
       break;
     case 3:
       if (lastArrowUsed == 5)
       {
-        mapOffsetY = 6;
-        playerXPosition = 8;
-        playerYPosition = 6;
+        setPlayerPosition(8, 6, 0, 6);
       }
       else if (lastArrowUsed == 4)
       {
-        playerXPosition = 1;
-        playerYPosition = 1;
+        setPlayerPosition(1, 1, 0, 0);
       }
       else if (lastArrowUsed == 2)
       {
-        mapOffsetX = 7;
-        playerXPosition = 11;
-        playerYPosition = 1;
+        setPlayerPosition(11, 1, 7, 0);
       }
       else if (lastArrowUsed == 7)
       {
-        playerXPosition = 8;
-        playerYPosition = 1;
+        setPlayerPosition(8, 1, 0, 0);
       }
       break;
     case 4:
       if (lastArrowUsed == 7)
       {
-        mapOffsetY = 6;
-        playerXPosition = 8;
-        playerYPosition = 6;
+        setPlayerPosition(8, 6, 0, 6);
       }
       else if (lastArrowUsed == 2)
       {
-        playerXPosition = 1;
-        playerYPosition = 1;
+        setPlayerPosition(1, 1, 0, 0);
       }
       else if (lastArrowUsed == 3)
       {
-        mapOffsetX = 7;
-        playerXPosition = 11;
-        playerYPosition = 1;
+        setPlayerPosition(11, 1, 7, 0);
       }
       else if (lastArrowUsed == 5)
       {
-        playerXPosition = 8;
-        playerYPosition = 1;
+        setPlayerPosition(8, 1, 0, 0);
       }
       break;
     case 5:
       if (lastArrowUsed == 4)
       {
-        mapOffsetY = 6;
-        playerXPosition = 8;
-        playerYPosition = 6;
+        setPlayerPosition(8, 6, 0, 6);
       }
       else if (lastArrowUsed == 6)
       {
-        mapOffsetX = 7;
-        mapOffsetY = 6;
-        playerXPosition = 11;
-        playerYPosition = 4;
+        setPlayerPosition(11, 4, 7, 6);
       }
       else if (lastArrowUsed == 7)
       {
-        mapOffsetY = 6;
-        playerXPosition = 1;
-        playerYPosition = 4;
+        setPlayerPosition(1, 4, 0, 6);
       }
       else if (lastArrowUsed == 3)
       {
-        playerXPosition = 8;
-        playerYPosition = 1;
+        setPlayerPosition(8, 1, 0, 0);
       }
       break;
     case 6:
       if (lastArrowUsed == 2)
       {
-        mapOffsetY = 6;
-        playerXPosition = 8;
-        playerYPosition = 6;
+        setPlayerPosition(8, 6, 0, 6);
       }
       else if (lastArrowUsed == 5)
       {
-        mapOffsetY = 6;
-        playerXPosition = 1;
-        playerYPosition = 4;
+        setPlayerPosition(1, 4, 0, 6);
       }
       else if (lastArrowUsed == 7)
       {
-        mapOffsetX = 7;
-        mapOffsetY = 6;
-        playerXPosition = 11;
-        playerYPosition = 4;
+        setPlayerPosition(11, 4, 7, 6);
       }
       break;
     case 7:
       if (lastArrowUsed == 3)
       {
-        mapOffsetY = 6;
-        playerXPosition = 8;
-        playerYPosition = 6;
+        setPlayerPosition(8, 6, 0, 6);
       }
       else if (lastArrowUsed == 5)
       {
-        mapOffsetX = 7;
-        mapOffsetY = 6;
-        playerXPosition = 11;
-        playerYPosition = 4;
+        setPlayerPosition(11, 4, 7, 6);
       }
       else if (lastArrowUsed == 6)
       {
-        mapOffsetY = 6;
-        playerXPosition = 1;
-        playerYPosition = 4;
+        setPlayerPosition(1, 4, 0, 6);
       }
       else if (lastArrowUsed == 4)
       {
-        playerXPosition = 8;
-        playerYPosition = 1;
+        setPlayerPosition(8, 1, 0, 0);
       }
       break;
     }
@@ -328,13 +282,13 @@ public:
     }
   }
 
-  void newDay(Stats *stats)
+  void newDay(Stats *stats, Effects *effects)
   {
-    if (currentMap == 0)
+    if (isMainMap())
     {
       stats->rest();
       lastArrowUsed = 0;
-      refresh();
+      refresh(effects);
       clearPlayerPosition();
       sheepRest();
       for (uint8_t i = 0; i < REAL_MAP_WEIGHT - 1; i++)
@@ -416,7 +370,7 @@ public:
     return (currentAction > 0);
   }
 
-  uint8_t action(Utils *utils, Stats *stats)
+  uint8_t action(Utils *utils, Stats *stats, Effects *effects)
   {
     if (Arduboy2Base::justPressed(A_BUTTON))
     {
@@ -436,7 +390,7 @@ public:
     {
       if (currentAction == 3)
       {
-        return useTool(stats);
+        return useTool(stats, effects);
       }
       else if (currentAction == 2)
       {
@@ -446,7 +400,7 @@ public:
         }
         else
         {
-          return useTool(stats);
+          return useTool(stats, effects);
         }
       }
       else if (currentAction == 1)
@@ -508,7 +462,7 @@ public:
         playerOrientation = 1;
         if (playerXPosition < SQUARE_AMOUNT_WEIGHT - 2)
         {
-          return move(stats, 1, 0);
+          return move(stats, effects, 1, 0);
         }
         else
         {
@@ -524,7 +478,7 @@ public:
         playerOrientation = 3;
         if (playerXPosition > 0)
         {
-          return move(stats, -1, 0);
+          return move(stats, effects, -1, 0);
         }
         else
         {
@@ -540,7 +494,7 @@ public:
         playerOrientation = 2;
         if (playerYPosition < SQUARE_AMOUNT_HEIGHT - 2)
         {
-          return move(stats, 0, 1);
+          return move(stats, effects, 0, 1);
         }
         else
         {
@@ -556,7 +510,7 @@ public:
         playerOrientation = 0;
         if (playerYPosition > 0)
         {
-          return move(stats, 0, -1);
+          return move(stats, effects, 0, -1);
         }
         else
         {
@@ -587,7 +541,7 @@ public:
 
   void environmentChange(Utils *utils)
   {
-    if (currentMap == 0 && !(currentAction > 1 && currentToolSelected == 1))
+    if (isMainMap() && !(currentAction > 1 && currentToolSelected == 1))
     {
       sheepChange(utils);
     }
@@ -751,25 +705,13 @@ public:
       }
     }
 
-    if (plusAnimation > 0)
-    {
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1), Common::plus_animation_0, 8, 8, BLACK);
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1), Common::plus_animation_1, 8, 8, WHITE);
-      plusAnimation--;
-    }
-
-    if (sleepAnimation > 0)
-    {
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1), Common::plus_animation_0, 8, 8, BLACK);
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1), Common::sleep_animation_2, 8, 8, WHITE);
-      sleepAnimation--;
-    }
+    effects->playerAnimationTick(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition - 1));
 
     if (energyCycle > 0)
     {
       energyCycle--;
     }
-    else if (energyCycle == 0)
+    else
     {
       if (stats->getEnergy() > MIN_HEALTH_ACTION)
       {
@@ -809,7 +751,7 @@ private:
   {
     uint8_t cell[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
 
-    if (currentMap == 0)
+    if (isMainMap())
     {
       memcpy_P(&cell, &Map::map_0, sizeof(cell));
     }
@@ -940,52 +882,24 @@ private:
   {
     if (currentAction == 0)
     {
-      if (utils->halfCycleCheck())
-      {
-        Arduboy2Base::drawBitmap(104, 28, Cards::a_1, 24, 8, WHITE);
-      }
-      else
-      {
-        Arduboy2Base::drawBitmap(104, 28, Cards::a_2, 24, 8, WHITE);
-      }
+      Arduboy2Base::drawBitmap(104, 28, utils->halfCycleCheck() ? Cards::a_1 : Cards::a_2, 24, 8, WHITE);
     }
     else
     {
-      if (utils->halfCycleCheck())
+      switch (currentToolSelected)
       {
-        switch (currentToolSelected)
-        {
-        case 0:
-          Arduboy2Base::drawBitmap(104, 28, Cards::plant_0, 24, 8, WHITE);
-          break;
-        case 1:
-          Arduboy2Base::drawBitmap(104, 28, Cards::sheers_0, 24, 8, WHITE);
-          break;
-        case 2:
-          Arduboy2Base::drawBitmap(104, 28, Cards::sword_0, 24, 8, WHITE);
-          break;
-        case 3:
-          Arduboy2Base::drawBitmap(104, 28, Cards::items_0, 24, 8, WHITE);
-          break;
-        }
-      }
-      else
-      {
-        switch (currentToolSelected)
-        {
-        case 0:
-          Arduboy2Base::drawBitmap(104, 28, Cards::plant_1, 24, 8, WHITE);
-          break;
-        case 1:
-          Arduboy2Base::drawBitmap(104, 28, Cards::sheers_1, 24, 8, WHITE);
-          break;
-        case 2:
-          Arduboy2Base::drawBitmap(104, 28, Cards::sword_1, 24, 8, WHITE);
-          break;
-        case 3:
-          Arduboy2Base::drawBitmap(104, 28, Cards::items_1, 24, 8, WHITE);
-          break;
-        }
+      case 0:
+        Arduboy2Base::drawBitmap(104, 28, utils->halfCycleCheck() ? Cards::plant_0 : Cards::plant_1, 24, 8, WHITE);
+        break;
+      case 1:
+        Arduboy2Base::drawBitmap(104, 28, utils->halfCycleCheck() ? Cards::sheers_0 : Cards::sheers_1, 24, 8, WHITE);
+        break;
+      case 2:
+        Arduboy2Base::drawBitmap(104, 28, utils->halfCycleCheck() ? Cards::sword_0 : Cards::sword_1, 24, 8, WHITE);
+        break;
+      case 3:
+        Arduboy2Base::drawBitmap(104, 28, utils->halfCycleCheck() ? Cards::items_0 : Cards::items_1, 24, 8, WHITE);
+        break;
       }
     }
   }
@@ -994,14 +908,7 @@ private:
   {
     if (currentAction == 1 || (currentAction == 2 && currentToolSelected == 0))
     {
-      if (utils->halfCycleCheck())
-      {
-        Arduboy2Base::drawBitmap(104, 21, Cards::change_1, 24, 8, WHITE);
-      }
-      else
-      {
-        Arduboy2Base::drawBitmap(104, 21, Cards::change_2, 24, 8, WHITE);
-      }
+      Arduboy2Base::drawBitmap(104, 21, utils->halfCycleCheck() ? Cards::change_1 : Cards::change_2, 24, 8, WHITE);
     }
     else if (currentAction > 1 && currentToolSelected != 0 && currentToolSelected != 3)
     {
@@ -1099,54 +1006,19 @@ private:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::door_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 20:
-        if (utils->halfCycleCheck())
-        {
-          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::natural_hay_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        }
-        else
-        {
-          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::natural_hay_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        }
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, utils->halfCycleCheck() ? Map::natural_hay_0 : Map::natural_hay_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 21:
-        if (utils->halfCycleCheck())
-        {
-          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Mini::sheep_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        }
-        else
-        {
-          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Mini::sheep_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        }
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, utils->halfCycleCheck() ? Mini::sheep_0 : Mini::sheep_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 23:
-        if (utils->halfCycleCheck())
-        {
-          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Mini::sheep_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        }
-        else
-        {
-          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Mini::sheep_3, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        }
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, utils->halfCycleCheck() ? Mini::sheep_2 : Mini::sheep_3, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 25:
-        if (utils->halfCycleCheck())
-        {
-          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Mini::sheep_4, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        }
-        else
-        {
-          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Mini::sheep_5, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        }
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, utils->halfCycleCheck() ? Mini::sheep_4 : Mini::sheep_5, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 27:
-        if (utils->halfCycleCheck())
-        {
-          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Mini::sheep_6, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        }
-        else
-        {
-          Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Mini::sheep_7, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        }
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, utils->halfCycleCheck() ? Mini::sheep_6 : Mini::sheep_7, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 29:
         if (utils->halfCycleCheck())
@@ -1374,11 +1246,25 @@ private:
     }
   }
 
-  uint8_t move(Stats *stats, const int extX, const int extY)
+  uint8_t changeCurrentMap(uint8_t number, Stats *stats = NULL)
   {
+    currentMap = number;
+    if (stats != NULL)
+    {
+      clearMap(stats);
+    }
+    clearPlayerPosition();
+    return 1;
+  }
+
+  uint8_t move(Stats *stats, Effects *effects, const int extX, const int extY)
+  {
+    uint8_t tempX = playerXPosition + mapOffsetX + extX;
+    uint8_t tempY = playerYPosition + mapOffsetY + extY;
+
     if (playerXPosition + extX >= 0 && playerYPosition + extY >= 0 && playerXPosition + extX < SQUARE_AMOUNT_WEIGHT - 1 && playerYPosition + extY < SQUARE_AMOUNT_HEIGHT - 1)
     {
-      uint8_t value = mapGet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY);
+      uint8_t value = mapGet(tempX, tempY);
 
       if (value == 61) // Store
       {
@@ -1403,253 +1289,161 @@ private:
       if (value == SEED_1_NUMBER + 10)
       {
         stats->plusSeedOne();
-        plusAnimation = 5;
-        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
+        effects->plusAnimation();
+        mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value == SEED_2_NUMBER + 10)
       {
         stats->plusSeedTwo();
-        plusAnimation = 5;
-        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
+        effects->plusAnimation();
+        mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value == SEED_3_NUMBER + 10)
       {
         stats->plusSeedThree();
-        plusAnimation = 5;
-        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
+        effects->plusAnimation();
+        mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value == SEED_4_NUMBER + 4)
       {
         stats->plusSeedFour();
-        plusAnimation = 5;
-        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
+        effects->plusAnimation();
+        mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value == SEED_5_NUMBER + 3)
       {
         stats->plusSeedFive();
-        plusAnimation = 5;
-        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
+        effects->plusAnimation();
+        mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value == SEED_6_NUMBER + 2)
       {
         stats->plusSeedSix();
-        plusAnimation = 5;
-        mapSet(playerXPosition + mapOffsetX + extX, playerYPosition + mapOffsetY + extY, EMPTY_NUMBER);
+        effects->plusAnimation();
+        mapSet(tempX, tempY, EMPTY_NUMBER);
       }
 
-      bool changeMap = false;
       lastArrowUsed = currentMap;
       switch (currentMap)
       {
       case 0:
         if (value == 17)
         {
-          currentMap = 1;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(1, stats);
         }
         break;
       case 1:
         if (value == 29)
         {
-          currentMap = 0;
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(0);
         }
         else if (value == 18)
         {
-          currentMap = 2;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(2, stats);
         }
         break;
       case 2:
         if (value == 30)
         {
-          currentMap = 1;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(1, stats);
         }
         else if (value == 29)
         {
-          currentMap = 3;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(3, stats);
         }
         else if (value == 17)
         {
-          currentMap = 4;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(4, stats);
         }
         else if (value == 18)
         {
-          currentMap = 6;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(6, stats);
         }
         break;
       case 3:
         if (value == 30)
         {
-          currentMap = 5;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(5, stats);
         }
         else if (value == 29)
         {
-          currentMap = 4;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(4, stats);
         }
         else if (value == 17)
         {
-          currentMap = 2;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(2, stats);
         }
         else if (value == 18)
         {
-          currentMap = 7;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(7, stats);
         }
         break;
       case 4:
         if (value == 30)
         {
-          currentMap = 7;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(7, stats);
         }
         else if (value == 29)
         {
-          currentMap = 2;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(2, stats);
         }
         else if (value == 17)
         {
-          currentMap = 3;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(3, stats);
         }
         else if (value == 18)
         {
-          currentMap = 5;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(5, stats);
         }
         break;
       case 5:
         if (value == 30)
         {
-          currentMap = 4;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(4, stats);
         }
         else if (value == 29)
         {
-          if (playerYPosition > 1)
-          {
-            currentMap = 7;
-          }
-          else
-          {
-            currentMap = 2;
-          }
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(playerYPosition > 1 ? 7 : 2, stats);
         }
         else if (value == 17)
         {
-          currentMap = 6;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(6, stats);
         }
         else if (value == 18)
         {
-          currentMap = 3;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(3, stats);
         }
         break;
       case 6:
         if (value == 30)
         {
-          currentMap = 2;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(2, stats);
         }
         else if (value == 29)
         {
-          currentMap = 5;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(5, stats);
         }
         else if (value == 17)
         {
-          currentMap = 7;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(7, stats);
         }
         break;
       case 7:
         if (value == 30)
         {
-          currentMap = 3;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(3, stats);
         }
         else if (value == 29)
         {
-          currentMap = 6;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(6, stats);
         }
         else if (value == 17)
         {
-          if (playerYPosition > 1)
-          {
-            currentMap = 5;
-          }
-          else
-          {
-            currentMap = 2;
-          }
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(playerYPosition > 1 ? 5 : 2, stats);
         }
         else if (value == 18)
         {
-          currentMap = 4;
-          clearMap(stats);
-          clearPlayerPosition();
-          return 1;
+          return changeCurrentMap(4, stats);
         }
         break;
       }
@@ -1693,7 +1487,7 @@ private:
     }
   }
 
-  uint8_t useTool(Stats *stats)
+  uint8_t useTool(Stats *stats, Effects *effects)
   {
     uint8_t x = 1, y = 1;
     switch (playerOrientation)
@@ -1718,7 +1512,7 @@ private:
     case 0:
       if (stats->getEnergy() > 0)
       {
-        if (currentMap == 0 && canPlace())
+        if (isMainMap() && canPlace())
         {
           switch (currentSeedSelected)
           {
@@ -1777,7 +1571,7 @@ private:
       else
       {
         stats->decHP(1);
-        sleepAnimation = 5;
+        effects->sleepAnimation();
       }
       break;
     case 1:
@@ -1785,7 +1579,7 @@ private:
       {
         mapSet(playerXPosition + mapOffsetX + (-1 + x), playerYPosition + mapOffsetY + (-1 + y), value + 2);
         stats->plusWool();
-        plusAnimation = 5;
+        effects->plusAnimation();
         return 1;
       }
       break;

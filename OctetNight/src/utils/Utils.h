@@ -1,8 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-#include <stdlib.h>
-
 #include <Arduboy2.h>
 
 #include "const/Map.h"
