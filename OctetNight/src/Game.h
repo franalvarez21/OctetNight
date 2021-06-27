@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include <Arduboy2.h>
+
 #define REAL_MAP_WEIGHT 20
 #define REAL_MAP_HEIGHT 14
 #define MAX_SQUARE_AMOUNT_WEIGHT 17
@@ -43,6 +45,30 @@
 #define STAGE_GAME 2
 #define STAGE_STOREMENU 3
 #define STAGE_GAMEOVER 4
+
+#include "utils/const/Map.h"
+#include "utils/const/Common.h"
+#include "utils/const/Mini.h"
+#include "utils/const/Lines.h"
+#include "utils/const/Title.h"
+#include "utils/const/Cards.h"
+#include "utils/const/Seeds.h"
+#include "utils/const/Hub.h"
+#include "utils/const/Digits.h"
+
+#include "utils/Cycle.h"
+#include "utils/Stats.h"
+#include "utils/Effects.h"
+#include "utils/Numbers.h"
+#include "utils/Dialogs.h"
+#include "utils/LevelProgression.h"
+#include "world/World.h"
+
+#include "menus/Menu.h"
+#include "menus/TitleMenu.h"
+#include "menus/PauseMenu.h"
+#include "menus/StoreMenu.h"
+#include "menus/GameOver.h"
 
 class Game
 {

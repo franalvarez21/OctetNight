@@ -24,10 +24,10 @@ public:
     return 0;
   }
 
-  void eventDisplay(Utils *utils)
+  void eventDisplay(Cycle *cycle)
   {
     Arduboy2Base::drawBitmap(73, 0, Title::title_2, 52, 24, WHITE);
-    if (utils->halfCycleCheck())
+    if (cycle->halfCycleCheck())
     {
       Arduboy2Base::drawBitmap(20, 18, Title::title_0, 23, 23, WHITE);
       Arduboy2Base::drawBitmap(65, 30, Title::title_3, 12, 12, WHITE);

@@ -41,14 +41,6 @@ struct Effects
     sleepAn = 5;
   }
 
-  void displayErrorLine(int16_t x, int16_t y, int16_t size)
-  {
-    if (rand() % 10 == 0)
-    {
-      Arduboy2Base::drawFastHLine(x, rand() % y, size, BLACK);
-    }
-  }
-
   void displayBistercian(int16_t x, int16_t y, int32_t number)
   {
     bistercian.setCursor(x, y);
@@ -68,6 +60,14 @@ struct Effects
     for (uint8_t i = 0; i < size; i++)
     {
       displayBistercian(x + i * 6, y, rand() % 10000);
+    }
+  }
+
+  static void displayErrorLine(int16_t x, int16_t y, int16_t size)
+  {
+    if (rand() % 10 == 0)
+    {
+      Arduboy2Base::drawFastHLine(x, rand() % y, size, BLACK);
     }
   }
 };

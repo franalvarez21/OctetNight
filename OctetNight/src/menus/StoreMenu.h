@@ -14,7 +14,7 @@ public:
     sell = false;
   }
 
-  uint8_t action(Stats *stats, Numbers *numbers)
+  uint8_t action(Stats *stats)
   {
     upDownMovement();
 
@@ -75,12 +75,12 @@ public:
     return sell ? 3 : 2;
   }
 
-  void eventDisplay(Stats *stats, Numbers *numbers)
+  void eventDisplay(Stats *stats)
   {
     Arduboy2Base::drawBitmap(45, 6, Lines::shop, 66, 34, WHITE);
     displayMenuCursor(40, 6, 6);
 
-    numbers->print(10, 6, stats->getRealMoney());
+    Numbers::print(10, 6, stats->getRealMoney());
 
     if (option > 0 && option < 5)
     {
@@ -90,16 +90,16 @@ public:
     switch (option)
     {
     case 1:
-      numbers->print(10, 12, POTION_PRICE);
+      Numbers::print(10, 12, POTION_PRICE);
       break;
     case 2:
-      numbers->print(10, 12, BASIC_SEED_PACK_PRICE);
+      Numbers::print(10, 12, BASIC_SEED_PACK_PRICE);
       break;
     case 3:
-      numbers->print(10, 12, MEDIUM_SEED_PACK_PRICE);
+      Numbers::print(10, 12, MEDIUM_SEED_PACK_PRICE);
       break;
     case 4:
-      numbers->print(10, 12, SHEEP_PRICE);
+      Numbers::print(10, 12, SHEEP_PRICE);
       break;
     }
 

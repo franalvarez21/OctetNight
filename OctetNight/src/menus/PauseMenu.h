@@ -10,7 +10,7 @@ public:
     option = 0;
   }
 
-  uint8_t action(Utils *utils)
+  uint8_t action()
   {
     upDownMovement();
 
@@ -46,15 +46,15 @@ public:
     return 0;
   }
 
-  void eventDisplay(Utils *utils, Stats *stats, Numbers *numbers)
+  void eventDisplay(Stats *stats)
   {
     // Stats
     Arduboy2Base::drawBitmap(5, 20, Lines::stats, 34, 36, WHITE);
-    numbers->print(37, 28, stats->getRealMoney());
-    numbers->print(37, 34, stats->potionsAmount);
-    numbers->print(37, 40, stats->woolAmount);
-    numbers->print(37, 46, stats->getTotalCropAmount());
-    numbers->print(37, 52, stats->getTotalSeedAmount());
+    Numbers::print(37, 28, stats->getRealMoney());
+    Numbers::print(37, 34, stats->potionsAmount);
+    Numbers::print(37, 40, stats->woolAmount);
+    Numbers::print(37, 46, stats->getTotalCropAmount());
+    Numbers::print(37, 52, stats->getTotalSeedAmount());
 
     // Menu
     Arduboy2Base::drawBitmap(74, 4, Lines::options, 34, 4, WHITE);

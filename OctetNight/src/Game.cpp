@@ -1,29 +1,15 @@
 
 #include "Game.h"
 
-#include "utils/Utils.h"
-#include "utils/Stats.h"
-#include "utils/Effects.h"
-#include "utils/Numbers.h"
-#include "utils/Dialogs.h"
-#include "world/World.h"
-
-#include "menus/Menu.h"
-#include "menus/TitleMenu.h"
-#include "menus/PauseMenu.h"
-#include "menus/StoreMenu.h"
-#include "menus/GameOver.h"
-
 Arduboy2Base arduboy;
-
 uint8_t onStage;
 uint8_t action;
 
-Utils utils;
-Stats stats;
-Numbers numbers;
+Cycle cycle;
 Effects effects;
+Stats stats;
 Dialogs dialogs;
+LevelProgression levelProgression;
 World world;
 
 TitleMenu titleMenu;
@@ -39,13 +25,14 @@ void Game::setup(void)
   arduboy.systemButtons();
   arduboy.waitNoButtons();
 
-  utils.init(&arduboy);
+  cycle.init();
   restart();
 }
 
 void Game::restart(void)
 {
   world.reset(&stats, &effects);
+  levelProgression.reset();
   dialogs.init();
   stats.init();
   action = 0;
@@ -80,14 +67,14 @@ void Game::loop(void)
     break;
   }
 
-  utils.tick();
+  cycle.tick();
   arduboy.display();
 }
 
 void Game::mainMenuTick(void)
 {
   rand() % analogRead(0);
-  titleMenu.eventDisplay(&utils);
+  titleMenu.eventDisplay(&cycle);
   switch (titleMenu.action())
   {
   case 1:
@@ -98,14 +85,14 @@ void Game::mainMenuTick(void)
     //TODO: Load game call
     break;
   }
-  effects.displayErrorLine(65, 25, 60);
+  Effects::displayErrorLine(65, 25, 60);
   effects.displayBistercianColumn(2, 2, 9);
 }
 
 void Game::mainPauseTick()
 {
-  pauseMenu.eventDisplay(&utils, &stats, &numbers);
-  switch (pauseMenu.action(&utils))
+  pauseMenu.eventDisplay(&stats);
+  switch (pauseMenu.action())
   {
   case 1:
     changeStage(STAGE_GAME);
@@ -137,8 +124,8 @@ void Game::mainPauseTick()
 
 void Game::mainStoreMenuTick(void)
 {
-  storeMenu.eventDisplay(&stats, &numbers);
-  switch (storeMenu.action(&stats, &numbers))
+  storeMenu.eventDisplay(&stats);
+  switch (storeMenu.action(&stats))
   {
   case 1:
     changeStage(STAGE_GAME);
@@ -163,7 +150,7 @@ void Game::mainGameTick(void)
   }
   else
   {
-    uint8_t action = world.action(&utils, &stats, &effects);
+    uint8_t action = world.action(&stats, &effects);
 
     if (action == 4)
     {
@@ -193,12 +180,12 @@ void Game::mainGameTick(void)
         dialogs.displayDialogs(5);
       }
 
-      if (utils.cycle == 1)
+      if (cycle.cycle == 1)
       {
-        world.environmentChange(&utils);
+        world.environmentChange();
       }
 
-      world.display(&utils, &stats, &effects, &numbers);
+      world.display(&cycle, &stats, &effects);
       world.canvas();
       dialogs.tick();
     }

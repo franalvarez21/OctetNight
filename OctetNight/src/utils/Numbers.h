@@ -1,8 +1,9 @@
 #pragma once
 
-struct Numbers
+class Numbers
 {
-  void print(uint8_t x, uint8_t y, int16_t number)
+public:
+  static void print(uint8_t x, uint8_t y, int16_t number)
   {
     number = abs(number);
     uint16_t multiplier = 10;
@@ -13,7 +14,7 @@ struct Numbers
     }
   }
 
-  void printDigit(uint8_t x, uint8_t y, uint8_t number, uint8_t sector)
+  static void printDigit(uint8_t x, uint8_t y, uint8_t number, uint8_t sector)
   {
     switch (number)
     {
