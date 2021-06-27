@@ -98,14 +98,14 @@ void Game::mainPauseTick()
     changeStage(STAGE_GAME);
     break;
   case 2:
-    if (stats.getEnergy() < MIN_HEALTH_ACTION)
+    if (!world.isMainMap())
+    {
+      dialogs.displayDialogs(7);
+    }
+    else if (stats.getEnergy() < MIN_HEALTH_ACTION)
     {
       dialogs.displayDialogs(6);
       world.newDay(&stats, &effects);
-    }
-    else if (!world.isMainMap())
-    {
-      dialogs.displayDialogs(7);
     }
     else
     {
@@ -150,7 +150,7 @@ void Game::mainGameTick(void)
   }
   else
   {
-    uint8_t action = world.action(&stats, &effects);
+    uint8_t action = world.action(&stats, &effects, &levelProgression);
 
     if (action == 4)
     {
@@ -185,7 +185,7 @@ void Game::mainGameTick(void)
         world.environmentChange();
       }
 
-      world.display(&cycle, &stats, &effects);
+      world.display(&cycle, &stats, &effects, &levelProgression);
       world.canvas();
       dialogs.tick();
     }

@@ -31,6 +31,7 @@
 #define SEED_4_NUMBER 98
 #define SEED_5_NUMBER 103
 #define SEED_6_NUMBER 107
+#define KEY_NUMBER 110
 #define VOID_NUMBER 198
 #define EMPTY_NUMBER 199
 

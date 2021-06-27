@@ -370,7 +370,7 @@ public:
     return (currentAction > 0);
   }
 
-  uint8_t action(Stats *stats, Effects *effects)
+  uint8_t action(Stats *stats, Effects *effects, LevelProgression *levelProgression)
   {
     if (Arduboy2Base::justPressed(A_BUTTON))
     {
@@ -462,7 +462,7 @@ public:
         playerOrientation = 1;
         if (playerXPosition < SQUARE_AMOUNT_WEIGHT - 2)
         {
-          return move(stats, effects, 1, 0);
+          return move(stats, effects, levelProgression, 1, 0);
         }
         else
         {
@@ -478,7 +478,7 @@ public:
         playerOrientation = 3;
         if (playerXPosition > 0)
         {
-          return move(stats, effects, -1, 0);
+          return move(stats, effects, levelProgression, -1, 0);
         }
         else
         {
@@ -494,7 +494,7 @@ public:
         playerOrientation = 2;
         if (playerYPosition < SQUARE_AMOUNT_HEIGHT - 2)
         {
-          return move(stats, effects, 0, 1);
+          return move(stats, effects, levelProgression, 0, 1);
         }
         else
         {
@@ -510,7 +510,7 @@ public:
         playerOrientation = 0;
         if (playerYPosition > 0)
         {
-          return move(stats, effects, 0, -1);
+          return move(stats, effects, levelProgression, 0, -1);
         }
         else
         {
@@ -664,7 +664,7 @@ public:
     }
   }
 
-  void display(Cycle *cycle, Stats *stats, Effects *effects)
+  void display(Cycle *cycle, Stats *stats, Effects *effects, LevelProgression *levelProgression)
   {
     if (playerXPosition + mapOffsetX == 9)
     {
@@ -701,7 +701,7 @@ public:
     {
       for (uint8_t y = mapOffsetY, j = 0; y < SQUARE_AMOUNT_HEIGHT + mapOffsetY - 1; y++, j++)
       {
-        displayMaze(cycle, stats, effects, x, y, i, j);
+        displayMaze(cycle, stats, effects, levelProgression, x, y, i, j);
       }
     }
 
@@ -933,7 +933,23 @@ private:
     Arduboy2Base::drawBitmap(104, 55, Cards::stats_1, 24, 8, WHITE);
   }
 
-  void displayMaze(Cycle *cycle, Stats *stats, Effects *effects, uint8_t x, uint8_t y, uint8_t i, uint8_t j)
+  void displayBarrierA(Effects *effects, LevelProgression *levelProgression, uint8_t x, uint8_t y, uint8_t number)
+  {
+    if (!levelProgression->canAccessZoneA(number))
+    {
+      effects->displayBistercian(SQUARE_SIZE * x + 2, SQUARE_SIZE * y + 2, rand() % 10000);
+    }
+  }
+
+  void displayKeyBarrierA(Effects *effects, LevelProgression *levelProgression, uint8_t x, uint8_t y, uint8_t number)
+  {
+    if (!levelProgression->canAccessZoneA(number))
+    {
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * x, SQUARE_SIZE * y, Mini::key, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+    }
+  }
+
+  void displayMaze(Cycle *cycle, Stats *stats, Effects *effects, LevelProgression *levelProgression, uint8_t x, uint8_t y, uint8_t i, uint8_t j)
   {
     if (!(i == playerXPosition && j == playerYPosition))
     {
@@ -961,13 +977,13 @@ private:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_flag_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 7:
-        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 2, rand() % 10000);
+        displayBarrierA(effects, levelProgression, i, j, 0);
         break;
       case 8:
-        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 2, rand() % 10000);
+        displayBarrierA(effects, levelProgression, i, j, 1);
         break;
       case 9:
-        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 2, rand() % 10000);
+        displayBarrierA(effects, levelProgression, i, j, 2);
         break;
       case 10:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
@@ -1242,6 +1258,15 @@ private:
       case 109:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_44, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
+      case KEY_NUMBER:
+        displayKeyBarrierA(effects, levelProgression, i, j, 0);
+        break;
+      case 111:
+        displayKeyBarrierA(effects, levelProgression, i, j, 1);
+        break;
+      case 112:
+        displayKeyBarrierA(effects, levelProgression, i, j, 2);
+        break;
       }
     }
   }
@@ -1257,7 +1282,7 @@ private:
     return 1;
   }
 
-  uint8_t move(Stats *stats, Effects *effects, const int extX, const int extY)
+  uint8_t move(Stats *stats, Effects *effects, LevelProgression *levelProgression, const int extX, const int extY)
   {
     uint8_t tempX = playerXPosition + mapOffsetX + extX;
     uint8_t tempY = playerYPosition + mapOffsetY + extY;
@@ -1320,6 +1345,11 @@ private:
       {
         stats->plusSeedSix();
         effects->plusAnimation();
+        mapSet(tempX, tempY, EMPTY_NUMBER);
+      }
+      if (value > KEY_NUMBER - 1 && value < KEY_NUMBER + 3 && !levelProgression->canAccessZoneA(value - KEY_NUMBER))
+      {
+        levelProgression->addKeyZoneA();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
 
@@ -1448,7 +1478,7 @@ private:
         break;
       }
 
-      if (value > 16 && value < 31 || value > SEED_1_NUMBER - 1)
+      if (canMove(levelProgression, value))
       {
         playerXPosition += extX;
         playerYPosition += extY;
@@ -1456,6 +1486,23 @@ private:
       }
     }
     return 0;
+  }
+
+  bool canMove(LevelProgression *levelProgression, uint8_t value)
+  {
+    // Elements check
+    if (value > 16 && value < 31 || value > SEED_1_NUMBER - 1)
+    {
+      return true;
+    }
+
+    // Zone A check
+    if ((value == 7 && levelProgression->canAccessZoneA(0)) || (value == 8 && levelProgression->canAccessZoneA(1)) || (value == 9 && levelProgression->canAccessZoneA(2)))
+    {
+      return true;
+    }
+
+    return false;
   }
 
   void displayPlaceIcon(Cycle *cycle)

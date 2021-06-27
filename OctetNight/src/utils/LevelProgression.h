@@ -10,13 +10,13 @@ public:
     keyZoneA = 0;
   }
 
-  void addKeyZoneA(uint8_t number)
+  void addKeyZoneA()
   {
-    keyZoneA = max(keyZoneA, number);
+    keyZoneA++;
   }
 
   bool canAccessZoneA(uint8_t number)
   {
-    return number <= keyZoneA;
+    return number < keyZoneA;
   }
 };
