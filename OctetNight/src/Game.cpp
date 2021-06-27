@@ -182,7 +182,7 @@ void Game::mainGameTick(void)
 
       if (cycle.cycle == 1)
       {
-        world.environmentChange();
+        world.environmentChange(&stats);
       }
 
       world.display(&cycle, &stats, &effects, &levelProgression);

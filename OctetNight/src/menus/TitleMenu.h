@@ -43,7 +43,7 @@ public:
     Arduboy2Base::drawBitmap(103, 60, Lines::load, 24, 4, WHITE);
     displayMenuCursor(92, 52);
 
-    Arduboy2Base::drawBitmap(0, 56, Title::g_rating, 8, 8, WHITE);
+    Arduboy2Base::drawBitmap(0, 56, Title::g_rating, SQUARE_SIZE, SQUARE_SIZE, WHITE);
     Arduboy2Base::drawBitmap(15, 60, Lines::version, 34, 4, WHITE);
   }
 };

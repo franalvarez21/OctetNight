@@ -248,6 +248,23 @@ public:
     }
   }
 
+  void spawnEnemy(Stats *stats)
+  {
+    if (currentMap > 1)
+    {
+      for (uint8_t i = ENEMY_BORDER_SPAWN_LIMIT; i < REAL_MAP_WEIGHT - ENEMY_BORDER_SPAWN_LIMIT - 1; i++)
+      {
+        for (uint8_t j = ENEMY_BORDER_SPAWN_LIMIT; j < REAL_MAP_HEIGHT - ENEMY_BORDER_SPAWN_LIMIT - 1; j++)
+        {
+          if (mapGet(i, j) == VOID_NUMBER && rand() % 100 < ENEMY_SPAWN_PERCENTAGE)
+          {
+            mapSet(i, j, START_ENEMY_NUMBER);
+          }
+        }
+      }
+    }
+  }
+
   void clearSheepSpace()
   {
     for (uint8_t i = 11; i < REAL_MAP_WEIGHT - 1; i++)
@@ -306,60 +323,121 @@ public:
     }
   }
 
-  void sheepChange()
+  bool isSheepA(uint8_t x, uint8_t y, uint8_t mod = 0)
+  {
+    return mapGet(x, y) == 21 + mod || mapGet(x, y) == 23 + mod;
+  }
+
+  bool isSheepB(uint8_t x, uint8_t y, uint8_t mod = 0)
+  {
+    return mapGet(x, y) == 25 + mod || mapGet(x, y) == 27 + mod;
+  }
+
+  bool isEnemy(uint8_t x, uint8_t y, uint8_t mod = 0)
+  {
+    return mapGet(x, y) == START_ENEMY_NUMBER + mod;
+  }
+
+  uint8_t randomMoveOther(Stats *stats, uint8_t i, uint8_t j)
+  {
+    uint8_t option = rand() % 4;
+    switch (option)
+    {
+    case 0:
+      moveOthers(stats, i, j, i - 1, j);
+      break;
+    case 1:
+      moveOthers(stats, i, j, i + 1, j);
+      break;
+    case 2:
+      moveOthers(stats, i, j, i, j - 1);
+      break;
+    case 3:
+      moveOthers(stats, i, j, i, j + 1);
+      break;
+    }
+    return option;
+  }
+
+  void enemyChange(Stats *stats)
+  {
+    for (uint8_t i = 1; i < REAL_MAP_WEIGHT - 1; i++)
+    {
+      for (uint8_t j = 1; j < REAL_MAP_HEIGHT - 1; j++)
+      {
+        if (isEnemy(i, j))
+        {
+          if (Numbers::sizeTypeAbs(playerXPosition + mapOffsetX, i) < FOLLOW_DISTANCE && Numbers::sizeTypeAbs(playerYPosition + mapOffsetY, j) < FOLLOW_DISTANCE)
+          {
+            if (playerXPosition + mapOffsetX < i && mapGet(i - 1, j) == VOID_NUMBER)
+            {
+              moveOthers(stats, i, j, i - 1, j);
+            }
+            else if (playerXPosition + mapOffsetX > i && mapGet(i + 1, j) == VOID_NUMBER)
+            {
+              moveOthers(stats, i, j, i + 1, j);
+            }
+            else if (playerYPosition + mapOffsetY < j && mapGet(i, j - 1) == VOID_NUMBER)
+            {
+              moveOthers(stats, i, j, i, j - 1);
+            }
+            else if (playerYPosition + mapOffsetY > j && mapGet(i, j + 1) == VOID_NUMBER)
+            {
+              moveOthers(stats, i, j, i, j + 1);
+            }
+          }
+          else
+          {
+            randomMoveOther(stats, i, j);
+          }
+        }
+      }
+    }
+  }
+
+  void sheepChange(Stats *stats)
   {
     for (uint8_t i = 10; i < REAL_MAP_WEIGHT - 1; i++)
     {
       for (uint8_t j = 3; j < REAL_MAP_HEIGHT - 1; j++)
       {
-        if (map[i][j] == 21 || map[i][j] == 23 || map[i][j] == 25 || map[i][j] == 27)
+        if (isSheepA(i, j) || isSheepB(i, j))
         {
           switch (rand() % 4)
           {
           case 0:
             if (i - 1 > 10)
             {
-              if (map[i][j] == 21 || map[i][j] == 23)
+              if (isSheepA(i, j))
               {
-                map[i][j] = map[i][j] + 4;
+                mapSet(i, j, mapGet(i, j) + 4);
               }
-              moveOthers(i, j, i - 1, j);
+              moveOthers(stats, i, j, i - 1, j);
             }
             break;
           case 1:
             if (i + 1 < REAL_MAP_WEIGHT - 1)
             {
-              if (map[i][j] == 25 || map[i][j] == 27)
+              if (isSheepB(i, j))
               {
-                map[i][j] = map[i][j] - 4;
+                mapSet(i, j, mapGet(i, j) - 4);
               }
-              moveOthers(i, j, i + 1, j);
+              moveOthers(stats, i, j, i + 1, j);
             }
             break;
           case 2:
             if (j - 1 > 3)
             {
-              moveOthers(i, j, i, j - 1);
+              moveOthers(stats, i, j, i, j - 1);
             }
             break;
           case 3:
             if (j + 1 < REAL_MAP_HEIGHT - 1)
             {
-              moveOthers(i, j, i, j + 1);
+              moveOthers(stats, i, j, i, j + 1);
             }
             break;
           }
-        }
-      }
-    }
-
-    for (uint8_t i = 11; i < REAL_MAP_WEIGHT - 1; i++)
-    {
-      for (uint8_t j = 4; j < REAL_MAP_HEIGHT - 1; j++)
-      {
-        if (map[i][j] == 22 || map[i][j] == 24 || map[i][j] == 26 || map[i][j] == 28)
-        {
-          map[i][j]--;
         }
       }
     }
@@ -530,20 +608,42 @@ public:
     return 0;
   }
 
-  void moveOthers(uint8_t x, uint8_t y, uint8_t i, uint8_t j)
+  void moveOthers(Stats *stats, uint8_t x, uint8_t y, uint8_t i, uint8_t j)
   {
-    if (mapGet(i, j) == VOID_NUMBER)
+    if (i == playerXPosition + mapOffsetX && j == playerYPosition + mapOffsetY)
+    {
+      if (isEnemy(x, y))
+      {
+        stats->decHP(1);
+      }
+    }
+    else if (mapGet(i, j) == VOID_NUMBER)
     {
       mapSet(i, j, mapGet(x, y) + 1);
       mapSet(x, y, VOID_NUMBER);
     }
   }
 
-  void environmentChange()
+  void environmentChange(Stats *stats)
   {
     if (isMainMap() && !(currentAction > 1 && currentToolSelected == 1))
     {
-      sheepChange();
+      sheepChange(stats);
+    }
+    else if (!isMainMap())
+    {
+      enemyChange(stats);
+    }
+
+    for (uint8_t i = 1; i < REAL_MAP_WEIGHT - 1; i++)
+    {
+      for (uint8_t j = 1; j < REAL_MAP_HEIGHT - 1; j++)
+      {
+        if (isEnemy(i, j, 1) || isSheepA(i, j, 1) || isSheepB(i, j, 1))
+        {
+          mapSet(i, j, mapGet(i, j) - 1);
+        }
+      }
     }
   }
 
@@ -810,6 +910,7 @@ private:
 
     clearSheepSpace();
     spawnSheep(stats);
+    spawnEnemy(stats);
   }
 
   bool attackEnemy(uint8_t value)
@@ -817,16 +918,16 @@ private:
     switch (playerOrientation)
     {
     case 0:
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition), SQUARE_SIZE * (playerYPosition - 1), Common::swing_animation_2, 8, 8, WHITE);
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition), SQUARE_SIZE * (playerYPosition - 1), Common::swing_animation_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       break;
     case 1:
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition), Common::swing_animation_0, 8, 8, WHITE);
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + 1), SQUARE_SIZE * (playerYPosition), Common::swing_animation_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       break;
     case 2:
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition), SQUARE_SIZE * (playerYPosition + 1), Common::swing_animation_3, 8, 8, WHITE);
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition), SQUARE_SIZE * (playerYPosition + 1), Common::swing_animation_3, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       break;
     case 3:
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition - 1), SQUARE_SIZE * (playerYPosition), Common::swing_animation_1, 8, 8, WHITE);
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition - 1), SQUARE_SIZE * (playerYPosition), Common::swing_animation_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       break;
     }
     return value >= START_ENEMY_NUMBER && value <= END_ENEMY_NUMBER;
@@ -1112,10 +1213,10 @@ private:
         // Reserve as home door
         break;
       case 63:
-        // Reserve as weird blocker
+        // Reserve as weird blocker (points 37 38 39)
         break;
       case 64:
-        // Reserve as blocker
+        // Reserve as non descriptive (complement to others) blocker
         break;
       // Seed 1
       case SEED_1_NUMBER:
@@ -1266,6 +1367,9 @@ private:
         break;
       case 112:
         displayKeyBarrierA(effects, levelProgression, i, j, 2);
+        break;
+      case START_ENEMY_NUMBER:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, cycle->halfCycleCheck() ? Mini::slime_0 : Mini::slime_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       }
     }
@@ -1491,7 +1595,7 @@ private:
   bool canMove(LevelProgression *levelProgression, uint8_t value)
   {
     // Elements check
-    if (value > 16 && value < 31 || value > SEED_1_NUMBER - 1)
+    if ((value > 16 && value < 31) || (value > SEED_1_NUMBER - 1 && value < START_ENEMY_NUMBER) || value > END_ENEMY_NUMBER)
     {
       return true;
     }

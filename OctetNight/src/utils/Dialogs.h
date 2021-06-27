@@ -39,8 +39,8 @@ struct Dialogs
     Arduboy2Base::drawBitmap(34, 53, Hub::text_dialog_bubble_left_1, 10, 10, BLACK);
     Arduboy2Base::drawBitmap(39, 48, Hub::text_dialog_bubble_1, 53, 15, BLACK);
     Arduboy2Base::drawBitmap(40, 49, Hub::text_dialog_bubble, 51, 13, WHITE);
-    Arduboy2Base::drawBitmap(88, 54, subject ? Hub::text_dialog_bubble_right : Hub::text_dialog_bubble_right_2, 8, 8, WHITE);
-    Arduboy2Base::drawBitmap(35, 54, subject ? Hub::text_dialog_bubble_left_2 : Hub::text_dialog_bubble_left, 8, 8, WHITE);
+    Arduboy2Base::drawBitmap(88, 54, subject ? Hub::text_dialog_bubble_right : Hub::text_dialog_bubble_right_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+    Arduboy2Base::drawBitmap(35, 54, subject ? Hub::text_dialog_bubble_left_2 : Hub::text_dialog_bubble_left, SQUARE_SIZE, SQUARE_SIZE, WHITE);
 
     switch (displayDialog)
     {

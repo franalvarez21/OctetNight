@@ -18,15 +18,15 @@ struct Effects
   {
     if (plusAn > 0)
     {
-      Arduboy2Base::drawBitmap(x, y, Common::plus_animation_0, 8, 8, BLACK);
-      Arduboy2Base::drawBitmap(x, y, Common::plus_animation_1, 8, 8, WHITE);
+      Arduboy2Base::drawBitmap(x, y, Common::plus_animation_0, SQUARE_SIZE, SQUARE_SIZE, BLACK);
+      Arduboy2Base::drawBitmap(x, y, Common::plus_animation_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       plusAn--;
     }
 
     if (sleepAn > 0)
     {
-      Arduboy2Base::drawBitmap(x, y, Common::plus_animation_0, 8, 8, BLACK);
-      Arduboy2Base::drawBitmap(x, y, Common::sleep_animation_2, 8, 8, WHITE);
+      Arduboy2Base::drawBitmap(x, y, Common::plus_animation_0, SQUARE_SIZE, SQUARE_SIZE, BLACK);
+      Arduboy2Base::drawBitmap(x, y, Common::sleep_animation_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       sleepAn--;
     }
   }

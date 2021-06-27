@@ -39,7 +39,7 @@ struct Stats
     seedFourAmount = 0;
     seedFiveAmount = 0;
     seedSixAmount = 0;
-    potionsAmount = 99;
+    potionsAmount = 0;
     woolAmount = 0;
 
     money = 200;
@@ -48,7 +48,7 @@ struct Stats
 
   void rest()
   {
-    hp = MAX_CAPACITY;
+    hp = STARTING_HP;
     energy = MAX_CAPACITY;
   }
 
@@ -232,10 +232,12 @@ struct Stats
     switch (money)
     {
     case 0 ... 10:
-      return 1;
+      return 0;
     case 11 ... 100:
+      return 1;
+    case 101 ... 200:
       return 2;
-    case 101 ... 500:
+    case 201 ... 500:
       return 3;
     case 501 ... 1000:
       return 4;
