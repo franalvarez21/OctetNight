@@ -68,6 +68,9 @@ struct Dialogs
     case 7:
       Arduboy2Base::drawBitmap(44, 51, Hub::text_dialog_7, 43, 13, WHITE);
       break;
+    case 8:
+      Arduboy2Base::drawBitmap(44, 51, Hub::text_dialog_8, 43, 13, WHITE);
+      break;
     }
 
     Arduboy2Base::drawBitmap(3, 35, Hub::portrait_player_0, 31, 32, BLACK);

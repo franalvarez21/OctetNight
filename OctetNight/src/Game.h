@@ -26,6 +26,7 @@
 #define ENEMY_BORDER_SPAWN_LIMIT 3
 
 #define CYCLE_TIME 20
+#define HURT_TIME 10
 #define ENERGY_TIME 200
 #define DIALOG_COOLDOWN 30
 

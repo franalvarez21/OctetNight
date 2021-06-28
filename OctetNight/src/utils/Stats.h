@@ -5,6 +5,7 @@ struct Stats
   uint8_t hp;
   uint16_t money;
   uint8_t energy;
+  uint16_t day;
 
   uint16_t seedOne;
   uint16_t seedTwo;
@@ -23,8 +24,12 @@ struct Stats
   uint16_t seedSixAmount;
   uint16_t woolAmount;
 
+  uint8_t hurtCycle;
+
   void init()
   {
+    day = 0;
+
     seedOne = 20;
     seedTwo = 0;
     seedThree = 0;
@@ -43,13 +48,30 @@ struct Stats
     woolAmount = 0;
 
     money = 200;
+    hurtCycle = 0;
     rest();
   }
 
   void rest()
   {
-    hp = STARTING_HP;
+    hp = max(hp, STARTING_HP);
     energy = MAX_CAPACITY;
+    newDay();
+  }
+
+  void newDay()
+  {
+    day = min(day + 1, REAL_MAX_CAPACITY);
+  }
+
+  bool hurt()
+  {
+    if (hurtCycle > 0)
+    {
+      hurtCycle--;
+      return hurtCycle % 2 == 0;
+    }
+    return true;
   }
 
   void incHP(uint8_t val)
@@ -60,6 +82,7 @@ struct Stats
   void decHP(uint8_t val)
   {
     hp = max(hp - val, 0);
+    hurtCycle = HURT_TIME;
   }
 
   void incMoney(uint8_t val)

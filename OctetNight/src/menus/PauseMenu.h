@@ -68,17 +68,5 @@ public:
     // Hub
     Arduboy2Base::drawBitmap(110, 2, Hub::hub_0, 16, 60, WHITE);
     Arduboy2Base::drawBitmap(5, 59, Hub::hub_1, 107, 2, WHITE);
-    if (stats->getHP() < 3)
-    {
-      Arduboy2Base::drawBitmap(115, 6, Hub::smile_2, 6, 6, BLACK);
-    }
-    else if (stats->getHP() < 6)
-    {
-      Arduboy2Base::drawBitmap(115, 6, Hub::smile_1, 6, 6, BLACK);
-    }
-    else
-    {
-      Arduboy2Base::drawBitmap(115, 6, Hub::smile_0, 6, 6, BLACK);
-    }
   }
 };

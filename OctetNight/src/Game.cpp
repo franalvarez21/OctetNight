@@ -179,6 +179,10 @@ void Game::mainGameTick(void)
       {
         dialogs.displayDialogs(5);
       }
+      else if (action == 7)
+      {
+        dialogs.displayDialogs(8);
+      }
 
       if (cycle.cycle == 1)
       {

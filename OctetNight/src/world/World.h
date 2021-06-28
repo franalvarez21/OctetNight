@@ -21,6 +21,7 @@ private:
   uint8_t currentToolSelected;
   uint8_t currentSeedSelected;
   uint8_t lastArrowUsed;
+  bool lastMapClear;
 
   uint8_t speedTick;
   uint8_t energyCycle;
@@ -182,13 +183,17 @@ public:
       {
         setPlayerPosition(8, 6, 0, 6);
       }
+      else if (lastArrowUsed == 7)
+      {
+        setPlayerPosition(11, 4, 7, 6);
+      }
       else if (lastArrowUsed == 5)
       {
         setPlayerPosition(1, 4, 0, 6);
       }
-      else if (lastArrowUsed == 7)
+      else if (lastArrowUsed == 8)
       {
-        setPlayerPosition(11, 4, 7, 6);
+        setPlayerPosition(8, 1, 0, 0);
       }
       break;
     case 7:
@@ -208,6 +213,9 @@ public:
       {
         setPlayerPosition(8, 1, 0, 0);
       }
+      break;
+    case 8:
+      setPlayerPosition(10, 2, 7, 0);
       break;
     }
   }
@@ -258,7 +266,14 @@ public:
         {
           if (mapGet(i, j) == VOID_NUMBER && rand() % 100 < ENEMY_SPAWN_PERCENTAGE)
           {
-            mapSet(i, j, START_ENEMY_NUMBER);
+            if (currentMap > 7)
+            {
+              mapSet(i, j, START_ENEMY_NUMBER + 2);
+            }
+            else
+            {
+              mapSet(i, j, START_ENEMY_NUMBER);
+            }
           }
         }
       }
@@ -307,18 +322,23 @@ public:
       lastArrowUsed = 0;
       refresh(effects);
       clearPlayerPosition();
-      sheepRest();
-      for (uint8_t i = 0; i < REAL_MAP_WEIGHT - 1; i++)
+      newDayEffects(stats, effects);
+    }
+  }
+
+  void newDayEffects(Stats *stats, Effects *effects)
+  {
+    sheepRest();
+    for (uint8_t i = 0; i < REAL_MAP_WEIGHT - 1; i++)
+    {
+      for (uint8_t j = 0; j < REAL_MAP_HEIGHT - 1; j++)
       {
-        for (uint8_t j = 0; j < REAL_MAP_HEIGHT - 1; j++)
-        {
-          seedGrowth(i, j, SEED_1_NUMBER);
-          seedGrowth(i, j, SEED_2_NUMBER);
-          seedGrowth(i, j, SEED_3_NUMBER);
-          seedGrowth(i, j, SEED_4_NUMBER);
-          seedGrowth(i, j, SEED_5_NUMBER);
-          seedGrowth(i, j, SEED_6_NUMBER);
-        }
+        seedGrowth(i, j, SEED_1_NUMBER);
+        seedGrowth(i, j, SEED_2_NUMBER);
+        seedGrowth(i, j, SEED_3_NUMBER);
+        seedGrowth(i, j, SEED_4_NUMBER);
+        seedGrowth(i, j, SEED_5_NUMBER);
+        seedGrowth(i, j, SEED_6_NUMBER);
       }
     }
   }
@@ -335,28 +355,26 @@ public:
 
   bool isEnemy(uint8_t x, uint8_t y, uint8_t mod = 0)
   {
-    return mapGet(x, y) == START_ENEMY_NUMBER + mod;
+    return mapGet(x, y) == START_ENEMY_NUMBER + mod || mapGet(x, y) == START_ENEMY_NUMBER + 2 + mod;
   }
 
   uint8_t randomMoveOther(Stats *stats, uint8_t i, uint8_t j)
   {
-    uint8_t option = rand() % 4;
-    switch (option)
+    switch (rand() % 4)
     {
     case 0:
       moveOthers(stats, i, j, i - 1, j);
-      break;
+      return 0;
     case 1:
       moveOthers(stats, i, j, i + 1, j);
-      break;
+      return 1;
     case 2:
       moveOthers(stats, i, j, i, j - 1);
-      break;
-    case 3:
+      return 2;
+    default:
       moveOthers(stats, i, j, i, j + 1);
-      break;
+      return 3;
     }
-    return option;
   }
 
   void enemyChange(Stats *stats)
@@ -542,12 +560,9 @@ public:
         {
           return move(stats, effects, levelProgression, 1, 0);
         }
-        else
+        else if (mapOffsetX + (SQUARE_AMOUNT_WEIGHT - 1) < REAL_MAP_WEIGHT)
         {
-          if (mapOffsetX + (SQUARE_AMOUNT_WEIGHT - 1) < REAL_MAP_WEIGHT)
-          {
-            mapOffsetX++;
-          }
+          mapOffsetX++;
         }
       }
 
@@ -558,12 +573,9 @@ public:
         {
           return move(stats, effects, levelProgression, -1, 0);
         }
-        else
+        else if (mapOffsetX > 0)
         {
-          if (mapOffsetX > 0)
-          {
-            mapOffsetX--;
-          }
+          mapOffsetX--;
         }
       }
 
@@ -574,12 +586,9 @@ public:
         {
           return move(stats, effects, levelProgression, 0, 1);
         }
-        else
+        else if (mapOffsetY + (SQUARE_AMOUNT_HEIGHT - 1) < REAL_MAP_HEIGHT)
         {
-          if (mapOffsetY + (SQUARE_AMOUNT_HEIGHT - 1) < REAL_MAP_HEIGHT)
-          {
-            mapOffsetY++;
-          }
+          mapOffsetY++;
         }
       }
 
@@ -590,12 +599,9 @@ public:
         {
           return move(stats, effects, levelProgression, 0, -1);
         }
-        else
+        else if (mapOffsetY > 0)
         {
-          if (mapOffsetY > 0)
-          {
-            mapOffsetY--;
-          }
+          mapOffsetY--;
         }
       }
     }
@@ -724,7 +730,8 @@ public:
     }
     else
     {
-      Arduboy2Base::drawBitmap(106, 2, Mini::clock, 20, 19, WHITE);
+      Arduboy2Base::drawBitmap(107, 2, Mini::clock, 19, 19, WHITE);
+      Numbers::print(102, 22, stats->day);
     }
   }
 
@@ -792,10 +799,14 @@ public:
 
     displayTime(stats);
     displayToolAction(cycle);
-    displayPlayerPointer(cycle);
     displayBuilderSelector(cycle);
     displayCardOption(cycle);
     displayStats(stats);
+
+    if (stats->hurt())
+    {
+      displayPlayerPointer(cycle);
+    }
 
     for (uint8_t x = mapOffsetX, i = 0; x < SQUARE_AMOUNT_WEIGHT + mapOffsetX - 1; x++, i++)
     {
@@ -882,6 +893,10 @@ private:
     else if (currentMap == 7)
     {
       memcpy_P(&cell, &Map::map_7, sizeof(cell));
+    }
+    else if (currentMap == 8)
+    {
+      memcpy_P(&cell, &Map::map_8, sizeof(cell));
     }
 
     for (uint8_t i = 0; i < REAL_MAP_WEIGHT; i++)
@@ -1206,6 +1221,12 @@ private:
       case 48:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_wall_5, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
+      case 49:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_ruin_tower_0, SQUARE_SIZE * 6, SQUARE_SIZE * 6, WHITE);
+        break;
+      case 55:
+        displayBarrierA(effects, levelProgression, i, j, 3);
+        break;
       case 61:
         // Reserve as store door
         break;
@@ -1371,6 +1392,9 @@ private:
       case START_ENEMY_NUMBER:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, cycle->halfCycleCheck() ? Mini::slime_0 : Mini::slime_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
+      case 122:
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, cycle->halfCycleCheck() ? Mini::shield_1 : Mini::shield_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        break;
       }
     }
   }
@@ -1403,15 +1427,22 @@ private:
       {
         return 3;
       }
-      if (value == 6 && currentMap == 1)
+      if (value == 6)
       {
-        if (playerXPosition + mapOffsetX > 6)
+        if (currentMap == 1)
         {
-          return 6;
+          if (playerXPosition + mapOffsetX > 6)
+          {
+            return 6;
+          }
+          else
+          {
+            return 5;
+          }
         }
-        else
+        else if (currentMap == 6)
         {
-          return 5;
+          return 7;
         }
       }
 
@@ -1555,7 +1586,7 @@ private:
         }
         else if (value == 29)
         {
-          return changeCurrentMap(5, stats);
+          return changeCurrentMap(playerXPosition < 2 ? 5 : 8, stats);
         }
         else if (value == 17)
         {
@@ -1578,6 +1609,18 @@ private:
         else if (value == 18)
         {
           return changeCurrentMap(4, stats);
+        }
+        break;
+      case 8:
+        if (value == 29)
+        {
+          stats->newDay();
+          newDayEffects(stats, effects);
+          return changeCurrentMap(8, stats);
+        }
+        else if (value == 17)
+        {
+          return changeCurrentMap(6, stats);
         }
         break;
       }
