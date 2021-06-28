@@ -116,10 +116,16 @@ void Game::mainPauseTick()
   case 3:
     changeStage(STAGE_MAINMENU);
     break;
-  default:
-    world.completeCanvas();
+  case 4:
+    //TODO: Load game call
+    break;
+  case 5:
+    //TODO: Save game call
+    dialogs.displayDialogs(0);
+    changeStage(STAGE_GAME);
     break;
   }
+  world.completeCanvas();
 }
 
 void Game::mainStoreMenuTick(void)

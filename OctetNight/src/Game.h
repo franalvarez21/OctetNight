@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include <Arduboy2.h>
+#include <EEPROM.h>
 
 #define REAL_MAP_WEIGHT 20
 #define REAL_MAP_HEIGHT 14

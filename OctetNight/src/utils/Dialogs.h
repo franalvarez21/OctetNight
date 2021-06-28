@@ -10,7 +10,7 @@ struct Dialogs
   {
     subject = false;
     displayDialog = 0;
-    displayCooldown = DIALOG_COOLDOWN + 10;
+    displayCooldown = DIALOG_COOLDOWN;
   }
 
   void tick()

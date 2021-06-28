@@ -22,11 +22,11 @@ public:
       }
       else if (option == 3)
       {
-        // Load Game message
+        return 4;
       }
       else if (option == 2)
       {
-        // Save Game message
+        return 5;
       }
       else if (option == 1)
       {

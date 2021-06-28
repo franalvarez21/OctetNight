@@ -13,11 +13,11 @@ public:
     {
       if (option == 0)
       {
-        return 1;
+        return 2;
       }
       else if (option == 1)
       {
-        return 2;
+        return 1;
       }
     }
 
@@ -39,8 +39,8 @@ public:
     }
     Arduboy2Base::drawBitmap(20, 41, Title::title_5, 60, 8, WHITE);
 
-    Arduboy2Base::drawBitmap(98, 52, Lines::start, 24, 4, WHITE);
-    Arduboy2Base::drawBitmap(103, 60, Lines::load, 24, 4, WHITE);
+    Arduboy2Base::drawBitmap(103, 52, Lines::load, 24, 4, WHITE);
+    Arduboy2Base::drawBitmap(98, 60, Lines::start, 24, 4, WHITE);
     displayMenuCursor(92, 52);
 
     Arduboy2Base::drawBitmap(0, 56, Title::g_rating, SQUARE_SIZE, SQUARE_SIZE, WHITE);
