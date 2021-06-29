@@ -26,6 +26,17 @@ private:
   uint8_t speedTick;
   uint8_t energyCycle;
 
+  uint8_t (*mapPointer[9])[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT] = {
+      &Map::map_0,
+      &Map::map_1,
+      &Map::map_2,
+      &Map::map_3,
+      &Map::map_4,
+      &Map::map_5,
+      &Map::map_6,
+      &Map::map_7,
+      &Map::map_8};
+
 public:
   bool isMainMap()
   {
@@ -356,21 +367,7 @@ public:
 
   uint8_t randomMoveOther(Stats *stats, uint8_t i, uint8_t j)
   {
-    switch (rand() % 4)
-    {
-    case 0:
-      moveOthers(stats, i, j, i - 1, j);
-      return 0;
-    case 1:
-      moveOthers(stats, i, j, i + 1, j);
-      return 1;
-    case 2:
-      moveOthers(stats, i, j, i, j - 1);
-      return 2;
-    default:
-      moveOthers(stats, i, j, i, j + 1);
-      return 3;
-    }
+    moveOthers(stats, i, j, i + (1 - rand() % 3), j + (1 - rand() % 3));
   }
 
   void enemyChange(Stats *stats)
@@ -858,42 +855,7 @@ private:
   {
     uint8_t cell[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
 
-    if (isMainMap())
-    {
-      memcpy_P(&cell, &Map::map_0, sizeof(cell));
-    }
-    else if (currentMap == 1)
-    {
-      memcpy_P(&cell, &Map::map_1, sizeof(cell));
-    }
-    else if (currentMap == 2)
-    {
-      memcpy_P(&cell, &Map::map_2, sizeof(cell));
-    }
-    else if (currentMap == 3)
-    {
-      memcpy_P(&cell, &Map::map_3, sizeof(cell));
-    }
-    else if (currentMap == 4)
-    {
-      memcpy_P(&cell, &Map::map_4, sizeof(cell));
-    }
-    else if (currentMap == 5)
-    {
-      memcpy_P(&cell, &Map::map_5, sizeof(cell));
-    }
-    else if (currentMap == 6)
-    {
-      memcpy_P(&cell, &Map::map_6, sizeof(cell));
-    }
-    else if (currentMap == 7)
-    {
-      memcpy_P(&cell, &Map::map_7, sizeof(cell));
-    }
-    else if (currentMap == 8)
-    {
-      memcpy_P(&cell, &Map::map_8, sizeof(cell));
-    }
+    memcpy_P(&cell, mapPointer[currentMap], sizeof(cell));
 
     for (uint8_t i = 0; i < REAL_MAP_WEIGHT; i++)
     {
