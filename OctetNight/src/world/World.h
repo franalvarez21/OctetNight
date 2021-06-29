@@ -111,17 +111,13 @@ public:
       {
         setPlayerPosition(8, 6, 0, 6);
       }
-      else if (lastArrowUsed == 3 || lastArrowUsed == 7)
+      else if (lastArrowUsed == 3)
       {
         setPlayerPosition(1, 1, 0, 0);
       }
-      else if (lastArrowUsed == 4 || lastArrowUsed == 5)
+      else if (lastArrowUsed == 4)
       {
         setPlayerPosition(11, 1, 7, 0);
-      }
-      else if (lastArrowUsed == 6)
-      {
-        setPlayerPosition(8, 1, 0, 0);
       }
       break;
     case 3:
@@ -171,7 +167,7 @@ public:
       }
       else if (lastArrowUsed == 7)
       {
-        setPlayerPosition(1, 4, 0, 6);
+        setPlayerPosition(1, 1, 0, 0);
       }
       else if (lastArrowUsed == 3)
       {
@@ -179,11 +175,7 @@ public:
       }
       break;
     case 6:
-      if (lastArrowUsed == 2)
-      {
-        setPlayerPosition(8, 6, 0, 6);
-      }
-      else if (lastArrowUsed == 7)
+      if (lastArrowUsed == 7)
       {
         setPlayerPosition(11, 4, 7, 6);
       }
@@ -203,7 +195,7 @@ public:
       }
       else if (lastArrowUsed == 5)
       {
-        setPlayerPosition(11, 4, 7, 6);
+        setPlayerPosition(11, 1, 7, 0);
       }
       else if (lastArrowUsed == 6)
       {
@@ -264,15 +256,19 @@ public:
       {
         for (uint8_t j = ENEMY_BORDER_SPAWN_LIMIT; j < REAL_MAP_HEIGHT - ENEMY_BORDER_SPAWN_LIMIT - 1; j++)
         {
-          if (mapGet(i, j) == VOID_NUMBER && rand() % 100 < ENEMY_SPAWN_PERCENTAGE)
+          if (mapGet(i, j) == VOID_NUMBER)
           {
-            if (currentMap > 7)
+            if (rand() % 100 < ENEMY_SPAWN_PERCENTAGE)
             {
-              mapSet(i, j, START_ENEMY_NUMBER + 2);
+              mapSet(i, j, (currentMap > 7) ? START_ENEMY_NUMBER + 2 : START_ENEMY_NUMBER);
             }
-            else
+            else if (rand() % 100 < PLANT_SPAWN_PERCENTAGE)
             {
-              mapSet(i, j, START_ENEMY_NUMBER);
+              mapSet(i, j, 20);
+              if (rand() % 2 == 0)
+              {
+                mapSet(i, j, 75);
+              }
             }
           }
         }
@@ -1520,10 +1516,6 @@ private:
         {
           return changeCurrentMap(4, stats);
         }
-        else if (value == 18)
-        {
-          return changeCurrentMap(6, stats);
-        }
         break;
       case 3:
         if (value == 30)
@@ -1568,7 +1560,7 @@ private:
         }
         else if (value == 29)
         {
-          return changeCurrentMap(playerYPosition > 1 ? 7 : 2, stats);
+          return changeCurrentMap(7, stats);
         }
         else if (value == 17)
         {
@@ -1580,11 +1572,7 @@ private:
         }
         break;
       case 6:
-        if (value == 30)
-        {
-          return changeCurrentMap(2, stats);
-        }
-        else if (value == 29)
+        if (value == 29)
         {
           return changeCurrentMap(playerXPosition < 2 ? 5 : 8, stats);
         }
@@ -1604,7 +1592,7 @@ private:
         }
         else if (value == 17)
         {
-          return changeCurrentMap(playerYPosition > 1 ? 5 : 2, stats);
+          return changeCurrentMap(5, stats);
         }
         else if (value == 18)
         {
