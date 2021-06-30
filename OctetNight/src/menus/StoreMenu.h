@@ -14,7 +14,7 @@ public:
     sell = false;
   }
 
-  uint8_t action(Stats *stats)
+  uint8_t action(Stats *stats, World *world)
   {
     upDownMovement();
 
@@ -36,9 +36,9 @@ public:
       case 2:
         if (stats->getRealMoney() > BASIC_SEED_PACK_PRICE - 1)
         {
-          stats->incSeedOne(2 + rand() % RANDOM_PACK_BENEFITS);
-          stats->incSeedTwo(2 + rand() % RANDOM_PACK_BENEFITS);
-          stats->incSeedThree(1 + rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedOne(6 + rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedTwo(4 + rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedThree(2 + rand() % RANDOM_PACK_BENEFITS);
           stats->decMoney(BASIC_SEED_PACK_PRICE);
           sell = true;
         }
@@ -46,8 +46,8 @@ public:
       case 3:
         if (stats->getRealMoney() > MEDIUM_SEED_PACK_PRICE - 1)
         {
-          stats->incSeedFour(2 + rand() % RANDOM_PACK_BENEFITS);
-          stats->incSeedFive(2 + rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedFour(6 + rand() % RANDOM_PACK_BENEFITS);
+          stats->incSeedFive(4 + rand() % RANDOM_PACK_BENEFITS);
           stats->incSeedSix(2 + rand() % RANDOM_PACK_BENEFITS);
           stats->decMoney(MEDIUM_SEED_PACK_PRICE);
           sell = true;
@@ -58,6 +58,7 @@ public:
         {
           stats->decMoney(SHEEP_PRICE);
           stats->buySheep();
+          world->spawnSheep(stats);
           sell = true;
         }
         break;

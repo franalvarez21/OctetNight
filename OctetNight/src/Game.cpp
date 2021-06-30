@@ -168,7 +168,7 @@ void Game::mainPauseTick()
 void Game::mainStoreMenuTick(void)
 {
   storeMenu.eventDisplay(&stats);
-  switch (storeMenu.action(&stats))
+  switch (storeMenu.action(&stats, &world))
   {
   case 1:
     changeStage(STAGE_GAME);

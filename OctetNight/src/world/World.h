@@ -46,11 +46,7 @@ public:
 
   uint8_t mapGet(uint8_t x, uint8_t y)
   {
-    if (isMainMap())
-    {
-      return map[x][y];
-    }
-    return map2[x][y];
+    return isMainMap() ? map[x][y] : map2[x][y];
   }
 
   void mapSet(uint8_t x, uint8_t y, uint8_t value)
@@ -262,25 +258,22 @@ public:
 
   void spawnEnemy(Stats *stats)
   {
-    if (currentMap > 1)
+    for (uint8_t i = ENEMY_BORDER_SPAWN_LIMIT; i < REAL_MAP_WEIGHT - ENEMY_BORDER_SPAWN_LIMIT - 1; i++)
     {
-      for (uint8_t i = ENEMY_BORDER_SPAWN_LIMIT; i < REAL_MAP_WEIGHT - ENEMY_BORDER_SPAWN_LIMIT - 1; i++)
+      for (uint8_t j = ENEMY_BORDER_SPAWN_LIMIT; j < REAL_MAP_HEIGHT - ENEMY_BORDER_SPAWN_LIMIT - 1; j++)
       {
-        for (uint8_t j = ENEMY_BORDER_SPAWN_LIMIT; j < REAL_MAP_HEIGHT - ENEMY_BORDER_SPAWN_LIMIT - 1; j++)
+        if (mapGet(i, j) == VOID_NUMBER)
         {
-          if (mapGet(i, j) == VOID_NUMBER)
+          if (rand() % 100 < ENEMY_SPAWN_PERCENTAGE)
           {
-            if (rand() % 100 < ENEMY_SPAWN_PERCENTAGE)
+            mapSet(i, j, (currentMap > 7) ? START_ENEMY_NUMBER + 2 : START_ENEMY_NUMBER);
+          }
+          else if (rand() % 100 < PLANT_SPAWN_PERCENTAGE && currentMap < 8)
+          {
+            mapSet(i, j, 20);
+            if (rand() % 2 == 0)
             {
-              mapSet(i, j, (currentMap > 7) ? START_ENEMY_NUMBER + 2 : START_ENEMY_NUMBER);
-            }
-            else if (rand() % 100 < PLANT_SPAWN_PERCENTAGE)
-            {
-              mapSet(i, j, 20);
-              if (rand() % 2 == 0)
-              {
-                mapSet(i, j, 75);
-              }
+              mapSet(i, j, SEED_4_NUMBER + 4);
             }
           }
         }
@@ -288,7 +281,7 @@ public:
     }
   }
 
-  void clearSheepSpace()
+  void spawnSheep(Stats *stats)
   {
     for (uint8_t i = 11; i < REAL_MAP_WEIGHT - 1; i++)
     {
@@ -297,10 +290,7 @@ public:
         map[i][j] = VOID_NUMBER;
       }
     }
-  }
 
-  void spawnSheep(Stats *stats)
-  {
     for (uint8_t i = 11, x = 0; i < REAL_MAP_WEIGHT - 1 && x < stats->sheepAmount; i++, x++)
     {
       map[i][5 + rand() % 8] = 20;
@@ -855,7 +845,6 @@ private:
   void clearMap(Stats *stats)
   {
     uint8_t cell[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
-
     memcpy_P(&cell, mapPointer[currentMap], sizeof(cell));
 
     for (uint8_t i = 0; i < REAL_MAP_WEIGHT; i++)
@@ -877,14 +866,19 @@ private:
         }
         else if (cell[i][j] == 63) // weird block
         {
-          mapSet(i, j, 37 + rand() % 3);
+          mapSet(i, j, 37);
         }
       }
     }
 
-    clearSheepSpace();
-    spawnSheep(stats);
-    spawnEnemy(stats);
+    if (currentMap == 0)
+    {
+      spawnSheep(stats);
+    }
+    else if (currentMap > 1)
+    {
+      spawnEnemy(stats);
+    }
   }
 
   bool attackEnemy(uint8_t value)
@@ -1145,14 +1139,6 @@ private:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::weird_block_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 3, stats->getRealMoney());
         break;
-      case 38:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::weird_block_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 3, stats->getRealMoney());
-        break;
-      case 39:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::weird_block_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 3, stats->getRealMoney());
-        break;
       case 40:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ruin_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
@@ -1407,43 +1393,44 @@ private:
 
       if (value == SEED_1_NUMBER + 10)
       {
-        stats->plusSeedOne();
+        stats->plusSeedSix();
         effects->plusAnimation();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value == SEED_2_NUMBER + 10)
       {
-        stats->plusSeedTwo();
+        stats->plusSeedFive();
         effects->plusAnimation();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value == SEED_3_NUMBER + 10)
       {
-        stats->plusSeedThree();
+        stats->plusSeedFour();
         effects->plusAnimation();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value == SEED_4_NUMBER + 4)
       {
-        stats->plusSeedFour();
+        stats->plusSeedThree();
         effects->plusAnimation();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value == SEED_5_NUMBER + 3)
       {
-        stats->plusSeedFive();
+        stats->plusSeedTwo();
         effects->plusAnimation();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value == SEED_6_NUMBER + 2)
       {
-        stats->plusSeedSix();
+        stats->plusSeedOne();
         effects->plusAnimation();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
       if (value > KEY_NUMBER - 1 && value < KEY_NUMBER + 3 && !stats->canAccessZone(value - KEY_NUMBER))
       {
         stats->addKey();
+        effects->plusAnimation();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
 
@@ -1713,7 +1700,7 @@ private:
           return 1;
         }
       }
-      else
+      else if (stats->getHP() > 1)
       {
         stats->decHP(1);
         effects->sleepAnimation();

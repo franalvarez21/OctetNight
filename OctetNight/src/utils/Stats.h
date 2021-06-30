@@ -39,7 +39,7 @@ struct Stats
     seedFive = 0;
     seedSix = 0;
 
-    sheepAmount = 1;
+    sheepAmount = 0;
     seedOneAmount = 0;
     seedTwoAmount = 0;
     seedThreeAmount = 0;
@@ -98,12 +98,12 @@ struct Stats
     hurtCycle = HURT_TIME;
   }
 
-  void incMoney(uint8_t val)
+  void incMoney(uint16_t val)
   {
     money = min(money + val, REAL_MAX_CAPACITY);
   }
 
-  void decMoney(uint8_t val)
+  void decMoney(uint16_t val)
   {
     money = max(money - val, 0);
   }
@@ -231,13 +231,13 @@ struct Stats
 
   void sellAll()
   {
-    incMoney(seedOneAmount * 40);
-    incMoney(seedTwoAmount * 45);
-    incMoney(seedThreeAmount * 60);
-    incMoney(seedFourAmount * 80);
-    incMoney(seedFiveAmount * 85);
-    incMoney(seedSixAmount * 100);
-    incMoney(woolAmount * 200);
+    incMoney(seedOneAmount * 5);
+    incMoney(seedTwoAmount * 10);
+    incMoney(seedThreeAmount * 15);
+    incMoney(seedFourAmount * 30);
+    incMoney(seedFiveAmount * 35);
+    incMoney(seedSixAmount * 40);
+    incMoney(woolAmount * 100);
 
     seedOneAmount = 0;
     seedTwoAmount = 0;

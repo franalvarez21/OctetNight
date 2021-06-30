@@ -7,16 +7,15 @@ struct Dialogs
   uint8_t displayCooldown;
 
   uint8_t (*dialogList[9])[sizeof(Hub::text_dialog_0)] = {
-    &Hub::text_dialog_0,
-    &Hub::text_dialog_1,
-    &Hub::text_dialog_2,
-    &Hub::text_dialog_3,
-    &Hub::text_dialog_4,
-    &Hub::text_dialog_5,
-    &Hub::text_dialog_6,
-    &Hub::text_dialog_7,
-    &Hub::text_dialog_8
-  };
+      &Hub::text_dialog_0,
+      &Hub::text_dialog_1,
+      &Hub::text_dialog_2,
+      &Hub::text_dialog_3,
+      &Hub::text_dialog_4,
+      &Hub::text_dialog_5,
+      &Hub::text_dialog_6,
+      &Hub::text_dialog_7,
+      &Hub::text_dialog_8};
 
   void init()
   {
