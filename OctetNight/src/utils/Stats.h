@@ -6,6 +6,7 @@ struct Stats
   uint16_t money;
   uint8_t energy;
   uint16_t day;
+  uint8_t key;
 
   uint16_t seedOne;
   uint16_t seedTwo;
@@ -29,6 +30,7 @@ struct Stats
   void init()
   {
     day = 0;
+    key = 0;
 
     seedOne = 20;
     seedTwo = 0;
@@ -49,7 +51,18 @@ struct Stats
 
     money = 200;
     hurtCycle = 0;
+
     rest();
+  }
+
+  void addKey()
+  {
+    key++;
+  }
+
+  bool canAccessZone(uint8_t number)
+  {
+    return number < key;
   }
 
   void rest()

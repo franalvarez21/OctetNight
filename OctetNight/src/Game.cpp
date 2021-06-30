@@ -4,12 +4,13 @@
 Arduboy2Base arduboy;
 uint8_t onStage;
 uint8_t action;
+bool saveFile;
+byte gameID;
 
 Cycle cycle;
 Effects effects;
 Stats stats;
 Dialogs dialogs;
-LevelProgression levelProgression;
 World world;
 
 TitleMenu titleMenu;
@@ -24,15 +25,41 @@ void Game::setup(void)
   arduboy.initRandomSeed();
   arduboy.systemButtons();
   arduboy.waitNoButtons();
+  gameID = GAME_ID;
+
+  saveFile = false;
+  if ((EEPROM.read(SAVE_FILE_ADDRESS) == gameID) && (EEPROM.read(SAVE_FILE_ADDRESS + sizeof(byte) + sizeof(Stats) + sizeof(uint8_t[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT])) == gameID))
+  {
+    saveFile = true;
+  }
 
   cycle.init();
   restart();
 }
 
+void Game::loadGame(void)
+{
+  if (saveFile)
+  {
+    uint8_t map[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
+    EEPROM.get(SAVE_FILE_ADDRESS + sizeof(byte), stats);
+    EEPROM.get(SAVE_FILE_ADDRESS + sizeof(byte) + sizeof(Stats), map);
+    memcpy(&world.map, &map, sizeof(map));
+  }
+}
+
+void Game::saveGame(void)
+{
+  saveFile = true;
+  EEPROM.put(SAVE_FILE_ADDRESS, gameID);
+  EEPROM.put(SAVE_FILE_ADDRESS + sizeof(byte), stats);
+  EEPROM.put(SAVE_FILE_ADDRESS + sizeof(byte) + sizeof(Stats), world.map);
+  EEPROM.put(SAVE_FILE_ADDRESS + sizeof(byte) + sizeof(Stats) + sizeof(uint8_t[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT]), gameID);
+}
+
 void Game::restart(void)
 {
   world.reset(&stats, &effects);
-  levelProgression.reset();
   dialogs.init();
   stats.init();
   action = 0;
@@ -74,15 +101,17 @@ void Game::loop(void)
 void Game::mainMenuTick(void)
 {
   rand() % analogRead(0);
-  titleMenu.eventDisplay(&cycle);
-  switch (titleMenu.action())
+  titleMenu.eventDisplay(&cycle, saveFile);
+  switch (titleMenu.action(saveFile))
   {
   case 1:
     restart();
     changeStage(STAGE_GAME);
     break;
   case 2:
-    //TODO: Load game call
+    restart();
+    loadGame();
+    changeStage(STAGE_GAME);
     break;
   }
   Effects::displayErrorLine(65, 25, 60);
@@ -117,11 +146,19 @@ void Game::mainPauseTick()
     changeStage(STAGE_MAINMENU);
     break;
   case 4:
-    //TODO: Load game call
+    restart();
+    loadGame();
+    changeStage(STAGE_GAME);
     break;
   case 5:
-    //TODO: Save game call
-    dialogs.displayDialogs(0);
+    if (!world.isMainMap())
+    {
+      dialogs.displayDialogs(7);
+    }
+    else
+    {
+      saveGame();
+    }
     changeStage(STAGE_GAME);
     break;
   }
@@ -156,7 +193,7 @@ void Game::mainGameTick(void)
   }
   else
   {
-    uint8_t action = world.action(&stats, &effects, &levelProgression);
+    uint8_t action = world.action(&stats, &effects);
 
     if (action == 4)
     {
@@ -195,7 +232,7 @@ void Game::mainGameTick(void)
         world.environmentChange(&stats);
       }
 
-      world.display(&cycle, &stats, &effects, &levelProgression);
+      world.display(&cycle, &stats, &effects);
       world.canvas();
       dialogs.tick();
     }

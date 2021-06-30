@@ -56,6 +56,10 @@
 #define STAGE_STOREMENU 3
 #define STAGE_GAMEOVER 4
 
+#define SAVE_FILE_ADDRESS (EEPROM_STORAGE_SPACE_START + 64)
+#define GAME_ID 111
+#define MAX_RANGE 10000
+
 #include "utils/const/Map.h"
 #include "utils/const/Common.h"
 #include "utils/const/Mini.h"
@@ -71,7 +75,6 @@
 #include "utils/Effects.h"
 #include "utils/Numbers.h"
 #include "utils/Dialogs.h"
-#include "utils/LevelProgression.h"
 #include "world/World.h"
 
 #include "menus/Menu.h"
@@ -87,6 +90,8 @@ public:
   void loop(void);
   void load(void);
   void restart(void);
+  void loadGame(void);
+  void saveGame(void);
   void mainMenuTick(void);
   void mainGameTick(void);
   void mainPauseTick(void);

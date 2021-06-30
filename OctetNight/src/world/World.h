@@ -2,6 +2,10 @@
 
 class World
 {
+public:
+  uint8_t map[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
+  uint8_t map2[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
+
 protected:
   uint8_t playerXPosition;
   uint8_t playerYPosition;
@@ -14,14 +18,11 @@ private:
   bool justPressedLock;
   bool playerXOrientation;
 
-  uint8_t map[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
-  uint8_t map2[REAL_MAP_WEIGHT][REAL_MAP_HEIGHT];
   uint8_t currentMap;
   uint8_t currentAction;
   uint8_t currentToolSelected;
   uint8_t currentSeedSelected;
   uint8_t lastArrowUsed;
-  bool lastMapClear;
 
   uint8_t speedTick;
   uint8_t energyCycle;
@@ -459,7 +460,7 @@ public:
     return (currentAction > 0);
   }
 
-  uint8_t action(Stats *stats, Effects *effects, LevelProgression *levelProgression)
+  uint8_t action(Stats *stats, Effects *effects)
   {
     if (Arduboy2Base::justPressed(A_BUTTON))
     {
@@ -551,7 +552,7 @@ public:
         playerOrientation = 1;
         if (playerXPosition < SQUARE_AMOUNT_WEIGHT - 2)
         {
-          return move(stats, effects, levelProgression, 1, 0);
+          return move(stats, effects, 1, 0);
         }
         else if (mapOffsetX + (SQUARE_AMOUNT_WEIGHT - 1) < REAL_MAP_WEIGHT)
         {
@@ -564,7 +565,7 @@ public:
         playerOrientation = 3;
         if (playerXPosition > 0)
         {
-          return move(stats, effects, levelProgression, -1, 0);
+          return move(stats, effects, -1, 0);
         }
         else if (mapOffsetX > 0)
         {
@@ -577,7 +578,7 @@ public:
         playerOrientation = 2;
         if (playerYPosition < SQUARE_AMOUNT_HEIGHT - 2)
         {
-          return move(stats, effects, levelProgression, 0, 1);
+          return move(stats, effects, 0, 1);
         }
         else if (mapOffsetY + (SQUARE_AMOUNT_HEIGHT - 1) < REAL_MAP_HEIGHT)
         {
@@ -590,7 +591,7 @@ public:
         playerOrientation = 0;
         if (playerYPosition > 0)
         {
-          return move(stats, effects, levelProgression, 0, -1);
+          return move(stats, effects, 0, -1);
         }
         else if (mapOffsetY > 0)
         {
@@ -764,7 +765,7 @@ public:
     }
   }
 
-  void display(Cycle *cycle, Stats *stats, Effects *effects, LevelProgression *levelProgression)
+  void display(Cycle *cycle, Stats *stats, Effects *effects)
   {
     if (playerXPosition + mapOffsetX == 9)
     {
@@ -805,7 +806,7 @@ public:
     {
       for (uint8_t y = mapOffsetY, j = 0; y < SQUARE_AMOUNT_HEIGHT + mapOffsetY - 1; y++, j++)
       {
-        displayMaze(cycle, stats, effects, levelProgression, x, y, i, j);
+        displayMaze(cycle, stats, effects, x, y, i, j);
       }
     }
 
@@ -1007,23 +1008,23 @@ private:
     Arduboy2Base::drawBitmap(104, 55, Cards::stats_1, 24, 8, WHITE);
   }
 
-  void displayBarrierA(Effects *effects, LevelProgression *levelProgression, uint8_t x, uint8_t y, uint8_t number)
+  void displayBarrier(Effects *effects, Stats *stats, uint8_t x, uint8_t y, uint8_t number)
   {
-    if (!levelProgression->canAccessZoneA(number))
+    if (!stats->canAccessZone(number))
     {
-      effects->displayBistercian(SQUARE_SIZE * x + 2, SQUARE_SIZE * y + 2, rand() % 10000);
+      effects->displayBistercian(SQUARE_SIZE * x + 2, SQUARE_SIZE * y + 2, rand() % MAX_RANGE);
     }
   }
 
-  void displayKeyBarrierA(Effects *effects, LevelProgression *levelProgression, uint8_t x, uint8_t y, uint8_t number)
+  void displayKeyBarrierA(Effects *effects, Stats *stats, uint8_t x, uint8_t y, uint8_t number)
   {
-    if (!levelProgression->canAccessZoneA(number))
+    if (!stats->canAccessZone(number))
     {
       Arduboy2Base::drawBitmap(SQUARE_SIZE * x, SQUARE_SIZE * y, Mini::key, SQUARE_SIZE, SQUARE_SIZE, WHITE);
     }
   }
 
-  void displayMaze(Cycle *cycle, Stats *stats, Effects *effects, LevelProgression *levelProgression, uint8_t x, uint8_t y, uint8_t i, uint8_t j)
+  void displayMaze(Cycle *cycle, Stats *stats, Effects *effects, uint8_t x, uint8_t y, uint8_t i, uint8_t j)
   {
     if (!(i == playerXPosition && j == playerYPosition))
     {
@@ -1051,13 +1052,13 @@ private:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_flag_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 7:
-        displayBarrierA(effects, levelProgression, i, j, 0);
+        displayBarrier(effects, stats, i, j, 0);
         break;
       case 8:
-        displayBarrierA(effects, levelProgression, i, j, 1);
+        displayBarrier(effects, stats, i, j, 1);
         break;
       case 9:
-        displayBarrierA(effects, levelProgression, i, j, 2);
+        displayBarrier(effects, stats, i, j, 2);
         break;
       case 10:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::ranch_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
@@ -1183,7 +1184,7 @@ private:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::world_ruin_tower_0, SQUARE_SIZE * 6, SQUARE_SIZE * 6, WHITE);
         break;
       case 55:
-        displayBarrierA(effects, levelProgression, i, j, 3);
+        displayBarrier(effects, stats, i, j, 3);
         break;
       case 61:
         // Reserve as store door
@@ -1339,13 +1340,13 @@ private:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_44, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case KEY_NUMBER:
-        displayKeyBarrierA(effects, levelProgression, i, j, 0);
+        displayKeyBarrierA(effects, stats, i, j, 0);
         break;
       case 111:
-        displayKeyBarrierA(effects, levelProgression, i, j, 1);
+        displayKeyBarrierA(effects, stats, i, j, 1);
         break;
       case 112:
-        displayKeyBarrierA(effects, levelProgression, i, j, 2);
+        displayKeyBarrierA(effects, stats, i, j, 2);
         break;
       case START_ENEMY_NUMBER:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, cycle->halfCycleCheck() ? Mini::slime_0 : Mini::slime_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
@@ -1368,7 +1369,7 @@ private:
     return 1;
   }
 
-  uint8_t move(Stats *stats, Effects *effects, LevelProgression *levelProgression, const int extX, const int extY)
+  uint8_t move(Stats *stats, Effects *effects, const int extX, const int extY)
   {
     uint8_t tempX = playerXPosition + mapOffsetX + extX;
     uint8_t tempY = playerYPosition + mapOffsetY + extY;
@@ -1440,9 +1441,9 @@ private:
         effects->plusAnimation();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
-      if (value > KEY_NUMBER - 1 && value < KEY_NUMBER + 3 && !levelProgression->canAccessZoneA(value - KEY_NUMBER))
+      if (value > KEY_NUMBER - 1 && value < KEY_NUMBER + 3 && !stats->canAccessZone(value - KEY_NUMBER))
       {
-        levelProgression->addKeyZoneA();
+        stats->addKey();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
 
@@ -1575,7 +1576,7 @@ private:
         break;
       }
 
-      if (canMove(levelProgression, value))
+      if (canMove(stats, value))
       {
         playerXPosition += extX;
         playerYPosition += extY;
@@ -1585,7 +1586,7 @@ private:
     return 0;
   }
 
-  bool canMove(LevelProgression *levelProgression, uint8_t value)
+  bool canMove(Stats *stats, uint8_t value)
   {
     // Elements check
     if ((value > 16 && value < 31) || (value > SEED_1_NUMBER - 1 && value < START_ENEMY_NUMBER) || value > END_ENEMY_NUMBER)
@@ -1594,7 +1595,7 @@ private:
     }
 
     // Zone A check
-    if ((value == 7 && levelProgression->canAccessZoneA(0)) || (value == 8 && levelProgression->canAccessZoneA(1)) || (value == 9 && levelProgression->canAccessZoneA(2)))
+    if ((value == 7 && stats->canAccessZone(0)) || (value == 8 && stats->canAccessZone(1)) || (value == 9 && stats->canAccessZone(2)))
     {
       return true;
     }

@@ -8,7 +8,7 @@ struct Effects
   uint8_t plusAn;
   uint8_t sleepAn;
 
-  void refresh() // 261
+  void refresh()
   {
     plusAn = 0;
     sleepAn = 0;
@@ -51,15 +51,7 @@ struct Effects
   {
     for (uint8_t i = 0; i < size; i++)
     {
-      displayBistercian(x, y + i * 6, rand() % 10000);
-    }
-  }
-
-  void displayBistercianBar(int16_t x, int16_t y, int8_t size)
-  {
-    for (uint8_t i = 0; i < size; i++)
-    {
-      displayBistercian(x + i * 6, y, rand() % 10000);
+      displayBistercian(x, y + i * 6, rand() % MAX_RANGE);
     }
   }
 
