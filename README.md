@@ -39,6 +39,10 @@ Nice to have (under consideration):
 - Sound.
 - Code space optimizations.
 
+## Arduboy site post
+
+https://community.arduboy.com/t/octet-night-farming-adventure-game-in-your-pocket/9932
+
 ## Compilation log
 
 Some parts of the code are made to save space, please be kind if you decide to check out the code.
