@@ -1124,13 +1124,13 @@ private:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::rock_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 34:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::pillar_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, cycle->halfCycleCheck() ? Map::simon_bird_0 : Map::simon_bird_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
       case 35:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::pillar_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        // Not in use
         break;
       case 36:
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::pillar_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        // Not in use
         break;
       case 37:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::weird_block_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
