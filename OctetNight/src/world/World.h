@@ -15,7 +15,6 @@ private:
   uint8_t mapOffsetX;
   uint8_t mapOffsetY;
 
-  bool justPressedLock;
   bool playerXOrientation;
 
   uint8_t currentMap;
@@ -77,7 +76,6 @@ public:
     speedTick = 0;
     currentAction = 0;
     energyCycle = ENERGY_TIME;
-    justPressedLock = true;
     playerOrientation = 1;
     playerXOrientation = true;
   }
@@ -817,25 +815,14 @@ public:
 private:
   bool pressed(uint8_t button)
   {
-    if (justPressedLock)
+    if (Arduboy2Base::justPressed(button) || Arduboy2Base::pressed(button) && speedTick == 0)
     {
-      if (Arduboy2Base::justPressed(button))
-      {
-        justPressedLock = false;
-        return true;
-      }
+      speedTick = 2;
+      return true;
     }
-    else
+    else if (Arduboy2Base::pressed(button) && speedTick > 0)
     {
-      if (Arduboy2Base::justPressed(button) || Arduboy2Base::pressed(button) && speedTick == 0)
-      {
-        speedTick = 2;
-        return true;
-      }
-      else if (Arduboy2Base::pressed(button) && speedTick > 0)
-      {
-        speedTick--;
-      }
+      speedTick--;
     }
     return false;
   }
