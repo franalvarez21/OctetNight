@@ -86,22 +86,21 @@ public:
     if (option > 0 && option < 5)
     {
       Arduboy2Base::drawBitmap(8, 14, Common::bar, 4, 1, WHITE);
-    }
-
-    switch (option)
-    {
-    case 1:
-      Numbers::print(10, 12, POTION_PRICE);
-      break;
-    case 2:
-      Numbers::print(10, 12, BASIC_SEED_PACK_PRICE);
-      break;
-    case 3:
-      Numbers::print(10, 12, MEDIUM_SEED_PACK_PRICE);
-      break;
-    case 4:
-      Numbers::print(10, 12, SHEEP_PRICE);
-      break;
+      switch (option)
+      {
+      case 1:
+        Numbers::print(10, 12, POTION_PRICE);
+        break;
+      case 2:
+        Numbers::print(10, 12, BASIC_SEED_PACK_PRICE);
+        break;
+      case 3:
+        Numbers::print(10, 12, MEDIUM_SEED_PACK_PRICE);
+        break;
+      case 4:
+        Numbers::print(10, 12, SHEEP_PRICE);
+        break;
+      }
     }
 
     Arduboy2Base::drawBitmap(96, 35, Hub::portrait_shop_0, 29, 32, BLACK);

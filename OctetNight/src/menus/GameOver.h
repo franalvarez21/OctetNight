@@ -13,7 +13,7 @@ public:
 
   bool action()
   {
-    Arduboy2Base::drawBitmap(23, 25, Lines::game_over, 78, 8, WHITE);
+    Arduboy2Base::drawBitmap(25, 25, Lines::game_over, 78, 8, WHITE);
     if (timeout > 0)
     {
       timeout--;

@@ -65,6 +65,8 @@ public:
   {
     changeCurrentMap(0, stats);
     refresh(effects);
+    currentSeedSelected = 0;
+    currentToolSelected = 0;
     setPlayerPosition(3, 2, 0, 0);
     lastArrowUsed = 0;
   }
@@ -74,8 +76,6 @@ public:
     effects->refresh();
     speedTick = 0;
     currentAction = 0;
-    currentToolSelected = 0;
-    currentSeedSelected = 0;
     energyCycle = ENERGY_TIME;
     justPressedLock = true;
     playerOrientation = 1;
@@ -222,8 +222,9 @@ public:
 
   void seedGrowth(uint8_t i, uint8_t j, uint8_t seed_number)
   {
-    if (seed_number == SEED_1_NUMBER || seed_number == SEED_2_NUMBER || seed_number == SEED_3_NUMBER)
+    switch (seed_number)
     {
+    case SEED_1_NUMBER or SEED_2_NUMBER or SEED_3_NUMBER:
       if (map[i][j] > seed_number + 2 && map[i][j] < seed_number + 10)
       {
         map[i][j]++;
@@ -232,27 +233,25 @@ public:
       {
         map[i][j] = seed_number + 3;
       }
-    }
-    else if (seed_number == SEED_4_NUMBER)
-    {
+      break;
+    case SEED_4_NUMBER:
       if (map[i][j] >= SEED_4_NUMBER && map[i][j] < SEED_5_NUMBER - 1)
       {
         map[i][j]++;
       }
-    }
-    else if (seed_number == SEED_5_NUMBER)
-    {
+      break;
+    case SEED_5_NUMBER:
       if (map[i][j] >= SEED_5_NUMBER && map[i][j] < SEED_6_NUMBER - 1)
       {
         map[i][j]++;
       }
-    }
-    else if (seed_number == SEED_6_NUMBER)
-    {
+      break;
+    case SEED_6_NUMBER:
       if (map[i][j] >= SEED_6_NUMBER && map[i][j] < 109)
       {
         map[i][j]++;
       }
+      break;
     }
   }
 
@@ -458,7 +457,6 @@ public:
       {
         if (currentAction > 2)
         {
-          currentSeedSelected = 0;
           currentAction--;
         }
         currentAction--;
@@ -492,8 +490,6 @@ public:
       }
       else
       {
-        currentToolSelected = 0;
-        currentSeedSelected = 0;
         currentAction++;
         return 1;
       }
@@ -507,14 +503,15 @@ public:
         {
           currentSeedSelected--;
         }
+        else
+        {
+          currentSeedSelected = SEEDS_AVAILABLE - 1;
+        }
       }
 
       if (Arduboy2Base::justPressed(DOWN_BUTTON))
       {
-        if (currentSeedSelected < SEEDS_AVAILABLE - 1)
-        {
-          currentSeedSelected++;
-        }
+        currentSeedSelected = (currentSeedSelected + 1) % SEEDS_AVAILABLE;
       }
     }
     else if (currentAction == 1)
@@ -525,14 +522,15 @@ public:
         {
           currentToolSelected--;
         }
+        else
+        {
+          currentToolSelected = TOOLS_AVAILABLE - 1;
+        }
       }
 
       if (Arduboy2Base::justPressed(DOWN_BUTTON))
       {
-        if (currentToolSelected < TOOLS_AVAILABLE - 1)
-        {
-          currentToolSelected++;
-        }
+        currentToolSelected = (currentToolSelected + 1) % TOOLS_AVAILABLE;
       }
     }
     else
@@ -852,21 +850,20 @@ private:
       for (uint8_t j = 0; j < REAL_MAP_HEIGHT; j++)
       {
         mapSet(i, j, cell[i][j]);
-        if (cell[i][j] == 0) // Trees
+        switch (cell[i][j])
         {
+        case 0: // Trees
           mapSet(i, j, rand() % 3);
-        }
-        else if (cell[i][j] == 1) // Empty
-        {
+          break;
+        case 1: // Empty
           mapSet(i, j, VOID_NUMBER);
-        }
-        else if (cell[i][j] == 2) // Rocks
-        {
+          break;
+        case 2: // Rocks
           mapSet(i, j, 31 + rand() % 3);
-        }
-        else if (cell[i][j] == 63) // weird block
-        {
+          break;
+        case 63: // Weird block
           mapSet(i, j, 37);
+          break;
         }
       }
     }
@@ -1609,14 +1606,7 @@ private:
       break;
     }
 
-    if (cycle->halfCycleCheck())
-    {
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + (-1 + x)), SQUARE_SIZE * (playerYPosition + (-1 + y)), Common::available_spot_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-    }
-    else
-    {
-      Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + (-1 + x)), SQUARE_SIZE * (playerYPosition + (-1 + y)), Common::available_spot_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-    }
+    Arduboy2Base::drawBitmap(SQUARE_SIZE * (playerXPosition + (-1 + x)), SQUARE_SIZE * (playerYPosition + (-1 + y)), cycle->halfCycleCheck() ? Common::available_spot_1 : Common::available_spot_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
   }
 
   uint8_t useTool(Stats *stats, Effects *effects)

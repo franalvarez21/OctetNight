@@ -210,21 +210,20 @@ void Game::mainGameTick(void)
     }
     else
     {
-      if (action == 3)
+      switch (action)
       {
+      case 3:
         dialogs.displayDialogs(4);
-      }
-      else if (action == 5)
-      {
+        break;
+      case 5:
         dialogs.displayDialogs(3);
-      }
-      else if (action == 6)
-      {
+        break;
+      case 6:
         dialogs.displayDialogs(5);
-      }
-      else if (action == 7)
-      {
+        break;
+      case 7:
         dialogs.displayDialogs(8);
+        break;
       }
 
       if (cycle.cycle == 1)

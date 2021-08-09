@@ -16,24 +16,17 @@ public:
 
     if (okMovement())
     {
-      if (option == 4)
+      switch (option)
       {
+      case 4:
         return 3;
-      }
-      else if (option == 3)
-      {
+      case 3:
         return 4;
-      }
-      else if (option == 2)
-      {
+      case 2:
         return 5;
-      }
-      else if (option == 1)
-      {
+      case 1:
         return 2;
-      }
-      else if (option == 0)
-      {
+      case 0:
         return 1;
       }
     }
