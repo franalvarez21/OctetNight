@@ -47,7 +47,12 @@ https://community.arduboy.com/t/octet-night-farming-adventure-game-in-your-pocke
 
 Some parts of the code are made to save space, please be kind if you decide to check out the code.
 
-# Last mayor releases
+# Releases
+
+August 9, 2021. V1.1
+
+Sketch uses 28538 bytes (99%) of program storage space. Maximum is 28672 bytes.
+Global variables use 1919 bytes (74%) of dynamic memory, leaving 641 bytes for local variables. Maximum is 2560 bytes.
 
 June 30, 2021. V1.0
 

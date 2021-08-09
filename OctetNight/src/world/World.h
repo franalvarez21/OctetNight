@@ -453,10 +453,6 @@ public:
     {
       if (currentAction > 0)
       {
-        if (currentAction > 2)
-        {
-          currentAction--;
-        }
         currentAction--;
         return 1;
       }
