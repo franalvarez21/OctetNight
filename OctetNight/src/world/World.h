@@ -535,54 +535,70 @@ public:
     {
       if (pressed(RIGHT_BUTTON) && !Arduboy2Base::pressed(LEFT_BUTTON))
       {
+        if (playerOrientation == 1 || currentAction == 0)
+        {
+          if (playerXPosition < SQUARE_AMOUNT_WEIGHT - 2)
+          {
+            playerOrientation = 1;
+            return move(stats, effects, 1, 0);
+          }
+          else if (mapOffsetX + (SQUARE_AMOUNT_WEIGHT - 1) < REAL_MAP_WEIGHT)
+          {
+            mapOffsetX++;
+          }
+        }
         playerOrientation = 1;
-        if (playerXPosition < SQUARE_AMOUNT_WEIGHT - 2)
-        {
-          return move(stats, effects, 1, 0);
-        }
-        else if (mapOffsetX + (SQUARE_AMOUNT_WEIGHT - 1) < REAL_MAP_WEIGHT)
-        {
-          mapOffsetX++;
-        }
       }
 
       if (pressed(LEFT_BUTTON) && !Arduboy2Base::pressed(RIGHT_BUTTON))
       {
+        if (playerOrientation == 3 || currentAction == 0)
+        {
+          if (playerXPosition > 0)
+          {
+            playerOrientation = 3;
+            return move(stats, effects, -1, 0);
+          }
+          else if (mapOffsetX > 0)
+          {
+            mapOffsetX--;
+          }
+        }
         playerOrientation = 3;
-        if (playerXPosition > 0)
-        {
-          return move(stats, effects, -1, 0);
-        }
-        else if (mapOffsetX > 0)
-        {
-          mapOffsetX--;
-        }
       }
 
       if (pressed(DOWN_BUTTON) && !Arduboy2Base::pressed(UP_BUTTON))
       {
+        if (playerOrientation == 2 || currentAction == 0)
+        {
+          if (playerYPosition < SQUARE_AMOUNT_HEIGHT - 2)
+          {
+            playerOrientation = 2;
+            return move(stats, effects, 0, 1);
+          }
+          else if (mapOffsetY + (SQUARE_AMOUNT_HEIGHT - 1) < REAL_MAP_HEIGHT)
+          {
+            mapOffsetY++;
+          }
+        }
         playerOrientation = 2;
-        if (playerYPosition < SQUARE_AMOUNT_HEIGHT - 2)
-        {
-          return move(stats, effects, 0, 1);
-        }
-        else if (mapOffsetY + (SQUARE_AMOUNT_HEIGHT - 1) < REAL_MAP_HEIGHT)
-        {
-          mapOffsetY++;
-        }
       }
 
       if (pressed(UP_BUTTON) && !Arduboy2Base::pressed(DOWN_BUTTON))
       {
+        if (playerOrientation == 0 || currentAction == 0)
+        {
+          if (playerYPosition > 0)
+          {
+            playerOrientation = 0;
+            return move(stats, effects, 0, -1);
+          }
+          else if (mapOffsetY > 0)
+          {
+            mapOffsetY--;
+          }
+        }
         playerOrientation = 0;
-        if (playerYPosition > 0)
-        {
-          return move(stats, effects, 0, -1);
-        }
-        else if (mapOffsetY > 0)
-        {
-          mapOffsetY--;
-        }
       }
     }
 
