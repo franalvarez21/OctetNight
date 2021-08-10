@@ -34,14 +34,14 @@ public:
 
     if (saveFlag)
     {
-      Arduboy2Base::drawBitmap(104, 52, Lines::start, 24, 4, WHITE);
-      Arduboy2Base::drawBitmap(109, 60, Lines::load, 24, 4, WHITE);
-      displayMenuCursor(98, 52);
+      Arduboy2Base::drawBitmap(104, 50, Lines::start, 24, 4, WHITE);
+      Arduboy2Base::drawBitmap(109, 58, Lines::load, 24, 4, WHITE);
+      displayMenuCursor(97, 50);
     }
     else
     {
-      Arduboy2Base::drawBitmap(104, 60, Lines::start, 24, 4, WHITE);
-      displayMenuCursor(98, 60);
+      Arduboy2Base::drawBitmap(104, 58, Lines::start, 24, 4, WHITE);
+      displayMenuCursor(97, 58);
     }
 
     Arduboy2Base::drawBitmap(0, 56, Title::g_rating, SQUARE_SIZE, SQUARE_SIZE, WHITE);

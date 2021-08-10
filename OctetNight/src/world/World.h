@@ -222,7 +222,9 @@ public:
   {
     switch (seed_number)
     {
-    case SEED_1_NUMBER or SEED_2_NUMBER or SEED_3_NUMBER:
+    case SEED_1_NUMBER:
+    case SEED_2_NUMBER:
+    case SEED_3_NUMBER:
       if (map[i][j] > seed_number + 2 && map[i][j] < seed_number + 10)
       {
         map[i][j]++;
@@ -271,6 +273,10 @@ public:
             if (rand() % 2 == 0)
             {
               mapSet(i, j, SEED_4_NUMBER + 4);
+              // if (rand() % 4 == 0)
+              // {
+              //   mapSet(i, j, 35);
+              // }
             }
           }
         }
@@ -1125,12 +1131,12 @@ private:
       case 34:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, cycle->halfCycleCheck() ? Map::simon_bird_0 : Map::simon_bird_1, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         break;
-      case 35:
-        // Not in use
-        break;
-      case 36:
-        // Not in use
-        break;
+      // case 35:
+      //   Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::apple, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+      //   break;
+      // case 36:
+      //   Not in use
+      //   break;
       case 37:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Map::weird_block_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
         effects->displayBistercian(SQUARE_SIZE * i + 2, SQUARE_SIZE * j + 3, stats->getRealMoney());
@@ -1168,18 +1174,18 @@ private:
       case 55:
         displayBarrier(effects, stats, i, j, 3);
         break;
-      case 61:
-        // Reserve as store door
-        break;
-      case 62:
-        // Reserve as home door
-        break;
-      case 63:
-        // Reserve as weird blocker (points 37 38 39)
-        break;
-      case 64:
-        // Reserve as non descriptive (complement to others) blocker
-        break;
+      // case 61:
+      //   Reserve as store door
+      //   break;
+      // case 62:
+      //   Reserve as home door
+      //   break;
+      // case 63:
+      //   Reserve as weird blocker (points 37 38 39)
+      //   break;
+      // case 64:
+      //   Reserve as non descriptive (complement to others) blocker
+      //   break;
       // Seed 1
       case SEED_1_NUMBER:
         Arduboy2Base::drawBitmap(SQUARE_SIZE * i, SQUARE_SIZE * j, Seeds::seed_0, SQUARE_SIZE, SQUARE_SIZE, WHITE);
@@ -1429,6 +1435,12 @@ private:
         effects->plusAnimation();
         mapSet(tempX, tempY, EMPTY_NUMBER);
       }
+      // if (value == 35)
+      // {
+      //   stats->incHP(1);
+      //   effects->plusAnimation();
+      //   mapSet(tempX, tempY, EMPTY_NUMBER);
+      // }
 
       lastArrowUsed = currentMap;
       switch (currentMap)
@@ -1572,7 +1584,7 @@ private:
   bool canMove(Stats *stats, uint8_t value)
   {
     // Elements check
-    if ((value > 16 && value < 31) || (value > SEED_1_NUMBER - 1 && value < START_ENEMY_NUMBER) || value > END_ENEMY_NUMBER)
+    if ((value > 16 && value < 31) || (value > SEED_1_NUMBER - 1 && value < START_ENEMY_NUMBER) || value > END_ENEMY_NUMBER) // value == 35
     {
       return true;
     }

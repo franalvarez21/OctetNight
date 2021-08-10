@@ -78,27 +78,27 @@ public:
 
   void eventDisplay(Stats *stats)
   {
-    Arduboy2Base::drawBitmap(45, 6, Lines::shop, 66, 34, WHITE);
+    Arduboy2Base::drawBitmap(47, 6, Lines::shop, 66, 34, WHITE);
     displayMenuCursor(40, 6, 6);
 
-    Numbers::print(10, 6, stats->getRealMoney());
+    Numbers::print(8, 6, stats->getRealMoney());
 
     if (option > 0 && option < 5)
     {
-      Arduboy2Base::drawBitmap(8, 14, Common::bar, 4, 1, WHITE);
+      Arduboy2Base::drawBitmap(6, 14, Common::bar, 4, 1, WHITE);
       switch (option)
       {
       case 1:
-        Numbers::print(10, 12, POTION_PRICE);
+        Numbers::print(8, 12, POTION_PRICE);
         break;
       case 2:
-        Numbers::print(10, 12, BASIC_SEED_PACK_PRICE);
+        Numbers::print(8, 12, BASIC_SEED_PACK_PRICE);
         break;
       case 3:
-        Numbers::print(10, 12, MEDIUM_SEED_PACK_PRICE);
+        Numbers::print(8, 12, MEDIUM_SEED_PACK_PRICE);
         break;
       case 4:
-        Numbers::print(10, 12, SHEEP_PRICE);
+        Numbers::print(8, 12, SHEEP_PRICE);
         break;
       }
     }

@@ -49,9 +49,9 @@ Some parts of the code are made to save space, please be kind if you decide to c
 
 # Releases
 
-August 9, 2021. V1.1
+August 9, 2021. V1.1 (rev. 2)
 
-Sketch uses 28538 bytes (99%) of program storage space. Maximum is 28672 bytes.
+Sketch uses 28624 bytes (99%) of program storage space. Maximum is 28672 bytes.
 Global variables use 1919 bytes (74%) of dynamic memory, leaving 641 bytes for local variables. Maximum is 2560 bytes.
 
 June 30, 2021. V1.0

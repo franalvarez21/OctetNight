@@ -56,7 +56,7 @@ public:
     Arduboy2Base::drawBitmap(82, 40, Lines::save, 34, 4, WHITE);
     Arduboy2Base::drawBitmap(82, 46, Lines::load, 34, 4, WHITE);
     Arduboy2Base::drawBitmap(82, 52, Lines::mMenu, 34, 4, WHITE);
-    displayMenuCursor(76, 28, 6);
+    displayMenuCursor(75, 28, 6);
 
     // Hub
     Arduboy2Base::drawBitmap(110, 2, Hub::hub_0, 16, 60, WHITE);

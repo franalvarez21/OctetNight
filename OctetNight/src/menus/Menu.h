@@ -42,6 +42,6 @@ public:
 
   void displayMenuCursor(uint8_t x, uint8_t y, uint8_t jumps = SQUARE_SIZE)
   {
-    Arduboy2Base::drawBitmap(x, y - 1 + (jumps * option), Common::cursor, 4, 5, WHITE);
+    Arduboy2Base::drawBitmap(x - 4, y - 2 + (jumps * option), Common::cursor, 8, 8, WHITE);
   }
 };
